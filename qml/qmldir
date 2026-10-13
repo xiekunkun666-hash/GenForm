@@ -1,0 +1,15 @@
+singleton Theme 1.0 Theme.qml
+ToolBtn 1.0 ToolBtn.qml
+DesignTree 1.0 DesignTree.qml
+FormPanel 1.0 FormPanel.qml
+Icon 1.0 Icon.qml
+IconBtn 1.0 IconBtn.qml
+RibbonBtn 1.0 RibbonBtn.qml
+GestureWheel 1.0 GestureWheel.qml
+RibbonMenu 1.0 RibbonMenu.qml
+AxisTriad 1.0 AxisTriad.qml
+MenuList 1.0 MenuList.qml
+ViewBar 1.0 ViewBar.qml
+Tip 1.0 Tip.qml
+ContextBar 1.0 ContextBar.qml
+SettingsDialog 1.0 SettingsDialog.qml

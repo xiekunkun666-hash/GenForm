@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "genform": {
+      "command": "C:\\qt_project\\venv313\\Scripts\\python.exe",
+      "args": ["-B", "-m", "genform.api.mcp_server"],
+      "cwd": "C:\\qt_project\\GenForm"
+    }
+  }
+}
