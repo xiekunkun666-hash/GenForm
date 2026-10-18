@@ -1,0 +1,63 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "聚碳酸酯 PC",
+  "color": "#5A060B"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "第三刹车灯草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 3730.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 1070,
+      "w": 240,
+      "h": 20
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "第三刹车灯",
+   "params": {
+    "sketch": "f1",
+    "distance": 50.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "prism",
+    "why": "LED 高位刹车灯。手动指定：每件 ¥500.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 500.0,
+    "unit": 500.0,
+    "tooling": 0.0,
+    "spec": "LED 高位刹车灯"
+   }
+  }
+ ]
+}

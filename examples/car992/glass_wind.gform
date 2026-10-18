@@ -1,0 +1,116 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 3,
+ "upto": null,
+ "props": {
+  "material": "钢化玻璃",
+  "color": "#2A3A48",
+  "feature_opacity": {
+   "f3": 0.32
+  },
+  "feature_colors": {
+   "f3": "#2A3A48"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "plane",
+   "name": "前挡风玻璃面",
+   "params": {
+    "base": "XY",
+    "offset": 10.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      1847.659,
+      0.0,
+      1059.172
+     ]
+    ],
+    "normal": [
+     [
+      -0.585292,
+      0.0,
+      0.810823
+     ]
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "sketch",
+   "name": "前挡风玻璃草图",
+   "params": {
+    "plane": "f1",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        545.0,
+        -209.66
+       ],
+       [
+        -545.0,
+        -209.66
+       ],
+       [
+        -520.0,
+        209.66
+       ],
+       [
+        520.0,
+        209.66
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "extrude",
+   "name": "前挡风玻璃",
+   "params": {
+    "sketch": "f2",
+    "distance": 10.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": true,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "waterjet",
+    "name": "水刀切割",
+    "short": "水刀",
+    "color": "#4C94FF",
+    "kind": "glass",
+    "auto": true,
+    "batch": 1,
+    "cost": 242.23,
+    "tooling": 0.0,
+    "unit": 242.23,
+    "standard": false,
+    "spec": "",
+    "why": "名字是 “前挡风玻璃” → 水刀切割：做 1 件, 每件约 ¥242；第二是 钢化 / 热弯玻璃 (外协) ¥337",
+    "alternatives": [
+     {
+      "id": "glass",
+      "name": "钢化 / 热弯玻璃 (外协)",
+      "cost": 336.86
+     }
+    ]
+   }
+  }
+ ]
+}

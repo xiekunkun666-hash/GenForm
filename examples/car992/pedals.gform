@@ -1,0 +1,230 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 6,
+ "upto": null,
+ "props": {
+  "material": "铝合金 6061",
+  "color": "#1D1E21"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "踏板草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 1810.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": -410,
+      "cy": 430,
+      "w": 100,
+      "h": 70
+     },
+     {
+      "type": "rect",
+      "cx": -290,
+      "cy": 430,
+      "w": 50,
+      "h": 110
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "踏板",
+   "params": {
+    "sketch": "f1",
+    "distance": 14.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "kind": "prism",
+    "auto": true,
+    "batch": 1,
+    "cost": 628.56,
+    "tooling": 300.0,
+    "unit": 328.56,
+    "standard": false,
+    "spec": "",
+    "why": "有厚度的块 → 三轴 CNC 铣：做 1 件, 每件约 ¥629 (模具 / 工装 ¥300 摊下来 ¥300 + 单件 ¥329)；第二是 五轴 CNC 铣 ¥2012；做到 367 件以上换成 砂型铸造 + 机加工 更划算",
+    "alternatives": [
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 2011.84
+     },
+     {
+      "id": "investment",
+      "name": "熔模精密铸造",
+      "cost": 6352.32
+     },
+     {
+      "id": "sand_cast",
+      "name": "砂型铸造 + 机加工",
+      "cost": 7690.68
+     }
+    ]
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "踏板臂草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 1810.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": -410,
+      "cy": 560,
+      "w": 18,
+      "h": 280
+     },
+     {
+      "type": "rect",
+      "cx": -290,
+      "cy": 560,
+      "w": 18,
+      "h": 280
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "踏板臂",
+   "params": {
+    "sketch": "f3",
+    "distance": 14.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "kind": "prism",
+    "auto": true,
+    "batch": 1,
+    "cost": 729.26,
+    "tooling": 300.0,
+    "unit": 429.26,
+    "standard": false,
+    "spec": "",
+    "why": "有厚度的块 → 三轴 CNC 铣：做 1 件, 每件约 ¥729 (模具 / 工装 ¥300 摊下来 ¥300 + 单件 ¥429)；第二是 五轴 CNC 铣 ¥2188；做到 50 件以上换成 熔模精密铸造 更划算",
+    "alternatives": [
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 2187.95
+     },
+     {
+      "id": "investment",
+      "name": "熔模精密铸造",
+      "cost": 6315.09
+     },
+     {
+      "id": "slm",
+      "name": "金属 SLM 打印",
+      "cost": 7656.0
+     }
+    ]
+   }
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "踏板支架草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 1810.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": -350,
+      "cy": 690,
+      "w": 140,
+      "h": 20
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "踏板支架",
+   "params": {
+    "sketch": "f5",
+    "distance": 14.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "kind": "prism",
+    "auto": true,
+    "batch": 1,
+    "cost": 417.64,
+    "tooling": 300.0,
+    "unit": 117.64,
+    "standard": false,
+    "spec": "",
+    "why": "有厚度的块 → 三轴 CNC 铣：做 1 件, 每件约 ¥418 (模具 / 工装 ¥300 摊下来 ¥300 + 单件 ¥118)；第二是 金属 SLM 打印 ¥1280；做到 354 件以上换成 熔模精密铸造 更划算",
+    "alternatives": [
+     {
+      "id": "slm",
+      "name": "金属 SLM 打印",
+      "cost": 1280.0
+     },
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 1303.94
+     },
+     {
+      "id": "investment",
+      "name": "熔模精密铸造",
+      "cost": 6101.54
+     }
+    ]
+   }
+  }
+ ]
+}

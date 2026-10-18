@@ -1,0 +1,63 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "聚碳酸酯 PC",
+  "color": "#0A0C10"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "中控屏草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 2050.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 755,
+      "w": 290,
+      "h": 120
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "中控屏",
+   "params": {
+    "sketch": "f1",
+    "distance": 12.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "plate",
+    "why": "10.9 寸中控触摸屏。手动指定：每件 ¥4,500.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 4500.0,
+    "unit": 4500.0,
+    "tooling": 0.0,
+    "spec": "10.9 寸中控触摸屏"
+   }
+  }
+ ]
+}

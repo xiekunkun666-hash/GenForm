@@ -1,0 +1,63 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "黄铜",
+  "color": "#D5D8DB"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "气门嘴草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 890.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 1188.0,
+      "cy": 284.0,
+      "r": 5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "气门嘴",
+   "params": {
+    "sketch": "f1",
+    "distance": 16.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "kind": "fastener",
+    "auto": true,
+    "batch": 1,
+    "cost": 1.5,
+    "tooling": 0.0,
+    "unit": 1.5,
+    "standard": true,
+    "spec": "TR414 无内胎气门嘴",
+    "why": "TR414 无内胎气门嘴。名字是 “气门嘴” → 标准件 (按规格网购)：做 1 件, 每件约 ¥1.50",
+    "alternatives": []
+   }
+  }
+ ]
+}

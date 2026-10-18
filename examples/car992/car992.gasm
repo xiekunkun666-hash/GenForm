@@ -1,0 +1,1643 @@
+{
+ "format": "genform-assembly",
+ "version": 1,
+ "parts": [
+  {
+   "name": "车身",
+   "file": "body.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "车门 1",
+   "file": "door.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "车门 2",
+   "file": "door.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "车门上铰链 1",
+   "file": "door_hinge_up.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "车门上铰链 2",
+   "file": "door_hinge_up.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "车门下铰链 1",
+   "file": "door_hinge_low.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "车门下铰链 2",
+   "file": "door_hinge_low.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "前车盖",
+   "file": "hood.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "前车盖铰链 1",
+   "file": "hood_hinge.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "前车盖铰链 2",
+   "file": "hood_hinge.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "前挡风玻璃",
+   "file": "glass_wind.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "后窗玻璃",
+   "file": "glass_rear_w.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "侧窗玻璃 1",
+   "file": "glass_door_w.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "侧窗玻璃 2",
+   "file": "glass_door_w.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "三角窗玻璃 1",
+   "file": "glass_qtr_w.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "三角窗玻璃 2",
+   "file": "glass_qtr_w.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "大灯总成 1",
+   "file": "headlamp.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "大灯总成 2",
+   "file": "headlamp.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "中进气格栅",
+   "file": "grille_center.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "侧进气格栅 1",
+   "file": "grille_side.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "侧进气格栅 2",
+   "file": "grille_side.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "转向灯 1",
+   "file": "blinker.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "转向灯 2",
+   "file": "blinker.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "前下扰流",
+   "file": "splitter.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "引擎盖徽标",
+   "file": "crest.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "外后视镜 1",
+   "file": "side_mirror.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "外后视镜 2",
+   "file": "side_mirror.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "贯穿尾灯",
+   "file": "tail_lamp.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "第三刹车灯",
+   "file": "brake_light.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "扩散器",
+   "file": "diffuser.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "排气尾管 1",
+   "file": "exhaust_tip.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "排气尾管 2",
+   "file": "exhaust_tip.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "PORSCHE 字标",
+   "file": "badge.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "牌照",
+   "file": "plate.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "牌照螺丝 1",
+   "file": "plate_screw.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "牌照螺丝 2",
+   "file": "plate_screw.gform",
+   "move": [
+    0,
+    400,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "牌照螺丝 3",
+   "file": "plate_screw.gform",
+   "move": [
+    0,
+    0,
+    -72
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "牌照螺丝 4",
+   "file": "plate_screw.gform",
+   "move": [
+    0,
+    400,
+    -72
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "尾翼",
+   "file": "wing.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "仪表台",
+   "file": "dash.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "组合仪表",
+   "file": "cluster.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "中控屏",
+   "file": "screen.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "中控台",
+   "file": "console.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "换挡拨杆",
+   "file": "selector.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "踏板总成",
+   "file": "pedals.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "转向柱",
+   "file": "column.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "方向盘",
+   "file": "steering.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "车内后视镜",
+   "file": "rear_view.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "座椅滑轨 1",
+   "file": "seat_rail.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "座椅滑轨 2",
+   "file": "seat_rail.gform",
+   "move": [
+    0,
+    -340,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "座椅滑轨 3",
+   "file": "seat_rail.gform",
+   "move": [
+    0,
+    320.0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "座椅滑轨 4",
+   "file": "seat_rail.gform",
+   "move": [
+    0,
+    660.0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "前排座椅 1",
+   "file": "seat_front.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "前排座椅 2",
+   "file": "seat_front.gform",
+   "move": [
+    0,
+    660.0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "后排座椅 1",
+   "file": "seat_rear.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "后排座椅 2",
+   "file": "seat_rear.gform",
+   "move": [
+    0,
+    750,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "动力总成",
+   "file": "powertrain.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "前悬挂总成 1",
+   "file": "suspension_front.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "前悬挂总成 2",
+   "file": "suspension_front.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "后悬挂总成 1",
+   "file": "suspension_rear.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "后悬挂总成 2",
+   "file": "suspension_rear.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "后半轴 1",
+   "file": "halfshaft.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "后半轴 2",
+   "file": "halfshaft.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "轮毂 1",
+   "file": "hub.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "轮毂 2",
+   "file": "hub.gform",
+   "move": [
+    2450.0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "轮毂 3",
+   "file": "hub.gform",
+   "move": [
+    1920.0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    180
+   ]
+  },
+  {
+   "name": "轮毂 4",
+   "file": "hub.gform",
+   "move": [
+    4370.0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    180
+   ]
+  },
+  {
+   "name": "刹车盘 1",
+   "file": "disc.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "刹车盘 2",
+   "file": "disc.gform",
+   "move": [
+    2450.0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "刹车盘 3",
+   "file": "disc.gform",
+   "move": [
+    1920.0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    180
+   ]
+  },
+  {
+   "name": "刹车盘 4",
+   "file": "disc.gform",
+   "move": [
+    4370.0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    180
+   ]
+  },
+  {
+   "name": "刹车卡钳 1",
+   "file": "caliper.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "刹车卡钳 2",
+   "file": "caliper.gform",
+   "move": [
+    2450.0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "刹车卡钳 3",
+   "file": "caliper.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "刹车卡钳 4",
+   "file": "caliper.gform",
+   "move": [
+    2450.0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ],
+   "mirror": true
+  },
+  {
+   "name": "轮辋 1",
+   "file": "rim.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "轮辋 2",
+   "file": "rim.gform",
+   "move": [
+    2450.0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "轮辋 3",
+   "file": "rim.gform",
+   "move": [
+    1920.0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    180
+   ]
+  },
+  {
+   "name": "轮辋 4",
+   "file": "rim.gform",
+   "move": [
+    4370.0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    180
+   ]
+  },
+  {
+   "name": "轮胎 1",
+   "file": "tyre.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "轮胎 2",
+   "file": "tyre.gform",
+   "move": [
+    2450.0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "轮胎 3",
+   "file": "tyre.gform",
+   "move": [
+    1920.0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    180
+   ]
+  },
+  {
+   "name": "轮胎 4",
+   "file": "tyre.gform",
+   "move": [
+    4370.0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    180
+   ]
+  },
+  {
+   "name": "轮毂螺栓 1",
+   "file": "lug_bolt.gform",
+   "move": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "turn": [
+    0.0,
+    0.0,
+    0
+   ]
+  },
+  {
+   "name": "轮毂螺栓 2",
+   "file": "lug_bolt.gform",
+   "move": [
+    336.1802,
+    0.0,
+    1150.7124
+   ],
+   "turn": [
+    0.0,
+    72.0,
+    0
+   ]
+  },
+  {
+   "name": "轮毂螺栓 3",
+   "file": "lug_bolt.gform",
+   "move": [
+    1534.4582,
+    0.0,
+    1186.5757
+   ],
+   "turn": [
+    0.0,
+    144.0,
+    0
+   ]
+  },
+  {
+   "name": "轮毂螺栓 4",
+   "file": "lug_bolt.gform",
+   "move": [
+    1938.8544,
+    0.0,
+    58.028
+   ],
+   "turn": [
+    0.0,
+    216.0,
+    0
+   ]
+  },
+  {
+   "name": "轮毂螺栓 5",
+   "file": "lug_bolt.gform",
+   "move": [
+    990.5071,
+    0.0,
+    -675.3161
+   ],
+   "turn": [
+    0.0,
+    288.0,
+    0
+   ]
+  },
+  {
+   "name": "轮毂螺栓 6",
+   "file": "lug_bolt.gform",
+   "move": [
+    2450.0,
+    0.0,
+    0.0
+   ],
+   "turn": [
+    0.0,
+    0.0,
+    0
+   ]
+  },
+  {
+   "name": "轮毂螺栓 7",
+   "file": "lug_bolt.gform",
+   "move": [
+    2786.1802,
+    0.0,
+    1150.7124
+   ],
+   "turn": [
+    0.0,
+    72.0,
+    0
+   ]
+  },
+  {
+   "name": "轮毂螺栓 8",
+   "file": "lug_bolt.gform",
+   "move": [
+    3984.4582,
+    0.0,
+    1186.5757
+   ],
+   "turn": [
+    0.0,
+    144.0,
+    0
+   ]
+  },
+  {
+   "name": "轮毂螺栓 9",
+   "file": "lug_bolt.gform",
+   "move": [
+    4388.8544,
+    0.0,
+    58.028
+   ],
+   "turn": [
+    0.0,
+    216.0,
+    0
+   ]
+  },
+  {
+   "name": "轮毂螺栓 10",
+   "file": "lug_bolt.gform",
+   "move": [
+    3440.5071,
+    0.0,
+    -675.3161
+   ],
+   "turn": [
+    0.0,
+    288.0,
+    0
+   ]
+  },
+  {
+   "name": "轮毂螺栓 11",
+   "file": "lug_bolt.gform",
+   "move": [
+    1920.0,
+    0.0,
+    0.0
+   ],
+   "turn": [
+    0.0,
+    0.0,
+    180
+   ]
+  },
+  {
+   "name": "轮毂螺栓 12",
+   "file": "lug_bolt.gform",
+   "move": [
+    1583.8198,
+    0.0,
+    1150.7124
+   ],
+   "turn": [
+    0.0,
+    72.0,
+    180
+   ]
+  },
+  {
+   "name": "轮毂螺栓 13",
+   "file": "lug_bolt.gform",
+   "move": [
+    385.5418,
+    0.0,
+    1186.5757
+   ],
+   "turn": [
+    0.0,
+    144.0,
+    180
+   ]
+  },
+  {
+   "name": "轮毂螺栓 14",
+   "file": "lug_bolt.gform",
+   "move": [
+    -18.8544,
+    0.0,
+    58.028
+   ],
+   "turn": [
+    0.0,
+    216.0,
+    180
+   ]
+  },
+  {
+   "name": "轮毂螺栓 15",
+   "file": "lug_bolt.gform",
+   "move": [
+    929.4929,
+    0.0,
+    -675.3161
+   ],
+   "turn": [
+    0.0,
+    288.0,
+    180
+   ]
+  },
+  {
+   "name": "轮毂螺栓 16",
+   "file": "lug_bolt.gform",
+   "move": [
+    4370.0,
+    0.0,
+    0.0
+   ],
+   "turn": [
+    0.0,
+    0.0,
+    180
+   ]
+  },
+  {
+   "name": "轮毂螺栓 17",
+   "file": "lug_bolt.gform",
+   "move": [
+    4033.8198,
+    0.0,
+    1150.7124
+   ],
+   "turn": [
+    0.0,
+    72.0,
+    180
+   ]
+  },
+  {
+   "name": "轮毂螺栓 18",
+   "file": "lug_bolt.gform",
+   "move": [
+    2835.5418,
+    0.0,
+    1186.5757
+   ],
+   "turn": [
+    0.0,
+    144.0,
+    180
+   ]
+  },
+  {
+   "name": "轮毂螺栓 19",
+   "file": "lug_bolt.gform",
+   "move": [
+    2431.1456,
+    0.0,
+    58.028
+   ],
+   "turn": [
+    0.0,
+    216.0,
+    180
+   ]
+  },
+  {
+   "name": "轮毂螺栓 20",
+   "file": "lug_bolt.gform",
+   "move": [
+    3379.4929,
+    0.0,
+    -675.3161
+   ],
+   "turn": [
+    0.0,
+    288.0,
+    180
+   ]
+  },
+  {
+   "name": "轮辋中心盖 1",
+   "file": "cap.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "轮辋中心盖 2",
+   "file": "cap.gform",
+   "move": [
+    2450.0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "轮辋中心盖 3",
+   "file": "cap.gform",
+   "move": [
+    1920.0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    180
+   ]
+  },
+  {
+   "name": "轮辋中心盖 4",
+   "file": "cap.gform",
+   "move": [
+    4370.0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    180
+   ]
+  },
+  {
+   "name": "气门嘴 1",
+   "file": "valve.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "气门嘴 2",
+   "file": "valve.gform",
+   "move": [
+    2450.0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "气门嘴 3",
+   "file": "valve.gform",
+   "move": [
+    1920.0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    180
+   ]
+  },
+  {
+   "name": "气门嘴 4",
+   "file": "valve.gform",
+   "move": [
+    4370.0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    180
+   ]
+  }
+ ],
+ "joints": [
+  {
+   "name": "左车门",
+   "kind": "hinge",
+   "origin": [
+    1718.0,
+    -912.0,
+    600.0
+   ],
+   "axis": [
+    0,
+    0,
+    -1
+   ],
+   "parts": [
+    1,
+    12,
+    25
+   ],
+   "base": 0,
+   "min": 0,
+   "max": 65
+  },
+  {
+   "name": "右车门",
+   "kind": "hinge",
+   "origin": [
+    1718.0,
+    912.0,
+    600.0
+   ],
+   "axis": [
+    0,
+    0,
+    1
+   ],
+   "parts": [
+    2,
+    13,
+    26
+   ],
+   "base": 0,
+   "min": 0,
+   "max": 65
+  },
+  {
+   "name": "前车盖",
+   "kind": "hinge",
+   "origin": [
+    1642.0,
+    0.0,
+    914.0
+   ],
+   "axis": [
+    0,
+    1,
+    0
+   ],
+   "parts": [
+    7,
+    24
+   ],
+   "base": 0,
+   "min": 0,
+   "max": 70
+  }
+ ]
+}

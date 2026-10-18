@@ -1,0 +1,356 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 12,
+ "upto": null,
+ "props": {
+  "material": "铝合金 6061",
+  "color": "#ECECEC",
+  "feature_colors": {
+   "f4": "#151515"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "牌照草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 4507.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 640,
+      "w": 500,
+      "h": 104
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "牌照",
+   "params": {
+    "sketch": "f1",
+    "distance": 4.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "kind": "plate",
+    "auto": true,
+    "batch": 1,
+    "cost": 47.66,
+    "tooling": 0.0,
+    "unit": 47.66,
+    "standard": false,
+    "spec": "",
+    "why": "厚 4 mm 的平板 → 激光切割：做 1 件, 每件约 ¥48；第二是 水刀切割 ¥59；做到 79 件以上换成 数控冲床 更划算",
+    "alternatives": [
+     {
+      "id": "waterjet",
+      "name": "水刀切割",
+      "cost": 59.25
+     },
+     {
+      "id": "edm",
+      "name": "慢走丝线切割",
+      "cost": 504.99
+     },
+     {
+      "id": "bend",
+      "name": "激光切割 + 折弯 + 焊接",
+      "cost": 664.52
+     }
+    ]
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "牌照字草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 4511.0,
+    "shapes": [
+     {
+      "type": "text",
+      "x": -150,
+      "y": 615,
+      "text": "GF 911",
+      "height": 52,
+      "font": "Arial"
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "牌照字",
+   "params": {
+    "sketch": "f3",
+    "distance": 3.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "kind": "letters",
+    "auto": true,
+    "batch": 1,
+    "cost": 125.05,
+    "tooling": 0.0,
+    "unit": 125.05,
+    "standard": false,
+    "spec": "",
+    "why": "凸起的字: 一个个切出来贴上去 → 激光切割：做 1 件, 每件约 ¥125；第二是 水刀切割 ¥165",
+    "alternatives": [
+     {
+      "id": "waterjet",
+      "name": "水刀切割",
+      "cost": 165.23
+     },
+     {
+      "id": "edm",
+      "name": "慢走丝线切割",
+      "cost": 786.1
+     },
+     {
+      "id": "cnc3",
+      "name": "三轴 CNC 铣",
+      "cost": 875.72
+     }
+    ]
+   }
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "螺丝杆草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 4479.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -200,
+      "cy": 676,
+      "r": 3
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "螺丝杆（让位）",
+   "params": {
+    "sketch": "f5",
+    "distance": 32.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "kind": "fastener",
+    "auto": true,
+    "batch": 1,
+    "cost": 1.5,
+    "tooling": 0.0,
+    "unit": 1.5,
+    "standard": true,
+    "spec": "GB/T 818 M3 十字盘头螺钉",
+    "why": "GB/T 818 M3 十字盘头螺钉。名字是 “螺丝杆（让位）” → 标准件 (按规格网购)：做 1 件, 每件约 ¥1.50",
+    "alternatives": []
+   }
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "螺丝杆草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 4479.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 200,
+      "cy": 676,
+      "r": 3
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "螺丝杆（让位）",
+   "params": {
+    "sketch": "f7",
+    "distance": 32.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "kind": "fastener",
+    "auto": true,
+    "batch": 1,
+    "cost": 1.5,
+    "tooling": 0.0,
+    "unit": 1.5,
+    "standard": true,
+    "spec": "GB/T 818 M3 十字盘头螺钉",
+    "why": "GB/T 818 M3 十字盘头螺钉。名字是 “螺丝杆（让位）” → 标准件 (按规格网购)：做 1 件, 每件约 ¥1.50",
+    "alternatives": []
+   }
+  },
+  {
+   "id": "f9",
+   "type": "sketch",
+   "name": "螺丝杆草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 4479.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -200,
+      "cy": 604,
+      "r": 3
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f10",
+   "type": "extrude",
+   "name": "螺丝杆（让位）",
+   "params": {
+    "sketch": "f9",
+    "distance": 32.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "kind": "fastener",
+    "auto": true,
+    "batch": 1,
+    "cost": 1.5,
+    "tooling": 0.0,
+    "unit": 1.5,
+    "standard": true,
+    "spec": "GB/T 818 M3 十字盘头螺钉",
+    "why": "GB/T 818 M3 十字盘头螺钉。名字是 “螺丝杆（让位）” → 标准件 (按规格网购)：做 1 件, 每件约 ¥1.50",
+    "alternatives": []
+   }
+  },
+  {
+   "id": "f11",
+   "type": "sketch",
+   "name": "螺丝杆草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 4479.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 200,
+      "cy": 604,
+      "r": 3
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f12",
+   "type": "extrude",
+   "name": "螺丝杆（让位）",
+   "params": {
+    "sketch": "f11",
+    "distance": 32.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "kind": "fastener",
+    "auto": true,
+    "batch": 1,
+    "cost": 1.5,
+    "tooling": 0.0,
+    "unit": 1.5,
+    "standard": true,
+    "spec": "GB/T 818 M3 十字盘头螺钉",
+    "why": "GB/T 818 M3 十字盘头螺钉。名字是 “螺丝杆（让位）” → 标准件 (按规格网购)：做 1 件, 每件约 ¥1.50",
+    "alternatives": []
+   }
+  }
+ ]
+}

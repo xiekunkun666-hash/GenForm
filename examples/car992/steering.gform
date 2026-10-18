@@ -1,0 +1,446 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 13,
+ "upto": null,
+ "props": {
+  "material": "铝合金 6061",
+  "color": "#151515",
+  "feature_colors": {
+   "f10": "#C9A227"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "plane",
+   "name": "方向盘截面面",
+   "params": {
+    "base": "XY",
+    "offset": 10.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      2300.0,
+      -370.0,
+      830.0
+     ]
+    ],
+    "normal": [
+     [
+      0.390293,
+      0.0,
+      -0.920691
+     ]
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "sketch",
+   "name": "方向盘截面",
+   "params": {
+    "plane": "f1",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 182.0,
+      "cy": 0.0,
+      "r": 17
+     },
+     {
+      "type": "line",
+      "x1": 0.0,
+      "y1": 300.0,
+      "x2": 0.0,
+      "y2": -300.0,
+      "construction": true
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "revolve",
+   "name": "方向盘轮圈",
+   "params": {
+    "sketch": "f2",
+    "axis": "CL",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false,
+   "process": {
+    "id": "turning",
+    "name": "数控车削",
+    "short": "车削",
+    "color": "#35A7A0",
+    "kind": "revolved",
+    "auto": true,
+    "batch": 1,
+    "cost": 3298.31,
+    "tooling": 200.0,
+    "unit": 3098.31,
+    "standard": false,
+    "spec": "",
+    "why": "旋转出来的回转体 → 数控车削：做 1 件, 每件约 ¥3298 (模具 / 工装 ¥200 摊下来 ¥200 + 单件 ¥3098)；第二是 三轴 CNC 铣 ¥5335；做到 3 件以上换成 熔模精密铸造 更划算",
+    "alternatives": [
+     {
+      "id": "cnc3",
+      "name": "三轴 CNC 铣",
+      "cost": 5335.25
+     },
+     {
+      "id": "millturn",
+      "name": "车铣复合",
+      "cost": 5706.6
+     },
+     {
+      "id": "investment",
+      "name": "熔模精密铸造",
+      "cost": 6650.49
+     }
+    ]
+   }
+  },
+  {
+   "id": "f4",
+   "type": "plane",
+   "name": "方向盘面",
+   "params": {
+    "base": "XY",
+    "offset": 10.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      2300.0,
+      -370.0,
+      830.0
+     ]
+    ],
+    "normal": [
+     [
+      -0.920691,
+      0.0,
+      -0.390293
+     ]
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "辐条草图",
+   "params": {
+    "plane": "f4",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "slot",
+      "x1": -40.0,
+      "y1": 0.0,
+      "x2": -172.0,
+      "y2": 0.0,
+      "w": 30
+     },
+     {
+      "type": "slot",
+      "x1": 40.0,
+      "y1": 0.0,
+      "x2": 172.0,
+      "y2": 0.0,
+      "w": 30
+     },
+     {
+      "type": "slot",
+      "x1": 0.0,
+      "y1": -40.0,
+      "x2": 0.0,
+      "y2": -172.0,
+      "w": 30
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "方向盘辐条",
+   "params": {
+    "sketch": "f5",
+    "distance": 24.0,
+    "op": "add",
+    "symmetric": true,
+    "end": "mid",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "kind": "prism",
+    "auto": true,
+    "batch": 1,
+    "cost": 4852.27,
+    "tooling": 300.0,
+    "unit": 4552.27,
+    "standard": false,
+    "spec": "",
+    "why": "有厚度的块 → 三轴 CNC 铣：做 1 件, 每件约 ¥4852 (模具 / 工装 ¥300 摊下来 ¥300 + 单件 ¥4552)；第二是 熔模精密铸造 ¥6794；做到 2 件以上换成 熔模精密铸造 更划算",
+    "alternatives": [
+     {
+      "id": "investment",
+      "name": "熔模精密铸造",
+      "cost": 6793.9
+     },
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 9359.91
+     },
+     {
+      "id": "sand_cast",
+      "name": "砂型铸造 + 机加工",
+      "cost": 17973.39
+     }
+    ]
+   }
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "中心草图",
+   "params": {
+    "plane": "f4",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0.0,
+      "cy": 0.0,
+      "r": 62
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "方向盘中心",
+   "params": {
+    "sketch": "f7",
+    "distance": 45.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "turning",
+    "name": "数控车削",
+    "short": "车削",
+    "color": "#35A7A0",
+    "kind": "revolved",
+    "auto": true,
+    "batch": 1,
+    "cost": 405.06,
+    "tooling": 200.0,
+    "unit": 205.06,
+    "standard": false,
+    "spec": "",
+    "why": "圆柱 (棒料车出来) → 数控车削：做 1 件, 每件约 ¥405 (模具 / 工装 ¥200 摊下来 ¥200 + 单件 ¥205)；第二是 三轴 CNC 铣 ¥658；做到 2091 件以上换成 高压压铸 (开钢模) 更划算",
+    "alternatives": [
+     {
+      "id": "cnc3",
+      "name": "三轴 CNC 铣",
+      "cost": 657.71
+     },
+     {
+      "id": "millturn",
+      "name": "车铣复合",
+      "cost": 918.81
+     },
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 1716.38
+     }
+    ]
+   }
+  },
+  {
+   "id": "f9",
+   "type": "sketch",
+   "name": "方向盘徽标草图",
+   "params": {
+    "plane": "f4",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0.0,
+      "cy": 0.0,
+      "r": 30
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f10",
+   "type": "extrude",
+   "name": "方向盘徽标",
+   "params": {
+    "sketch": "f9",
+    "distance": 6.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": true,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "turning",
+    "name": "数控车削",
+    "short": "车削",
+    "color": "#35A7A0",
+    "kind": "revolved",
+    "auto": true,
+    "batch": 1,
+    "cost": 257.35,
+    "tooling": 200.0,
+    "unit": 57.35,
+    "standard": false,
+    "spec": "",
+    "why": "圆柱 (棒料车出来) → 数控车削：做 1 件, 每件约 ¥257 (模具 / 工装 ¥200 摊下来 ¥200 + 单件 ¥57)；第二是 三轴 CNC 铣 ¥430；做到 5398 件以上换成 高压压铸 (开钢模) 更划算",
+    "alternatives": [
+     {
+      "id": "cnc3",
+      "name": "三轴 CNC 铣",
+      "cost": 430.17
+     },
+     {
+      "id": "millturn",
+      "name": "车铣复合",
+      "cost": 682.22
+     },
+     {
+      "id": "slm",
+      "name": "金属 SLM 打印",
+      "cost": 724.12
+     }
+    ]
+   }
+  },
+  {
+   "id": "f11",
+   "type": "plane",
+   "name": "转向柱基准面",
+   "params": {
+    "base": "XY",
+    "offset": 10.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      2300.0,
+      -370.0,
+      830.0
+     ]
+    ],
+    "normal": [
+     [
+      -0.920691,
+      0.0,
+      -0.390293
+     ]
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f12",
+   "type": "sketch",
+   "name": "转向柱草图",
+   "params": {
+    "plane": "f11",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0.0,
+      "cy": 0.0,
+      "r": 24
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f13",
+   "type": "extrude",
+   "name": "转向柱（让位）",
+   "params": {
+    "sketch": "f12",
+    "distance": 480.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "drill",
+    "name": "钻孔 / 攻丝",
+    "short": "钻孔",
+    "color": "#9A9EA3",
+    "kind": "hole",
+    "auto": true,
+    "batch": 1,
+    "cost": 21.0,
+    "tooling": 0.0,
+    "unit": 21.0,
+    "standard": false,
+    "spec": "",
+    "why": "圆孔 → 钻孔 / 攻丝：做 1 件, 每件约 ¥21；第二是 三轴 CNC 铣 ¥1343",
+    "alternatives": [
+     {
+      "id": "cnc3",
+      "name": "三轴 CNC 铣",
+      "cost": 1343.05
+     },
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 2874.83
+     }
+    ]
+   }
+  }
+ ]
+}

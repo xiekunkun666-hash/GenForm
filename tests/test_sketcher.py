@@ -97,7 +97,14 @@ class EditingTests(unittest.TestCase):
         click(self.editor, (0.0, 0.0))                            # 矩形里面是空的 (只有轮廓线能点)
         self.assertIsNone(self.editor.selected)
 
-    def test_drag_outline_moves_the_whole_shape(self):
+    def test_drag_rect_edge_moves_only_that_edge(self):
+        drag(self.editor, (20.0, 5.0), (30.0, 12.0))               # 右边: 只往右挪, 左边不动
+        self.assertEqual(self.editor.shapes[0], {'type': 'rect', 'cx': 5.0, 'cy': 0.0, 'w': 50.0, 'h': 30})
+        self.assertEqual(self.editor.edge, (0, 1))
+
+    def test_double_click_then_drag_moves_the_whole_rect(self):
+        self.editor.move((20.0, 5.0), PIXEL)
+        self.editor.double_click()
         drag(self.editor, (20.0, 5.0), (30.0, 12.0))
         self.assertEqual((self.editor.shapes[0]['cx'], self.editor.shapes[0]['cy']), (10.0, 7.0))
         self.assertEqual((self.editor.shapes[0]['w'], self.editor.shapes[0]['h']), (40, 30))
@@ -123,13 +130,22 @@ class EditingTests(unittest.TestCase):
         self.assertEqual(self.editor.shapes[1], {'type': 'circle', 'cx': 50.0, 'cy': 0, 'r': 6.25})
 
     def test_delete_removes_the_selected_shape(self):
-        click(self.editor, (20.0, 5.0))
+        self.editor.move((20.0, 5.0), PIXEL)
+        self.editor.double_click()                                # 双击: 整个矩形
         self.assertTrue(self.editor.key('delete'))
         self.assertEqual([shape['type'] for shape in self.editor.shapes], ['circle'])
         self.assertFalse(self.editor.key('delete'))
 
+    def test_delete_a_rect_edge_leaves_three_lines(self):
+        click(self.editor, (20.0, 5.0))                           # 右边
+        self.assertTrue(self.editor.key('delete'))
+        self.assertEqual([shape['type'] for shape in self.editor.shapes], ['circle', 'line', 'line', 'line'])
+        self.assertNotIn(20.0, [shape['x1'] for shape in self.editor.shapes[1:] if shape['x1'] == shape['x2']])
+
     def test_drawing_marks_states_and_dimension_label(self):
-        click(self.editor, (20.0, 5.0))
+        click(self.editor, (20.0, 5.0))                           # 只选中右边: 只亮这一条
+        self.assertEqual(sum(1 for line in self.editor.drawing()[0] if line[2] == 2), 1)
+        self.editor.double_click()                                # 整个矩形
         lines, points, labels = self.editor.drawing()
         self.assertEqual(sum(1 for line in lines if line[2] == 2), 4)
         self.assertEqual(len(points), 4)

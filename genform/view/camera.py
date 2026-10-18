@@ -50,6 +50,9 @@ class Camera:
         return matrix
 
     def projection(self, aspect):
+        aspect = float(aspect)
+        if not math.isfinite(aspect) or aspect <= 0:
+            aspect = 1.0
         near, far = max(self.distance * 0.02, 0.05), self.distance * 40.0 + 2000.0
         scale = 1.0 / math.tan(math.radians(FOV) / 2)
         matrix = np.zeros((4, 4))
@@ -67,12 +70,22 @@ class Camera:
         return matrix
 
     def matrix(self, width, height):
-        return self.projection(width / max(height, 1)) @ self.view()
+        return self.projection(max(float(width), 1.0) / max(float(height), 1.0)) @ self.view()
 
     # ---- 操作 ----
-    def orbit(self, dx, dy):
+    def orbit(self, dx, dy, pivot=None):
+        """转视角。pivot: 绕着转的那个三维点 — 它在屏幕上的位置不动, 看起来是零件自己在原地转;
+        不给就绕目标点 (画面中心) 转。"""
+        if pivot is not None:
+            front, right, up = self.basis()
+            offset = np.asarray(pivot, dtype=float) - self.eye()
+            local = (float(offset @ right), float(offset @ up), float(offset @ front))
         self.yaw = (self.yaw + dx * 0.4 + 180.0) % 360.0 - 180.0
         self.pitch = max(-89.9, min(89.9, self.pitch + dy * 0.4))
+        if pivot is not None:
+            front, right, up = self.basis()
+            eye = np.asarray(pivot, dtype=float) - (local[0] * right + local[1] * up + local[2] * front)
+            self.target = eye + front * self.distance
 
     def pixel_size(self, height):
         """目标点所在深度上, 一个像素对应多少毫米。"""
@@ -95,6 +108,9 @@ class Camera:
 
     def fit(self, low, high, aspect=1.0):
         """把包围盒放进画面 (留边)。"""
+        aspect = float(aspect)
+        if not math.isfinite(aspect) or aspect <= 0:
+            aspect = 1.0
         low, high = np.asarray(low, dtype=float), np.asarray(high, dtype=float)
         self.target = (low + high) / 2
         radius = max(float(np.linalg.norm(high - low)) / 2, 1.0)
@@ -118,13 +134,15 @@ class Camera:
     def project(self, points, width, height):
         """三维点 (N,3) → 屏幕像素 (N,2) 和到相机平面的深度 (N,)。深度 <= 0 的点在相机后面。"""
         points = np.asarray(points, dtype=float).reshape(-1, 3)
-        clip = (self.matrix(width, height) @ np.c_[points, np.ones(len(points))].T).T
+        matrix = self.matrix(width, height)
+        # 只算用得着的三行 (x, y, w), 不先拼齐次坐标: 十几万个点时省一半多
+        rows = points @ matrix[(0, 1, 3), :3].T + matrix[(0, 1, 3), 3]
         depth = (points - self.eye()) @ self.basis()[0]         # 沿视线方向到眼睛的距离 (透视时就是 clip 的 w)
         if not self.perspective:
             depth = np.maximum(depth, 1e-6)                     # 平行投影没有 "相机后面"
-        scale = clip[:, 3]
+        scale = rows[:, 2]
         safe = np.where(np.abs(scale) > 1e-9, scale, 1e-9)
         screen = np.empty((len(points), 2))
-        screen[:, 0] = (clip[:, 0] / safe * 0.5 + 0.5) * width
-        screen[:, 1] = (0.5 - clip[:, 1] / safe * 0.5) * height
+        screen[:, 0] = (rows[:, 0] / safe * 0.5 + 0.5) * width
+        screen[:, 1] = (0.5 - rows[:, 1] / safe * 0.5) * height
         return screen, depth

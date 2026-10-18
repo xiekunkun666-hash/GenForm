@@ -1,0 +1,249 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 7,
+ "upto": null,
+ "props": {
+  "material": "ABS",
+  "color": "#9DA3A8",
+  "feature_colors": {
+   "f4": "#202226"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "车内后视镜草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 1985.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 1110,
+      "w": 230,
+      "h": 56
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "车内后视镜",
+   "params": {
+    "sketch": "f1",
+    "distance": 24.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "fdm",
+    "name": "FDM 熔融挤出打印",
+    "short": "FDM",
+    "color": "#E2B43C",
+    "kind": "prism",
+    "auto": true,
+    "batch": 1,
+    "cost": 138.65,
+    "tooling": 0.0,
+    "unit": 138.65,
+    "standard": false,
+    "spec": "",
+    "why": "有厚度的块 → FDM 熔融挤出打印：做 1 件, 每件约 ¥139；第二是 尼龙 SLS / MJF 打印 ¥401；做到 94 件以上换成 三轴 CNC 铣 更划算",
+    "alternatives": [
+     {
+      "id": "sls_print",
+      "name": "尼龙 SLS / MJF 打印",
+      "cost": 400.94
+     },
+     {
+      "id": "cnc3",
+      "name": "三轴 CNC 铣",
+      "cost": 435.45
+     },
+     {
+      "id": "sla",
+      "name": "SLA 光固化打印",
+      "cost": 586.42
+     }
+    ]
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "后视镜座草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 1989.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 1139.0,
+      "w": 24,
+      "h": 58.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "后视镜座",
+   "params": {
+    "sketch": "f3",
+    "distance": 16.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "fdm",
+    "name": "FDM 熔融挤出打印",
+    "short": "FDM",
+    "color": "#E2B43C",
+    "kind": "prism",
+    "auto": true,
+    "batch": 1,
+    "cost": 23.91,
+    "tooling": 0.0,
+    "unit": 23.91,
+    "standard": false,
+    "spec": "",
+    "why": "有厚度的块 → FDM 熔融挤出打印：做 1 件, 每件约 ¥24；第二是 尼龙 SLS / MJF 打印 ¥57；做到 1918 件以上换成 注塑 (开钢模) 更划算",
+    "alternatives": [
+     {
+      "id": "sls_print",
+      "name": "尼龙 SLS / MJF 打印",
+      "cost": 56.73
+     },
+     {
+      "id": "sla",
+      "name": "SLA 光固化打印",
+      "cost": 70.09
+     },
+     {
+      "id": "cnc3",
+      "name": "三轴 CNC 铣",
+      "cost": 412.77
+     }
+    ]
+   }
+  },
+  {
+   "id": "f5",
+   "type": "plane",
+   "name": "前挡风玻璃面",
+   "params": {
+    "base": "XY",
+    "offset": 10.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      1847.659,
+      0.0,
+      1059.172
+     ]
+    ],
+    "normal": [
+     [
+      -0.585292,
+      0.0,
+      0.810823
+     ]
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "sketch",
+   "name": "前挡风玻璃草图",
+   "params": {
+    "plane": "f5",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        545.0,
+        -209.66
+       ],
+       [
+        -545.0,
+        -209.66
+       ],
+       [
+        -520.0,
+        209.66
+       ],
+       [
+        520.0,
+        209.66
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f7",
+   "type": "extrude",
+   "name": "前挡风玻璃（让位）",
+   "params": {
+    "sketch": "f6",
+    "distance": 10.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": true,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "kind": "pocket_cut",
+    "auto": true,
+    "batch": 1,
+    "cost": 9707.05,
+    "tooling": 300.0,
+    "unit": 9407.05,
+    "standard": false,
+    "spec": "",
+    "why": "切出来的槽、窗、缺口 → 三轴 CNC 铣：做 1 件, 每件约 ¥9707 (模具 / 工装 ¥300 摊下来 ¥300 + 单件 ¥9407)；第二是 五轴 CNC 铣 ¥2.0 万",
+    "alternatives": [
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 19626.06
+     }
+    ]
+   }
+  }
+ ]
+}

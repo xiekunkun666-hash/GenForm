@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """拾取: 光标指着哪个面 / 哪条边 (纯 numpy, 在界面线程算)。
 
-零件的显示网格通常只有几千到几万个三角面, 直接拿射线和全部三角面求交比另画一遍拾取缓冲简单,
-也不用和渲染线程来回同步。模型大到这里变慢时再换成加速结构。
+拿射线和三角面求交比另画一遍拾取缓冲简单, 也不用和渲染线程来回同步。三角面、边线段多了 (十万个) 以后每次都和全部
+求交太慢 (鼠标动一下几十毫秒), 所以先筛一遍: 每个三角面、每条线段在空间里的包围盒只在零件变了的时候算一次 (_space),
+射线先和这些盒子比, 只有碰得到的那几个才去求交 / 投影到屏幕上。原来筛的是屏幕上的方框, 视角一变 (转完视角、点了
+视图定向) 就要把整个零件重新投影一遍, 大零件第一下要几十上百毫秒; 空间里的盒子和视角无关, 不会顿这一下。
 """
 from __future__ import annotations
 
@@ -10,6 +12,82 @@ import numpy as np
 
 EDGE_REACH = 7.0            # 光标离边的屏幕距离在这么多像素内算指着这条边
 EDGE_DEPTH_SLACK = 0.004    # 边比面略远一点点也算可见 (边就贴在面上), 相对于到相机的距离
+NEAR_PIXELS = 24.0          # 找 "离光标最近的线段" 时只看屏幕上离光标这么近的: 再远的反正够不着
+_kept = {}                  # 记着的包围盒、屏幕方框: 名称 → (凭据, 内容, 它们来自的数组)
+
+
+def _screen(name, camera, width, height, arrays, make):
+    """这批几何体在现在这个视角下的屏幕方框; 视角、窗口大小、几何体都没变时用上次记着的。"""
+    token = _token(camera, width, height, arrays)
+    found = _kept.get(name)
+    if found is None or found[0] != token:
+        found = (token, make(), arrays)         # 留着 arrays: 它们活着, id 才不会被别的数组占去
+        _kept[name] = found
+    return found[1]
+
+
+def _token(camera, width, height, arrays):
+    return (tuple(float(value) for value in camera.target), camera.yaw, camera.pitch, camera.distance, camera.perspective,
+            width, height) + tuple(id(array) for array in arrays)
+
+
+def _space(name, arrays, make):
+    """这批几何体在空间里的包围盒 (low, high): 和视角无关, 几何体换了才重算。"""
+    found = _kept.get(name)
+    if found is None or found[0] != tuple(id(array) for array in arrays):
+        found = (tuple(id(array) for array in arrays), make(), arrays)
+        _kept[name] = found
+    return found[1]
+
+
+def _along_ray(boxes, origin, direction, reach, forward=True):
+    """射线穿过哪些盒子 (每个盒子先往外放宽 reach) → 序号。boxes: (low, high, ...), 都是 (3, 盒子数) 单精度 —
+    按分量连续存放, 一次取一个分量比从 (盒子数, 3) 里跳着取快好几倍; 中间结果就地算在复用的数组里 (每次新开
+    十几万个数的数组比算本身还慢)。forward: 只算起点前面的 (透视; 平行投影眼睛后面也看得见)。"""
+    low, high = boxes[0], boxes[1]
+    count = low.shape[1]
+    found = _kept.get('ray_buffers')
+    if found is None or len(found[0]) < count:
+        found = tuple(np.empty(count, dtype=np.float32) for _ in range(5))
+        _kept['ray_buffers'] = found
+    enter, leave, first, second, spare = (buffer[:count] for buffer in found)
+    enter.fill(0.0 if forward else -np.inf)
+    leave.fill(np.inf)
+    reach = float(reach) + 1e-3                     # 单精度的盒子: 留一点余量, 只会多挑不会漏
+    for axis in range(3):                           # 射线穿过盒子在三个方向上的那三段要有重叠
+        start, step = float(origin[axis]), float(direction[axis])
+        if abs(step) < 1e-12:
+            outside = (low[axis] > start + reach) | (high[axis] < start - reach)
+            leave[outside] = -np.inf
+            continue
+        np.subtract(low[axis], start + reach, out=first)
+        first *= np.float32(1.0 / step)
+        np.subtract(high[axis], start - reach, out=second)
+        second *= np.float32(1.0 / step)
+        np.maximum(enter, np.minimum(first, second, out=spare), out=enter)
+        np.minimum(leave, np.maximum(first, second, out=spare), out=leave)
+    return np.nonzero(leave >= enter)[0]
+
+
+def ray_model(camera, x, y, width, height, model):
+    """光标下最近的三角面 → (序号或 -1, 沿射线的距离)。"""
+    origin, direction = camera.ray(x, y, width, height)
+    return ray_boxed(origin, direction, model)
+
+
+def ray_boxed(origin, direction, model):
+    """一条射线打在零件的哪个三角面上 → (序号或 -1, 距离)。结果和 ray_triangles 一样, 只是三角面多时先用空间里的
+    包围盒筛过 (和视角无关, 零件变了才重算): 转视角、缩放一开始找 "光标指着零件上哪一点" 也不会顿一下。"""
+    verts, tris = model['verts'], model['tris']
+    if len(tris) < 4000:
+        return ray_triangles(origin, direction, verts, tris)
+
+    def boxes():
+        corners = verts[tris].astype(np.float64)                # (三角面, 3 个顶点, xyz)
+        return np.ascontiguousarray(corners.min(axis=1).T, dtype=np.float32), np.ascontiguousarray(corners.max(axis=1).T, dtype=np.float32)
+    near = _along_ray(_space('boxes3d', (verts, tris), boxes), origin, direction, 0.0)
+    hit, distance = ray_triangles(origin, direction, verts, tris[near])
+    return (int(near[hit]), distance) if hit >= 0 else (-1, np.inf)
 
 
 def ray_triangles(origin, direction, verts, tris):
@@ -35,13 +113,72 @@ def ray_triangles(origin, direction, verts, tris):
     return nearest, float(distance[nearest])
 
 
-def nearest_segment(camera, x, y, width, height, segments):
-    """光标离哪条线段最近 → (线段序号或 -1, 像素距离, 那一点到相机的距离)。"""
+def ray_box(origin, direction, low, high):
+    """射线进包围盒的距离 (没碰到是 inf)。"""
+    with np.errstate(divide='ignore', invalid='ignore'):
+        inverse = 1.0 / np.where(np.abs(direction) < 1e-12, 1e-12, direction)
+    near = (np.asarray(low, float) - origin) * inverse
+    far = (np.asarray(high, float) - origin) * inverse
+    enter, leave = float(np.max(np.minimum(near, far))), float(np.min(np.maximum(near, far)))
+    return max(enter, 0.0) if leave >= max(enter, 0.0) else np.inf
+
+
+def pick_extras(origin, direction, extras):
+    """装配体里别的零件 (视图另外画的网格, 带 'pick' 的才能点): 射线最先碰到哪一个 → (它的 'pick', 距离) 或 (None, inf)。
+    先按包围盒从近到远排, 碰到了一个以后比它远的包围盒就不用算了。"""
+    order = sorted((ray_box(origin, direction, part['low'], part['high']), number) for number, part in enumerate(extras)
+                   if part.get('pick') is not None and part.get('low') is not None)
+    best, reach = None, np.inf
+    for enter, number in order:
+        if enter >= reach:
+            break
+        part = extras[number]
+        triangle, distance = ray_triangles(origin, direction, np.asarray(part['verts']), np.asarray(part['tris']))
+        if triangle >= 0 and distance < reach:
+            best, reach = part['pick'], distance
+    return best, reach
+
+
+def nearest_segment(camera, x, y, width, height, segments, name='edges'):
+    """光标离哪条线段最近 → (线段序号或 -1, 像素距离, 那一点到相机的距离)。
+    segments: (线段数, 2, 3), 或者两点一段摊平的 (2×线段数, 3) (草图线是这样给的)。
+    name: 记着的包围盒放在哪一格 — 实体的边和草图线轮流查, 共用一格就会互相顶掉、每次都重算。"""
+    source = segments
+    segments = np.asarray(segments).reshape(-1, 2, 3)
     if len(segments) == 0:
         return -1, np.inf, np.inf
-    screen, depth = camera.project(segments.reshape(-1, 3), width, height)
-    start, end = screen[0::2], screen[1::2]
-    depth0, depth1 = depth[0::2], depth[1::2]
+
+    def projected(chosen=slice(None)):
+        screen, depth = camera.project(segments[chosen].reshape(-1, 3), width, height)
+        return screen[0::2], screen[1::2], depth[0::2], depth[1::2]
+    picked = None
+    if len(segments) > 4000:
+        # 线段多: 不把全部线段投影一遍, 先在空间里挑出离视线够近 (屏幕上不超过 NEAR_PIXELS) 的那些
+        def boxes():
+            low = np.ascontiguousarray(np.minimum(segments[:, 0], segments[:, 1]).T, dtype=np.float32)
+            high = np.ascontiguousarray(np.maximum(segments[:, 0], segments[:, 1]).T, dtype=np.float32)
+            bottom, top = [low[axis].min() for axis in range(3)], [high[axis].max() for axis in range(3)]
+            corners = np.array([[float(a), float(b), float(c)] for a in (bottom[0], top[0]) for b in (bottom[1], top[1]) for c in (bottom[2], top[2])])
+            return low, high, corners
+        low, high, corners = _space(('segments3d', name), (source,), boxes)
+        origin, direction = camera.ray(x, y, width, height)
+        reach = NEAR_PIXELS * camera.pixel_size(height)
+        if camera.perspective:          # 越远一个像素越大: 按零件最远的那一点放宽
+            farthest = float(((corners - camera.eye()) @ camera.basis()[0]).max())
+            reach *= max(farthest, 0.0) / max(camera.distance, 1e-9)
+        picked = _along_ray((low, high), origin, direction, reach * 1.05, camera.perspective)
+        if len(picked) == 0:
+            return -1, np.inf, np.inf
+        start, end, depth0, depth1 = projected(picked)
+    else:
+        start, end, depth0, depth1 = _screen(('segments', name), camera, width, height, (source,), projected)
+    chosen = None
+    if picked is not None:              # 挑出来的里面再只看屏幕上挨着光标的那些
+        chosen = np.nonzero((np.minimum(start[:, 0], end[:, 0]) <= x + NEAR_PIXELS) & (np.maximum(start[:, 0], end[:, 0]) >= x - NEAR_PIXELS)
+                            & (np.minimum(start[:, 1], end[:, 1]) <= y + NEAR_PIXELS) & (np.maximum(start[:, 1], end[:, 1]) >= y - NEAR_PIXELS))[0]
+        if len(chosen) == 0:
+            return -1, np.inf, np.inf
+        start, end, depth0, depth1 = start[chosen], end[chosen], depth0[chosen], depth1[chosen]
     visible = (depth0 > 0) & (depth1 > 0)
     span = end - start
     length2 = np.einsum('ij,ij->i', span, span)
@@ -53,7 +190,9 @@ def nearest_segment(camera, x, y, width, height, segments):
     if not np.isfinite(gap[nearest]):
         return -1, np.inf, np.inf
     # 屏幕上按比例插值的深度不是精确的三维距离, 但只用来和面的命中距离比远近, 够用
-    return nearest, float(gap[nearest]), float(depth0[nearest] + (depth1[nearest] - depth0[nearest]) * along[nearest])
+    reach = float(depth0[nearest] + (depth1[nearest] - depth0[nearest]) * along[nearest])
+    index = nearest if chosen is None else int(chosen[nearest])
+    return (index if picked is None else int(picked[index])), float(gap[nearest]), reach
 
 
 def pick(camera, x, y, width, height, model):
@@ -66,7 +205,7 @@ def pick_depth(camera, x, y, width, height, model):
     if not model or not model.get('has_body'):
         return None, np.inf
     origin, direction = camera.ray(x, y, width, height)
-    triangle, distance = ray_triangles(origin, direction, model['verts'], model['tris'])
+    triangle, distance = ray_model(camera, x, y, width, height, model)
     segment, gap, depth = nearest_segment(camera, x, y, width, height, model['segments'])
     if segment >= 0 and gap <= EDGE_REACH:
         # 面的命中距离是沿射线量的, 边的深度是沿视线方向量的: 换成同一种再比

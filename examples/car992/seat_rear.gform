@@ -1,0 +1,144 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 4,
+ "upto": null,
+ "props": {
+  "material": "皮革 + 海绵",
+  "color": "#7A4A2C"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "后排坐垫草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 200.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        3150,
+        301.0
+       ],
+       [
+        3350,
+        301.0
+       ],
+       [
+        3350,
+        470
+       ],
+       [
+        3150,
+        470
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "后排坐垫",
+   "params": {
+    "sketch": "f1",
+    "distance": 350.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "upholstery",
+    "name": "软包 (发泡 + 皮革缝制)",
+    "short": "软包",
+    "color": "#7A4A2C",
+    "kind": "soft",
+    "auto": true,
+    "batch": 1,
+    "cost": 2638.85,
+    "tooling": 2000.0,
+    "unit": 638.85,
+    "standard": false,
+    "spec": "",
+    "why": "名字是 “后排坐垫” → 软包 (发泡 + 皮革缝制)：做 1 件, 每件约 ¥2639 (模具 / 工装 ¥2000 摊下来 ¥2000 + 单件 ¥639)",
+    "alternatives": []
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "后排靠背草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 200.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        3285,
+        460
+       ],
+       [
+        3360,
+        460
+       ],
+       [
+        3365,
+        860
+       ],
+       [
+        3325,
+        860
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "后排靠背",
+   "params": {
+    "sketch": "f3",
+    "distance": 350.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "upholstery",
+    "name": "软包 (发泡 + 皮革缝制)",
+    "short": "软包",
+    "color": "#7A4A2C",
+    "kind": "soft",
+    "auto": true,
+    "batch": 1,
+    "cost": 2700.44,
+    "tooling": 2000.0,
+    "unit": 700.44,
+    "standard": false,
+    "spec": "",
+    "why": "名字是 “后排靠背” → 软包 (发泡 + 皮革缝制)：做 1 件, 每件约 ¥2700 (模具 / 工装 ¥2000 摊下来 ¥2000 + 单件 ¥700)",
+    "alternatives": []
+   }
+  }
+ ]
+}

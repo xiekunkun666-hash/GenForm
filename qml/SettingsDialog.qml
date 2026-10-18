@@ -21,7 +21,8 @@ Popup {
         NumberAnimation { property: "scale"; from: 0.97; to: 1; duration: 160; easing.type: Easing.OutCubic }
     }
 
-    property string page: "keys"        // keys / gestures / ai
+    property string page: "general"     // general / keys / gestures / rules / ai
+    function openPage(which) { page = which; open() }
     property string capturing: ""       // 正在等用户按键的那个功能的 id
     property string query: ""
     property string group: ""           // 只看哪一组 (空 = 全部)
@@ -94,10 +95,10 @@ Popup {
                 x: 12; y: 16
                 width: parent.width - 24
                 spacing: 4
-                Text { x: 6; height: 34; text: "设置"; color: Theme.cText; font.family: Theme.font; font.pixelSize: 16; font.bold: true }
+                Text { x: 6; height: 34; text: qsTr("设置"); color: Theme.cText; font.family: Theme.font; font.pixelSize: 16; font.bold: true }
                 Repeater {
-                    model: [{ id: "keys", text: "快捷键", icon: "keyboard" }, { id: "gestures", text: "鼠标笔势", icon: "gesture" },
-                            { id: "ai", text: "AI 接口", icon: "ai" }]
+                    model: [{ id: "general", text: qsTr("常规"), icon: "gear" }, { id: "keys", text: qsTr("快捷键"), icon: "keyboard" }, { id: "gestures", text: qsTr("鼠标笔势"), icon: "gesture" },
+                            { id: "rules", text: qsTr("设计规则"), icon: "rules" }, { id: "ai", text: qsTr("AI 接口"), icon: "ai" }]
                     delegate: Rectangle {
                         required property var modelData
                         readonly property bool on: dialog.page === modelData.id
@@ -116,20 +117,46 @@ Popup {
                 }
             }
         }
-        IconBtn { anchors.right: parent.right; anchors.top: parent.top; anchors.margins: 8; icon: "close"; tip: "关闭"; onClicked: dialog.close() }
+        IconBtn { z: 5; anchors.right: parent.right; anchors.top: parent.top; anchors.margins: 8; icon: "close"; tip: qsTr("关闭"); onClicked: dialog.close() }
+
+        // ================= 常规 =================
+        Column {
+            visible: dialog.page === "general"
+            anchors.left: side.right; anchors.right: parent.right; anchors.top: parent.top
+            anchors.margins: 20; anchors.topMargin: 18
+            spacing: 12
+            Heading { text: qsTr("常规") }
+            Text { topPadding: 6; text: qsTr("界面语言"); color: Theme.cText; font.family: Theme.font; font.pixelSize: Theme.textSize; font.bold: true }
+            Row {
+                spacing: 8
+                Repeater {
+                    model: app.languages
+                    delegate: Rectangle {
+                        required property var modelData
+                        readonly property bool on: app.language === modelData.id
+                        width: 120; height: 36; radius: 8
+                        color: on ? Theme.cAccentSoft : (langArea.containsMouse ? Theme.cBgHover : Theme.cBgWorkspace)
+                        border.width: 1; border.color: on ? Theme.cAccent : Theme.cDivider
+                        Text { anchors.centerIn: parent; text: modelData.title; color: parent.on ? Theme.cAccent : Theme.cText; font.family: Theme.font; font.pixelSize: Theme.textSize; font.bold: parent.on }
+                        MouseArea { id: langArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: app.setLanguage(modelData.id) }
+                    }
+                }
+            }
+            Note { width: parent.width - 40; text: qsTr("点了立刻生效。特征的名字（拉伸1、草图2…）是零件里存着的，不跟着换；内核报的出错原因目前只有中文。") }
+        }
 
         // ================= 快捷键 =================
         Item {
             visible: dialog.page === "keys"
             anchors.left: side.right; anchors.right: parent.right; anchors.top: parent.top; anchors.bottom: parent.bottom
             anchors.margins: 20; anchors.topMargin: 18
-            Heading { id: keysTitle; text: "快捷键" }
-            Note { id: keysNote; anchors.top: keysTitle.bottom; anchors.topMargin: 4; width: parent.width - 40; text: "点右边的键，再按下新的键（可以带 Ctrl / Shift / Alt）。这个键原来给了别的功能的，那边自动让出来。Esc 和回车固定是取消和确认。" }
+            Heading { id: keysTitle; text: qsTr("快捷键") }
+            Note { id: keysNote; anchors.top: keysTitle.bottom; anchors.topMargin: 4; width: parent.width - 40; text: qsTr("点右边的键，再按下新的键（可以带 Ctrl / Shift / Alt）。这个键原来给了别的功能的，那边自动让出来。Esc 和回车固定是取消和确认。") }
             Row {
                 id: keysTools
                 anchors.top: keysNote.bottom; anchors.topMargin: 12
                 spacing: 6
-                Field { width: 200; hint: "搜功能名或按键"; onTextChanged: dialog.query = text }
+                Field { width: 200; hint: qsTr("搜功能名或按键"); onTextChanged: dialog.query = text }
                 Repeater {
                     model: [""].concat(app.actionGroups)
                     delegate: Rectangle {
@@ -138,12 +165,12 @@ Popup {
                         anchors.verticalCenter: parent.verticalCenter
                         width: chipText.implicitWidth + 22; height: 26; radius: 13
                         color: on ? Theme.cAccentStrong : (chipArea.containsMouse ? Theme.cBgHover : Theme.cBgWorkspace)
-                        Text { id: chipText; anchors.centerIn: parent; text: modelData === "" ? "全部" : modelData; color: parent.on ? "#FFFFFF" : Theme.cTextSec; font.family: Theme.font; font.pixelSize: Theme.smallSize }
+                        Text { id: chipText; anchors.centerIn: parent; text: modelData === "" ? qsTr("全部") : modelData; color: parent.on ? "#FFFFFF" : Theme.cTextSec; font.family: Theme.font; font.pixelSize: Theme.smallSize }
                         MouseArea { id: chipArea; anchors.fill: parent; hoverEnabled: true; onClicked: dialog.group = modelData }
                     }
                 }
             }
-            ToolBtn { anchors.right: parent.right; anchors.verticalCenter: keysTools.verticalCenter; compact: true; text: "全部恢复默认"; tip: "所有快捷键回到出厂的样子"; onClicked: { dialog.capturing = ""; app.resetShortcuts() } }
+            IconBtn { anchors.right: parent.right; anchors.verticalCenter: keysTools.verticalCenter; icon: "reset"; tint: Theme.cIcon; tip: qsTr("全部恢复默认：所有快捷键回到出厂的样子"); onClicked: { dialog.capturing = ""; app.resetShortcuts() } }
             Rectangle {
                 anchors.top: keysTools.bottom; anchors.topMargin: 10
                 anchors.bottom: parent.bottom
@@ -189,7 +216,7 @@ Popup {
                             border.width: 1; border.color: keyRow.waiting ? Theme.cAccent : (keyRow.key !== keyRow.modelData.default ? Theme.cAccentLine : Theme.cDivider)
                             Text {
                                 anchors.centerIn: parent
-                                text: keyRow.waiting ? "按下新的键…" : (keyRow.key !== "" ? keyRow.key : "无")
+                                text: keyRow.waiting ? qsTr("按下新的键…") : (keyRow.key !== "" ? keyRow.key : qsTr("无"))
                                 color: keyRow.waiting ? Theme.cAccent : (keyRow.key !== "" ? Theme.cText : Theme.cTextMuted)
                                 font.family: Theme.font; font.pixelSize: Theme.smallSize; font.bold: keyRow.key !== "" && !keyRow.waiting
                             }
@@ -203,14 +230,14 @@ Popup {
                             anchors.right: parent.right; anchors.rightMargin: 32; anchors.verticalCenter: parent.verticalCenter
                             implicitWidth: 26; implicitHeight: 26; iconSize: 15
                             visible: keyRow.key !== ""
-                            icon: "cancel"; tip: "不要快捷键"
+                            icon: "cancel"; tip: qsTr("不要快捷键")
                             onClicked: { dialog.capturing = ""; app.setShortcut(keyRow.modelData.id, "") }
                         }
                         IconBtn {
                             anchors.right: parent.right; anchors.rightMargin: 4; anchors.verticalCenter: parent.verticalCenter
                             implicitWidth: 26; implicitHeight: 26; iconSize: 15
                             visible: keyRow.key !== keyRow.modelData.default
-                            icon: "reset"; tip: "恢复默认：" + (keyRow.modelData.default !== "" ? keyRow.modelData.default : "无")
+                            icon: "reset"; tip: qsTr("恢复默认：") + (keyRow.modelData.default !== "" ? keyRow.modelData.default : qsTr("无"))
                             onClicked: { dialog.capturing = ""; app.resetShortcut(keyRow.modelData.id) }
                         }
                     }
@@ -218,7 +245,7 @@ Popup {
                 Text {
                     anchors.centerIn: parent
                     visible: dialog.rows.length === 0
-                    text: "没有找到"
+                    text: qsTr("没有找到")
                     color: Theme.cTextMuted
                     font.family: Theme.font; font.pixelSize: Theme.textSize
                 }
@@ -231,19 +258,20 @@ Popup {
             visible: dialog.page === "gestures"
             anchors.left: side.right; anchors.right: parent.right; anchors.top: parent.top; anchors.bottom: parent.bottom
             anchors.margins: 20; anchors.topMargin: 18
-            Heading { id: wheelTitle; text: "鼠标笔势" }
-            Note { id: wheelNote; anchors.top: wheelTitle.bottom; anchors.topMargin: 4; width: parent.width - 40; text: "在视图里按住右键朝一个方向一划，就执行那个方向上的功能。建模时和画草图时各一套，点一格换成别的功能。" }
-            ToolBtn { anchors.right: parent.right; anchors.top: wheelNote.bottom; anchors.topMargin: 6; compact: true; text: "恢复默认"; tip: "两套手势轮都回到出厂的样子"; onClicked: app.resetGestures() }
+            Heading { id: wheelTitle; text: qsTr("鼠标笔势") }
+            Note { id: wheelNote; anchors.top: wheelTitle.bottom; anchors.topMargin: 4; width: parent.width - 40; text: qsTr("在视图里按住右键朝一个方向一划，就执行那个方向上的功能。建模时和画草图时各一套，点一格换成别的功能。") }
+            IconBtn { anchors.right: parent.right; anchors.top: wheelNote.bottom; anchors.topMargin: 2; icon: "reset"; tint: Theme.cIcon; tip: qsTr("恢复默认：两套手势轮都回到出厂的样子"); onClicked: app.resetGestures() }
             Row {
                 anchors.top: wheelNote.bottom; anchors.topMargin: 34
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: Math.max(8, (gesturePage.width - 2 * 300) / 3)
                 Repeater {
-                    model: [{ id: "model", text: "建模时" }, { id: "sketch", text: "画草图时" }]
+                    model: [{ id: "model", text: qsTr("建模时") }, { id: "sketch", text: qsTr("画草图时") }]
                     delegate: Item {
                         id: wheel
                         required property var modelData
-                        readonly property var cells: app.gestureWheels[modelData.id] || []
+                        readonly property string which: modelData.id
+                        readonly property var cells: app.gestureWheels[which] || []
                         width: 300; height: 330
                         Rectangle {
                             anchors.horizontalCenter: parent.horizontalCenter; y: 20
@@ -264,6 +292,7 @@ Popup {
                                 required property var modelData
                                 required property int index
                                 readonly property real angle: index * Math.PI / 4
+                                readonly property string which: wheel.which
                                 x: 150 + Math.cos(angle) * 104 - width / 2
                                 y: 165 - Math.sin(angle) * 104 - height / 2
                                 width: 70; height: 56; radius: 10
@@ -282,9 +311,9 @@ Popup {
                                 MouseArea {
                                     id: cellArea
                                     anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
-                                    onClicked: picker.openFor(wheel.modelData.id, cell.index, cell)
+                                    onClicked: picker.openFor(cell.which, cell.index, cell)
                                 }
-                                Tip { shown: cellArea.containsMouse && !picker.opened; text: cell.modelData.title + "：点一下换成别的功能" }
+                                Tip { shown: cellArea.containsMouse && !picker.opened; text: qsTr("%1：点一下换成别的功能").arg(cell.modelData.title) }
                             }
                         }
                     }
@@ -312,7 +341,7 @@ Popup {
             background: Rectangle { color: Theme.cBgCard; radius: 10; border.width: 1; border.color: Theme.cAccentLine }
             onOpened: { pickField.text = ""; pickField.grab() }
             contentItem: Item {
-                Field { id: pickField; width: parent.width; hint: "搜功能名"; onTextChanged: picker.query = text }
+                Field { id: pickField; width: parent.width; hint: qsTr("搜功能名"); onTextChanged: picker.query = text }
                 ListView {
                     id: pickList
                     anchors.top: pickField.bottom; anchors.topMargin: 6; anchors.bottom: parent.bottom
@@ -351,6 +380,80 @@ Popup {
             }
         }
 
+        // ================= 设计规则 (像 PCB 的 DRC 规则; 设计检查按它们判断) =================
+        Flickable {
+            visible: dialog.page === "rules"
+            anchors.left: side.right; anchors.right: parent.right; anchors.top: parent.top; anchors.bottom: parent.bottom
+            anchors.margins: 20; anchors.topMargin: 18
+            contentHeight: rulesColumn.implicitHeight
+            clip: true
+            boundsBehavior: Flickable.StopAtBounds
+            ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
+            Column {
+                id: rulesColumn
+                width: parent.width - 16
+                spacing: 6
+                Row {
+                    width: parent.width
+                    Heading { text: qsTr("设计规则"); width: parent.width - resetRules.width }
+                    Rectangle {
+                        id: resetRules
+                        width: resetText.implicitWidth + 20; height: 26; radius: 6
+                        color: resetArea.containsMouse ? Theme.cBgHover : "transparent"
+                        border.width: 1; border.color: Theme.cDivider
+                        Text { id: resetText; anchors.centerIn: parent; text: qsTr("恢复默认"); color: Theme.cText; font.family: Theme.font; font.pixelSize: Theme.smallSize }
+                        MouseArea { id: resetArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: app.resetRules() }
+                    }
+                }
+                Note { width: parent.width; bottomPadding: 6; text: qsTr("评估 → 设计检查 按这些规则查：件与件的间隙比规则小、只贴着、压得比规则浅的，两个件在视图里一起标红。所有零件共用；改了立刻生效，下次检查用新的。") }
+                Repeater {
+                    model: app.designRules
+                    delegate: Rectangle {
+                        required property var modelData
+                        width: rulesColumn.width; height: Math.max(54, help.implicitHeight + 32)
+                        radius: 8
+                        color: ruleHover.hovered ? Theme.cBgHover : "transparent"
+                        HoverHandler { id: ruleHover }
+                        Text {
+                            x: 10; y: 8
+                            text: modelData.label
+                            color: Theme.cText; font.family: Theme.font; font.pixelSize: Theme.textSize; font.bold: true
+                        }
+                        Text {
+                            id: help
+                            x: 10; y: 30; width: parent.width - 200
+                            text: modelData.help + (modelData.changed ? "" : qsTr("（默认）"))
+                            wrapMode: Text.Wrap
+                            color: Theme.cTextMuted; font.family: Theme.font; font.pixelSize: Theme.smallSize
+                        }
+                        Rectangle {
+                            anchors.right: unit.left; anchors.rightMargin: 6; y: 12
+                            width: 110; height: 28; radius: 6
+                            color: Theme.cBgInput
+                            border.width: 1; border.color: value.activeFocus ? Theme.cAccent : modelData.changed ? Theme.cAccentLine : Theme.cDivider
+                            TextInput {
+                                id: value
+                                anchors.fill: parent; anchors.leftMargin: 8; anchors.rightMargin: 8
+                                verticalAlignment: TextInput.AlignVCenter
+                                horizontalAlignment: TextInput.AlignRight
+                                text: String(modelData.value)
+                                color: Theme.cText; font.family: Theme.font; font.pixelSize: Theme.textSize
+                                selectByMouse: true
+                                validator: DoubleValidator { bottom: modelData.min; top: modelData.max }
+                                onEditingFinished: if (text !== String(modelData.value)) app.setRule(modelData.key, text)
+                            }
+                        }
+                        Text {
+                            id: unit
+                            anchors.right: parent.right; anchors.rightMargin: 10; y: 18; width: 28
+                            text: modelData.unit
+                            color: Theme.cTextSec; font.family: Theme.font; font.pixelSize: Theme.smallSize
+                        }
+                    }
+                }
+            }
+        }
+
         // ================= AI 接口 =================
         Flickable {
             visible: dialog.page === "ai"
@@ -379,28 +482,28 @@ Popup {
                 }
                 IconBtn {
                     anchors.right: parent.right; anchors.top: parent.top; anchors.margins: 4
-                    icon: "copy"; tip: "复制"
-                    onClicked: { code.selectAll(); code.copy(); code.deselect(); app.notice("已复制") }
+                    icon: "copy"; tip: qsTr("复制")
+                    onClicked: { code.selectAll(); code.copy(); code.deselect(); app.notice(qsTr("已复制")) }
                 }
             }
             Column {
                 id: aiColumn
                 width: parent.width
                 spacing: 10
-                Heading { text: "AI 接口" }
-                Note { width: parent.width - 40; text: "界面上能做的事，AI 都能通过这个接口做：画草图、拉伸、打孔、改参数、撤销、看图、导出。AI 画的时候你在窗口里看得见，也可以随时接手。接口只在本机开放（127.0.0.1），不联网。" }
+                Heading { text: qsTr("AI 接口") }
+                Note { width: parent.width - 40; text: qsTr("界面上能做的事，AI 都能通过这个接口做：画草图、拉伸、打孔、改参数、撤销、看图、导出。AI 画的时候你在窗口里看得见，也可以随时接手。接口只在本机开放（127.0.0.1），不联网。") }
                 Row {
                     spacing: 8
-                    Rectangle { anchors.verticalCenter: parent.verticalCenter; width: 8; height: 8; radius: 4; color: app.aiGuide.port > 0 ? "#3FB97F" : Theme.cError }
-                    Text { text: apiText; color: Theme.cText; font.family: Theme.font; font.pixelSize: Theme.textSize }
+                    Rectangle { anchors.verticalCenter: parent.verticalCenter; width: 8; height: 8; radius: 4; color: app.aiGuide.port > 0 ? Theme.cGood : Theme.cError }
+                    Text { text: app.tr(apiText); color: Theme.cText; font.family: Theme.font; font.pixelSize: Theme.textSize }
                 }
-                Text { topPadding: 6; text: "① 接到 Claude Code（一条命令）"; color: Theme.cText; font.family: Theme.font; font.pixelSize: Theme.textSize; font.bold: true }
+                Text { topPadding: 6; text: qsTr("① 接到 Claude Code（一条命令）"); color: Theme.cText; font.family: Theme.font; font.pixelSize: Theme.textSize; font.bold: true }
                 Snippet { text: app.aiGuide.claude }
-                Text { topPadding: 6; text: "② 接到别的支持 MCP 的 AI 工具（写进它的 MCP 配置）"; color: Theme.cText; font.family: Theme.font; font.pixelSize: Theme.textSize; font.bold: true }
+                Text { topPadding: 6; text: qsTr("② 接到别的支持 MCP 的 AI 工具（写进它的 MCP 配置）"); color: Theme.cText; font.family: Theme.font; font.pixelSize: Theme.textSize; font.bold: true }
                 Snippet { text: app.aiGuide.mcp }
-                Text { topPadding: 6; text: "③ 自己写程序连（每行一条 JSON）"; color: Theme.cText; font.family: Theme.font; font.pixelSize: Theme.textSize; font.bold: true }
+                Text { topPadding: 6; text: qsTr("③ 自己写程序连（每行一条 JSON）"); color: Theme.cText; font.family: Theme.font; font.pixelSize: Theme.textSize; font.bold: true }
                 Snippet { text: app.aiGuide.raw }
-                Note { width: parent.width - 40; text: "接好以后直接用自然语言说要画什么就行。完整的上手说明、命令清单和例子在：" }
+                Note { width: parent.width - 40; text: qsTr("接好以后直接用自然语言说要画什么就行。完整的上手说明、命令清单和例子在：") }
                 Snippet { text: app.aiGuide.doc }
             }
         }

@@ -1,0 +1,124 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 3,
+ "upto": null,
+ "props": {
+  "material": "钢化玻璃",
+  "color": "#2A3A48",
+  "feature_opacity": {
+   "f3": 0.32
+  },
+  "feature_colors": {
+   "f3": "#2A3A48"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "plane",
+   "name": "三角窗玻璃面",
+   "params": {
+    "base": "XY",
+    "offset": 10.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      3208.358,
+      -624.266,
+      1065.815
+     ]
+    ],
+    "normal": [
+     [
+      0.083426,
+      -0.857966,
+      0.506886
+     ]
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "sketch",
+   "name": "三角窗玻璃草图",
+   "params": {
+    "plane": "f1",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        -249.42,
+        -103.04
+       ],
+       [
+        -238.06,
+        137.21
+       ],
+       [
+        -53.45,
+        99.58
+       ],
+       [
+        123.59,
+        21.13
+       ],
+       [
+        229.45,
+        -65.24
+       ],
+       [
+        187.89,
+        -89.63
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "extrude",
+   "name": "三角窗玻璃",
+   "params": {
+    "sketch": "f2",
+    "distance": 10.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": true,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "waterjet",
+    "name": "水刀切割",
+    "short": "水刀",
+    "color": "#4C94FF",
+    "kind": "glass",
+    "auto": true,
+    "batch": 1,
+    "cost": 75.82,
+    "tooling": 0.0,
+    "unit": 75.82,
+    "standard": false,
+    "spec": "",
+    "why": "名字是 “三角窗玻璃” → 水刀切割：做 1 件, 每件约 ¥76；第二是 钢化 / 热弯玻璃 (外协) ¥109",
+    "alternatives": [
+     {
+      "id": "glass",
+      "name": "钢化 / 热弯玻璃 (外协)",
+      "cost": 109.18
+     }
+    ]
+   }
+  }
+ ]
+}

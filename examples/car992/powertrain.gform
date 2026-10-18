@@ -1,0 +1,953 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 32,
+ "upto": null,
+ "props": {
+  "material": "铸造铝合金 A356",
+  "color": "#9A9EA3",
+  "feature_colors": {
+   "f10": "#5E6268",
+   "f6": "#5E6268",
+   "f12": "#B9BDC2",
+   "f14": "#D5D8DB",
+   "f16": "#B5121B",
+   "f23": "#C9A227",
+   "f29": "#8A6A45",
+   "f31": "#8A6A45",
+   "f27": "#6A5A4A"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "发动机总成 曲轴箱草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 3660.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 500,
+      "w": 300,
+      "h": 280
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "发动机总成 曲轴箱",
+   "params": {
+    "sketch": "f1",
+    "distance": 600.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "bought",
+    "why": "3.0T 水平对置六缸双涡轮 + 8 速双离合。手动指定：每件 ¥160,000.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 160000.0,
+    "unit": 160000.0,
+    "tooling": 0.0,
+    "spec": "3.0T 水平对置六缸双涡轮 + 8 速双离合"
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "变速箱草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 3380.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 490,
+      "w": 340,
+      "h": 220
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "变速箱",
+   "params": {
+    "sketch": "f3",
+    "distance": 285.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "bought",
+    "why": "3.0T 水平对置六缸双涡轮 + 8 速双离合。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "3.0T 水平对置六缸双涡轮 + 8 速双离合"
+   }
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "发动机脚草图",
+   "params": {
+    "plane": "XY",
+    "offset": 301.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 3780,
+      "cy": -100,
+      "w": 70,
+      "h": 60
+     },
+     {
+      "type": "rect",
+      "cx": 3780,
+      "cy": 100,
+      "w": 70,
+      "h": 60
+     },
+     {
+      "type": "rect",
+      "cx": 4200,
+      "cy": 0,
+      "w": 70,
+      "h": 60
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "发动机脚",
+   "params": {
+    "sketch": "f5",
+    "distance": 64.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "prism",
+    "why": "3.0T 水平对置六缸双涡轮 + 8 速双离合。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "3.0T 水平对置六缸双涡轮 + 8 速双离合"
+   }
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "左列缸筒草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 147.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 3770,
+      "cy": 500,
+      "r": 52
+     },
+     {
+      "type": "circle",
+      "cx": 3915,
+      "cy": 500,
+      "r": 52
+     },
+     {
+      "type": "circle",
+      "cx": 4060,
+      "cy": 500,
+      "r": 52
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "左列缸筒",
+   "params": {
+    "sketch": "f7",
+    "distance": 252.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "revolved",
+    "why": "3.0T 水平对置六缸双涡轮 + 8 速双离合。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "3.0T 水平对置六缸双涡轮 + 8 速双离合"
+   }
+  },
+  {
+   "id": "f9",
+   "type": "sketch",
+   "name": "左缸盖草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 397.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 3915,
+      "cy": 500,
+      "w": 440,
+      "h": 200
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f10",
+   "type": "extrude",
+   "name": "左缸盖",
+   "params": {
+    "sketch": "f9",
+    "distance": 61.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "prism",
+    "why": "3.0T 水平对置六缸双涡轮 + 8 速双离合。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "3.0T 水平对置六缸双涡轮 + 8 速双离合"
+   }
+  },
+  {
+   "id": "f11",
+   "type": "sketch",
+   "name": "左气门室盖草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 457.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 3915,
+      "cy": 500,
+      "w": 400,
+      "h": 160
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f12",
+   "type": "extrude",
+   "name": "左气门室盖",
+   "params": {
+    "sketch": "f11",
+    "distance": 23.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "prism",
+    "why": "3.0T 水平对置六缸双涡轮 + 8 速双离合。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "3.0T 水平对置六缸双涡轮 + 8 速双离合"
+   }
+  },
+  {
+   "id": "f13",
+   "type": "sketch",
+   "name": "缸盖螺栓草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 479.0,
+    "shapes": [
+     {
+      "type": "ngon",
+      "cx": 3735,
+      "cy": 438,
+      "r": 9,
+      "sides": 6,
+      "angle": 0
+     },
+     {
+      "type": "ngon",
+      "cx": 3735,
+      "cy": 562,
+      "r": 9,
+      "sides": 6,
+      "angle": 0
+     },
+     {
+      "type": "ngon",
+      "cx": 3845,
+      "cy": 438,
+      "r": 9,
+      "sides": 6,
+      "angle": 0
+     },
+     {
+      "type": "ngon",
+      "cx": 3845,
+      "cy": 562,
+      "r": 9,
+      "sides": 6,
+      "angle": 0
+     },
+     {
+      "type": "ngon",
+      "cx": 3985,
+      "cy": 438,
+      "r": 9,
+      "sides": 6,
+      "angle": 0
+     },
+     {
+      "type": "ngon",
+      "cx": 3985,
+      "cy": 562,
+      "r": 9,
+      "sides": 6,
+      "angle": 0
+     },
+     {
+      "type": "ngon",
+      "cx": 4095,
+      "cy": 438,
+      "r": 9,
+      "sides": 6,
+      "angle": 0
+     },
+     {
+      "type": "ngon",
+      "cx": 4095,
+      "cy": 562,
+      "r": 9,
+      "sides": 6,
+      "angle": 0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f14",
+   "type": "extrude",
+   "name": "缸盖螺栓",
+   "params": {
+    "sketch": "f13",
+    "distance": 11.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "fastener",
+    "why": "3.0T 水平对置六缸双涡轮 + 8 速双离合。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "3.0T 水平对置六缸双涡轮 + 8 速双离合"
+   }
+  },
+  {
+   "id": "f15",
+   "type": "sketch",
+   "name": "点火线圈草图",
+   "params": {
+    "plane": "XY",
+    "offset": 598.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 3770,
+      "cy": -430,
+      "w": 46,
+      "h": 60
+     },
+     {
+      "type": "rect",
+      "cx": 3915,
+      "cy": -430,
+      "w": 46,
+      "h": 60
+     },
+     {
+      "type": "rect",
+      "cx": 4060,
+      "cy": -430,
+      "w": 46,
+      "h": 60
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f16",
+   "type": "extrude",
+   "name": "点火线圈",
+   "params": {
+    "sketch": "f15",
+    "distance": 52.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "bought",
+    "why": "3.0T 水平对置六缸双涡轮 + 8 速双离合。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "3.0T 水平对置六缸双涡轮 + 8 速双离合"
+   }
+  },
+  {
+   "id": "f17",
+   "type": "mirror",
+   "name": "右列缸筒、缸盖",
+   "params": {
+    "features": [
+     "f8",
+     "f10",
+     "f12",
+     "f14",
+     "f16"
+    ],
+    "plane": "XZ",
+    "offset": 0.0
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "revolved",
+    "why": "3.0T 水平对置六缸双涡轮 + 8 速双离合。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "3.0T 水平对置六缸双涡轮 + 8 速双离合"
+   }
+  },
+  {
+   "id": "f18",
+   "type": "sketch",
+   "name": "进气歧管草图",
+   "params": {
+    "plane": "XY",
+    "offset": 638.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 3960,
+      "cy": 0,
+      "w": 520,
+      "h": 480
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f19",
+   "type": "extrude",
+   "name": "进气歧管",
+   "params": {
+    "sketch": "f18",
+    "distance": 72.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "prism",
+    "why": "3.0T 水平对置六缸双涡轮 + 8 速双离合。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "3.0T 水平对置六缸双涡轮 + 8 速双离合"
+   }
+  },
+  {
+   "id": "f20",
+   "type": "sketch",
+   "name": "节气门草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 3625.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 675,
+      "r": 45
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f21",
+   "type": "extrude",
+   "name": "节气门",
+   "params": {
+    "sketch": "f20",
+    "distance": 80.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "revolved",
+    "why": "3.0T 水平对置六缸双涡轮 + 8 速双离合。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "3.0T 水平对置六缸双涡轮 + 8 速双离合"
+   }
+  },
+  {
+   "id": "f22",
+   "type": "sketch",
+   "name": "机油盖草图",
+   "params": {
+    "plane": "XY",
+    "offset": 708.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 4170,
+      "cy": 130,
+      "r": 30
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f23",
+   "type": "extrude",
+   "name": "机油盖",
+   "params": {
+    "sketch": "f22",
+    "distance": 22.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "revolved",
+    "why": "3.0T 水平对置六缸双涡轮 + 8 速双离合。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "3.0T 水平对置六缸双涡轮 + 8 速双离合"
+   }
+  },
+  {
+   "id": "f24",
+   "type": "sketch",
+   "name": "皮带轮草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 4258.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 470,
+      "r": 75
+     },
+     {
+      "type": "circle",
+      "cx": 120,
+      "cy": 600,
+      "r": 40
+     },
+     {
+      "type": "circle",
+      "cx": -120,
+      "cy": 590,
+      "r": 45
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f25",
+   "type": "extrude",
+   "name": "皮带轮",
+   "params": {
+    "sketch": "f24",
+    "distance": 32.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "revolved",
+    "why": "3.0T 水平对置六缸双涡轮 + 8 速双离合。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "3.0T 水平对置六缸双涡轮 + 8 速双离合"
+   }
+  },
+  {
+   "id": "f26",
+   "type": "sketch",
+   "name": "左排气歧管草图",
+   "params": {
+    "plane": "XY",
+    "offset": 440.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 4200,
+      "cy": -375,
+      "w": 200,
+      "h": 90
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f27",
+   "type": "extrude",
+   "name": "左排气歧管",
+   "params": {
+    "sketch": "f26",
+    "distance": 60.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "prism",
+    "why": "3.0T 水平对置六缸双涡轮 + 8 速双离合。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "3.0T 水平对置六缸双涡轮 + 8 速双离合"
+   }
+  },
+  {
+   "id": "f28",
+   "type": "sketch",
+   "name": "左涡轮 压气端草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 330.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 4300,
+      "cy": 470,
+      "r": 68
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f29",
+   "type": "extrude",
+   "name": "左涡轮 压气端",
+   "params": {
+    "sketch": "f28",
+    "distance": 70.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "bought",
+    "why": "3.0T 水平对置六缸双涡轮 + 8 速双离合。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "3.0T 水平对置六缸双涡轮 + 8 速双离合"
+   }
+  },
+  {
+   "id": "f30",
+   "type": "sketch",
+   "name": "左涡轮 涡轮端草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 398.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 4300,
+      "cy": 470,
+      "r": 82
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f31",
+   "type": "extrude",
+   "name": "左涡轮 涡轮端",
+   "params": {
+    "sketch": "f30",
+    "distance": 52.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "bought",
+    "why": "3.0T 水平对置六缸双涡轮 + 8 速双离合。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "3.0T 水平对置六缸双涡轮 + 8 速双离合"
+   }
+  },
+  {
+   "id": "f32",
+   "type": "mirror",
+   "name": "右涡轮、排气歧管",
+   "params": {
+    "features": [
+     "f27",
+     "f29",
+     "f31"
+    ],
+    "plane": "XZ",
+    "offset": 0.0
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "prism",
+    "why": "3.0T 水平对置六缸双涡轮 + 8 速双离合。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "3.0T 水平对置六缸双涡轮 + 8 速双离合"
+   }
+  }
+ ]
+}

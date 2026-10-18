@@ -1,0 +1,182 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 6,
+ "upto": null,
+ "props": {
+  "material": "合金钢",
+  "color": "#7C8085"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "轮毂草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 846.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 960.0,
+      "cy": 344.0,
+      "r": 85
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "轮毂",
+   "params": {
+    "sketch": "f1",
+    "distance": 146.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": true,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "turning",
+    "name": "数控车削",
+    "short": "车削",
+    "color": "#35A7A0",
+    "kind": "revolved",
+    "auto": true,
+    "batch": 1,
+    "cost": 846.97,
+    "tooling": 200.0,
+    "unit": 646.97,
+    "standard": false,
+    "spec": "",
+    "why": "圆柱 (棒料车出来) → 数控车削：做 1 件, 每件约 ¥847 (模具 / 工装 ¥200 摊下来 ¥200 + 单件 ¥647)；第二是 三轴 CNC 铣 ¥1374",
+    "alternatives": [
+     {
+      "id": "cnc3",
+      "name": "三轴 CNC 铣",
+      "cost": 1373.66
+     },
+     {
+      "id": "millturn",
+      "name": "车铣复合",
+      "cost": 1668.42
+     },
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 2990.83
+     }
+    ]
+   }
+  },
+  {
+   "id": "f3",
+   "type": "axis",
+   "name": "轮轴",
+   "params": {
+    "origin": [
+     [
+      960.0,
+      0.0,
+      344.0
+     ]
+    ],
+    "direction": [
+     [
+      0.0,
+      1.0,
+      0.0
+     ]
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "sketch",
+   "name": "螺栓杆草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 826.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 960.0,
+      "cy": 406.0,
+      "r": 7
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "extrude",
+   "name": "螺栓杆（让位）",
+   "params": {
+    "sketch": "f4",
+    "distance": 58.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "kind": "fastener",
+    "auto": true,
+    "batch": 1,
+    "cost": 1.5,
+    "tooling": 0.0,
+    "unit": 1.5,
+    "standard": true,
+    "spec": "螺栓杆（让位）",
+    "why": "螺栓杆（让位）。名字是 “螺栓杆（让位）” → 标准件 (按规格网购)：做 1 件, 每件约 ¥1.50",
+    "alternatives": []
+   }
+  },
+  {
+   "id": "f6",
+   "type": "pattern_circular",
+   "name": "螺栓孔 x5",
+   "params": {
+    "features": [
+     "f5"
+    ],
+    "axis": "f3",
+    "count": 5,
+    "angle": 360.0
+   },
+   "suppressed": false,
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "kind": "fastener",
+    "auto": true,
+    "batch": 1,
+    "cost": 1.5,
+    "tooling": 0.0,
+    "unit": 1.5,
+    "standard": true,
+    "spec": "螺栓杆（让位）",
+    "why": "复制原件 → 和原件一样用标准件 (按规格网购)",
+    "alternatives": []
+   }
+  }
+ ]
+}

@@ -18,6 +18,8 @@ from PySide6.QtCore import QObject, Signal
 from .. import commands
 from .wire import DEFAULT_PORT, encode
 
+READ_ONLY = {'get_model', 'get_selection', 'get_design_rules', 'list_edges', 'list_faces', 'list_processes', 'bbox', 'com',
+             'check_design', 'screenshot'}    # 这些命令只看不改: 不收起开始页
 REPLY_TIMEOUT = 300.0           # 一条命令 (含重算) 最多等这么久
 
 
@@ -67,7 +69,8 @@ class ApiServer(QObject):
                         raise ValueError('请求要写成 JSON 对象')
                     self._request.emit(request, reply)
                     if not done.wait(REPLY_TIMEOUT):
-                        box['result'] = {'ok': False, 'error': '命令超时没有完成'}
+                        box['result'] = {'ok': False, 'error': f'{REPLY_TIMEOUT:g} 秒内没等到结果，命令可能还在算（大模型整个重算要好几分钟）：'
+                                                               '用 get_model 看 busy 和各特征的状态，算完了就是成了；不要重发这条命令'}
                 except ValueError as error:
                     box['result'] = {'ok': False, 'error': f'请求格式不对: {error}'}
                 except RuntimeError:        # 程序正在退出
@@ -85,9 +88,13 @@ class ApiServer(QObject):
         elif name == 'ping':
             reply({'ok': True, 'app': 'GenForm', 'pid': os.getpid()})
         elif name == 'ui':                  # 自动化测试用: 直接调界面控制器的槽 (模拟用户点按钮)
-            target = getattr(self.controller, str(request.get('slot')), None)
-            if self.controller is None or not callable(target):
+            target = self.controller
+            for part in str(request.get('slot')).split('.'):      # 'sim.open' = 控制器下面仿真页的槽
+                target = getattr(target, part, None)
+            if self.controller is None or target is None:
                 reply({'ok': False, 'error': '没有这个界面操作'})
+            elif not callable(target):          # 属性: 把它现在的值给回去 (测试里看界面状态)
+                reply({'ok': True, 'value': json.loads(json.dumps(target, ensure_ascii=False, default=str))})
             else:
                 target(*(request.get('args') or []))
                 reply({'ok': True})
@@ -99,4 +106,6 @@ class ApiServer(QObject):
             # 正要画一帧 (比如视角过渡到一半) 时在等 Python 的全局锁 — 这边拿着锁等它, 两边就互相卡死
             QMetaObject.invokeMethod(QGuiApplication.instance(), 'quit', Qt.QueuedConnection)
         else:
+            if self.controller is not None and str(name) not in READ_ONLY:
+                self.controller.closeStart()
             self._session.execute(str(name), request.get('args') or {}, reply)

@@ -1,0 +1,398 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 9,
+ "upto": null,
+ "props": {
+  "material": "铝合金 6061",
+  "color": "#B5121B",
+  "feature_colors": {
+   "f4": "#202226",
+   "f6": "#202226",
+   "f8": "#202226"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "尾翼翼片草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "spline",
+      "points": [
+       [
+        4170,
+        1072
+       ],
+       [
+        4210,
+        1086
+       ],
+       [
+        4290,
+        1094
+       ],
+       [
+        4380,
+        1090
+       ],
+       [
+        4445,
+        1078
+       ],
+       [
+        4450,
+        1070
+       ],
+       [
+        4380,
+        1064
+       ],
+       [
+        4280,
+        1060
+       ],
+       [
+        4200,
+        1062
+       ]
+      ],
+      "closed": true
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "尾翼翼片",
+   "params": {
+    "sketch": "f1",
+    "distance": 1320.0,
+    "op": "add",
+    "symmetric": true,
+    "end": "mid",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "kind": "prism",
+    "auto": true,
+    "batch": 1,
+    "cost": 2315.43,
+    "tooling": 300.0,
+    "unit": 2015.43,
+    "standard": false,
+    "spec": "",
+    "why": "有厚度的块 → 三轴 CNC 铣：做 1 件, 每件约 ¥2315 (模具 / 工装 ¥300 摊下来 ¥300 + 单件 ¥2015)；第二是 五轴 CNC 铣 ¥4986；做到 67 件以上换成 砂型铸造 + 机加工 更划算",
+    "alternatives": [
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 4985.57
+     },
+     {
+      "id": "sand_cast",
+      "name": "砂型铸造 + 机加工",
+      "cost": 24242.94
+     },
+     {
+      "id": "die_cast",
+      "name": "高压压铸 (开钢模)",
+      "cost": 416674.59
+     }
+    ]
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "扰流条草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 4446,
+      "cy": 1082,
+      "w": 6,
+      "h": 18
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "扰流条",
+   "params": {
+    "sketch": "f3",
+    "distance": 1320.0,
+    "op": "add",
+    "symmetric": true,
+    "end": "mid",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "kind": "plate",
+    "auto": true,
+    "batch": 1,
+    "cost": 40.95,
+    "tooling": 0.0,
+    "unit": 40.95,
+    "standard": false,
+    "spec": "",
+    "why": "厚 6 mm 的平板 → 激光切割：做 1 件, 每件约 ¥41；第二是 水刀切割 ¥51；做到 82 件以上换成 数控冲床 更划算",
+    "alternatives": [
+     {
+      "id": "waterjet",
+      "name": "水刀切割",
+      "cost": 51.46
+     },
+     {
+      "id": "bend",
+      "name": "激光切割 + 折弯 + 焊接",
+      "cost": 657.83
+     },
+     {
+      "id": "punch",
+      "name": "数控冲床",
+      "cost": 2016.33
+     }
+    ]
+   }
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "尾翼支架草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 340.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        4250,
+        930
+       ],
+       [
+        4330,
+        930
+       ],
+       [
+        4360,
+        1066
+       ],
+       [
+        4290,
+        1066
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "尾翼支架",
+   "params": {
+    "sketch": "f5",
+    "distance": 22.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": true,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "kind": "prism",
+    "auto": true,
+    "batch": 1,
+    "cost": 463.7,
+    "tooling": 300.0,
+    "unit": 163.7,
+    "standard": false,
+    "spec": "",
+    "why": "有厚度的块 → 三轴 CNC 铣：做 1 件, 每件约 ¥464 (模具 / 工装 ¥300 摊下来 ¥300 + 单件 ¥164)；第二是 五轴 CNC 铣 ¥1397；做到 2012 件以上换成 高压压铸 (开钢模) 更划算",
+    "alternatives": [
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 1396.81
+     },
+     {
+      "id": "slm",
+      "name": "金属 SLM 打印",
+      "cost": 5910.0
+     },
+     {
+      "id": "investment",
+      "name": "熔模精密铸造",
+      "cost": 6203.3
+     }
+    ]
+   }
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "尾翼端板草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 660.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        4180,
+        1050
+       ],
+       [
+        4450,
+        1050
+       ],
+       [
+        4450,
+        1110
+       ],
+       [
+        4200,
+        1100
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "尾翼端板",
+   "params": {
+    "sketch": "f7",
+    "distance": 8.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": true,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "kind": "plate",
+    "auto": true,
+    "batch": 1,
+    "cost": 38.36,
+    "tooling": 0.0,
+    "unit": 38.36,
+    "standard": false,
+    "spec": "",
+    "why": "厚 8 mm 的平板 → 激光切割：做 1 件, 每件约 ¥38；第二是 水刀切割 ¥48；做到 82 件以上换成 数控冲床 更划算",
+    "alternatives": [
+     {
+      "id": "waterjet",
+      "name": "水刀切割",
+      "cost": 48.05
+     },
+     {
+      "id": "edm",
+      "name": "慢走丝线切割",
+      "cost": 467.94
+     },
+     {
+      "id": "bend",
+      "name": "激光切割 + 折弯 + 焊接",
+      "cost": 654.8
+     }
+    ]
+   }
+  },
+  {
+   "id": "f9",
+   "type": "mirror",
+   "name": "右侧尾翼支架、端板",
+   "params": {
+    "features": [
+     "f6",
+     "f8"
+    ],
+    "plane": "XZ",
+    "offset": 0.0
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "kind": "prism",
+    "auto": true,
+    "batch": 1,
+    "cost": 463.7,
+    "tooling": 300.0,
+    "unit": 163.7,
+    "standard": false,
+    "spec": "",
+    "why": "复制原件 → 和原件一样用三轴 CNC 铣",
+    "alternatives": [
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 1396.81
+     },
+     {
+      "id": "slm",
+      "name": "金属 SLM 打印",
+      "cost": 5910.0
+     },
+     {
+      "id": "investment",
+      "name": "熔模精密铸造",
+      "cost": 6203.3
+     }
+    ]
+   }
+  }
+ ]
+}

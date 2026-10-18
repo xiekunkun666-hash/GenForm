@@ -1,0 +1,105 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 3,
+ "upto": null,
+ "props": {
+  "material": "合金钢",
+  "color": "#151515"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "plane",
+   "name": "转向柱基准面",
+   "params": {
+    "base": "XY",
+    "offset": 10.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      2300.0,
+      -370.0,
+      830.0
+     ]
+    ],
+    "normal": [
+     [
+      -0.920691,
+      0.0,
+      -0.390293
+     ]
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "sketch",
+   "name": "转向柱草图",
+   "params": {
+    "plane": "f1",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0.0,
+      "cy": 0.0,
+      "r": 24
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "extrude",
+   "name": "转向柱",
+   "params": {
+    "sketch": "f2",
+    "distance": 480.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "turning",
+    "name": "数控车削",
+    "short": "车削",
+    "color": "#35A7A0",
+    "kind": "revolved",
+    "auto": true,
+    "batch": 1,
+    "cost": 1373.6,
+    "tooling": 200.0,
+    "unit": 1173.6,
+    "standard": false,
+    "spec": "",
+    "why": "圆柱 (棒料车出来) → 数控车削：做 1 件, 每件约 ¥1374 (模具 / 工装 ¥200 摊下来 ¥200 + 单件 ¥1174)；第二是 三轴 CNC 铣 ¥2515；做到 11 件以上换成 熔模精密铸造 更划算",
+    "alternatives": [
+     {
+      "id": "cnc3",
+      "name": "三轴 CNC 铣",
+      "cost": 2515.47
+     },
+     {
+      "id": "millturn",
+      "name": "车铣复合",
+      "cost": 2914.16
+     },
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 5315.95
+     }
+    ]
+   }
+  }
+ ]
+}

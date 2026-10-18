@@ -8,9 +8,11 @@ ToolTip {
     property bool shown: false
     property string keys: ""            // 这个功能的快捷键 (没有就不显示键帽)
     property bool above: false          // 摆在按钮上面 (默认在下面)
-    readonly property int cut: text.indexOf("：")
-    readonly property string head: cut > 0 && cut <= 16 ? text.substring(0, cut) : ""
-    readonly property string body: head !== "" ? text.substring(cut + 1) : text
+    readonly property int wide: text.indexOf("：")                // 中文: "标题：说明"
+    readonly property int narrow: text.indexOf(": ")              // 英文: "Title: description"
+    readonly property int cut: wide > 0 ? wide : narrow
+    readonly property string head: cut > 0 && cut <= (wide > 0 ? 16 : 34) ? text.substring(0, cut) : ""
+    readonly property string body: head !== "" ? text.substring(cut + (wide > 0 ? 1 : 2)) : text
 
     visible: shown && text !== ""
     delay: 380

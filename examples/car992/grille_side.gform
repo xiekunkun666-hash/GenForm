@@ -1,0 +1,152 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 4,
+ "upto": null,
+ "props": {
+  "material": "ABS",
+  "color": "#1A1A1A"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "格栅底板草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 167.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": -580,
+      "cy": 360,
+      "w": 220,
+      "h": 80
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "格栅底板",
+   "params": {
+    "sketch": "f1",
+    "distance": 3.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "kind": "plate",
+    "auto": true,
+    "batch": 1,
+    "cost": 27.37,
+    "tooling": 0.0,
+    "unit": 27.37,
+    "standard": false,
+    "spec": "",
+    "why": "厚 3 mm 的平板 → 激光切割：做 1 件, 每件约 ¥27；第二是 水刀切割 ¥37",
+    "alternatives": [
+     {
+      "id": "waterjet",
+      "name": "水刀切割",
+      "cost": 36.72
+     }
+    ]
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "格栅叶片草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 50.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": -580,
+      "cy": 332,
+      "w": 300,
+      "h": 9
+     },
+     {
+      "type": "rect",
+      "cx": -580,
+      "cy": 362,
+      "w": 300,
+      "h": 9
+     },
+     {
+      "type": "rect",
+      "cx": -580,
+      "cy": 392,
+      "w": 300,
+      "h": 9
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "格栅叶片",
+   "params": {
+    "sketch": "f3",
+    "distance": 117.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "fdm",
+    "name": "FDM 熔融挤出打印",
+    "short": "FDM",
+    "color": "#E2B43C",
+    "kind": "prism",
+    "auto": true,
+    "batch": 1,
+    "cost": 1182.24,
+    "tooling": 0.0,
+    "unit": 1182.24,
+    "standard": false,
+    "spec": "",
+    "why": "有厚度的块 → FDM 熔融挤出打印：做 1 件, 每件约 ¥1182；第二是 三轴 CNC 铣 ¥1414；做到 5 件以上换成 三轴 CNC 铣 更划算",
+    "alternatives": [
+     {
+      "id": "cnc3",
+      "name": "三轴 CNC 铣",
+      "cost": 1414.48
+     },
+     {
+      "id": "sls_print",
+      "name": "尼龙 SLS / MJF 打印",
+      "cost": 3501.72
+     },
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 4508.93
+     }
+    ]
+   }
+  }
+ ]
+}

@@ -13,114 +13,35 @@ import numpy as np
 from OpenGL.GL import *
 
 from .shader_program import ShaderProgram
+from .shaders import _BACK_VS, _BACK_FS, _FLAT_VS, _FLAT_FS, _MESH_VS, _MESH_FS, _LINE_VS, _LINE_GS, _LINE_FS
 
+EMPTY_TINTS = np.zeros((0, 3), dtype=np.float32)      # 没有实体时的逐顶点颜色
 GRID_HALF = 200.0           # 草图平面上的网格从原点往每个方向画多远 (mm)
 GRID_MINOR, GRID_MAJOR = 10.0, 50.0
 
-_BACK_VS = """#version 330 core
-out vec2 uv;
-void main(){ vec2 p = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2); uv = p; gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0); }"""
-_BACK_FS = """#version 330 core
-in vec2 uv; uniform vec3 top; uniform vec3 bottom; uniform float spot; out vec4 Frag;
-void main(){
-    float t = smoothstep(0.0, 1.0, uv.y);
-    if (spot > 0.5) t = 1.0 - smoothstep(0.0, 0.85, length((uv - vec2(0.5, 0.42)) * vec2(1.25, 1.0)));     // 中间一团亮, 四周暗下去
-    Frag = vec4(mix(bottom, top, t), 1.0);
-}"""
-
-_FLAT_VS = """#version 330 core
-layout(location=0) in vec3 pos; layout(location=1) in vec4 color;
-uniform mat4 mvp; uniform float pointSize; out vec4 vColor; out vec3 vPos;
-void main(){ vColor = color; vPos = pos; gl_Position = mvp * vec4(pos, 1.0); gl_PointSize = pointSize; }"""
-_FLAT_FS = """#version 330 core
-in vec4 vColor; in vec3 vPos; uniform float fade; out vec4 Frag;
-void main(){
-    float edge = fade > 0.0 ? 1.0 - smoothstep(0.55 * fade, fade, max(abs(vPos.x), abs(vPos.y))) : 1.0;
-    Frag = vec4(vColor.rgb, vColor.a * edge);
-}"""
-
-_MESH_VS = """#version 330 core
-layout(location=0) in vec3 pos; layout(location=1) in vec3 nrm; layout(location=2) in float state;
-uniform mat4 mvp; uniform vec4 clip; out vec3 vN; out vec3 vP; flat out float vState;
-void main(){ vN = nrm; vP = pos; vState = state; gl_Position = mvp * vec4(pos, 1.0); gl_ClipDistance[0] = dot(vec4(pos, 1.0), clip); }"""
-_MESH_FS = """#version 330 core
-in vec3 vN; in vec3 vP; flat in float vState;
-uniform vec3 eye; uniform vec3 base; uniform vec3 hover; uniform vec3 chosen;
-uniform float flatShade; uniform float toon;
-out vec4 Frag;
-void main(){
-    if (flatShade > 0.5) {                          // 消除隐藏线 / 隐藏线可见: 面只用来挡住后面的线, 不打光
-        Frag = vec4(vState > 1.5 ? mix(base, chosen, 0.55) : (vState > 0.5 ? mix(base, hover, 0.45) : base), 1.0);
-        return;
-    }
-    vec3 N = normalize(vN);
-    vec3 V = normalize(eye - vP);
-    if (dot(N, V) < 0.0) N = -N;                    // 背面 (切开的内壁等) 也按朝向相机打光
-    // 光跟着相机走 (主光偏右上, 补光偏左): 零件转到哪个角度都看得清, 没有照不到的黑面
-    vec3 R = normalize(cross(V, vec3(0.0, 0.0, 1.0)) + vec3(1e-4, 0.0, 0.0));
-    vec3 U = cross(R, V);
-    vec3 L1 = normalize(V + R * 0.55 + U * 0.75);
-    vec3 L2 = normalize(V - R * 0.80 - U * 0.20);
-    float diffuse = 0.42 + 0.50 * max(dot(N, L1), 0.0) + 0.16 * max(dot(N, L2), 0.0);
-    vec3 color = vState > 1.5 ? chosen : (vState > 0.5 ? hover : base);
-    float spec = pow(max(dot(N, normalize(L1 + V)), 0.0), 40.0) * 0.16;
-    if (toon > 0.5) { diffuse = 0.50 + 0.18 * floor(diffuse * 3.2); spec = 0.0; }      // 卡通: 明暗分成几档, 不要高光
-    Frag = vec4(color * diffuse + vec3(spec), 1.0);
-}"""
-
-_LINE_VS = """#version 330 core
-layout(location=0) in vec3 pos; layout(location=1) in float state;
-uniform mat4 mvp; uniform vec4 clip; out float gState;
-void main(){ gState = state; gl_Position = mvp * vec4(pos, 1.0); gl_ClipDistance[0] = dot(vec4(pos, 1.0), clip); }"""
-_LINE_GS = """#version 330 core
-layout(lines) in; layout(triangle_strip, max_vertices=4) out;
-in float gState[]; uniform vec2 viewport; uniform float width; uniform float widthActive;
-flat out float fState;
-void main(){
-    vec4 a = gl_in[0].gl_Position, b = gl_in[1].gl_Position;
-    if (a.w <= 0.0 || b.w <= 0.0) return;           // 穿过相机平面的线段不画 (零件一般都在相机前面)
-    vec2 sa = a.xy / a.w * viewport, sb = b.xy / b.w * viewport;
-    vec2 along = sb - sa; float len = length(along);
-    vec2 side = len > 1e-6 ? vec2(-along.y, along.x) / len : vec2(1.0, 0.0);
-    float half = (gState[0] > 0.5 ? widthActive : width);
-    vec2 off = side * half / viewport;
-    // 每发一个顶点前都要重新给输出赋值 (发完就失效)
-    float ca = gl_in[0].gl_ClipDistance[0], cb = gl_in[1].gl_ClipDistance[0];
-    fState = gState[0]; gl_ClipDistance[0] = ca; gl_Position = vec4(a.xy + off * a.w, a.zw); EmitVertex();
-    fState = gState[0]; gl_ClipDistance[0] = ca; gl_Position = vec4(a.xy - off * a.w, a.zw); EmitVertex();
-    fState = gState[0]; gl_ClipDistance[0] = cb; gl_Position = vec4(b.xy + off * b.w, b.zw); EmitVertex();
-    fState = gState[0]; gl_ClipDistance[0] = cb; gl_Position = vec4(b.xy - off * b.w, b.zw); EmitVertex();
-    EndPrimitive();
-}"""
-_LINE_FS = """#version 330 core
-flat in float fState; uniform vec3 base; uniform vec3 hover; uniform vec3 chosen; uniform vec3 draft; uniform float alpha;
-out vec4 Frag;
-void main(){
-    vec3 color = fState > 2.5 ? draft : (fState > 1.5 ? chosen : (fState > 0.5 ? hover : base));
-    Frag = vec4(color, fState > 0.5 ? 1.0 : alpha);
-}"""
-
 # 配色: (深色主题, 浅色主题)
 PALETTE = {
-    'back_top': ((0.345, 0.365, 0.395), (0.93, 0.955, 0.985)),
-    'back_bottom': ((0.205, 0.218, 0.240), (0.78, 0.835, 0.905)),
-    'grid_minor': ((0.85, 0.90, 1.0, 0.07), (0.05, 0.15, 0.35, 0.07)),
-    'grid_major': ((0.85, 0.90, 1.0, 0.16), (0.05, 0.15, 0.35, 0.15)),
-    'face': ((0.76, 0.80, 0.85), (0.76, 0.81, 0.88)),
-    'face_hover': ((0.62, 0.74, 0.86), (0.66, 0.80, 0.94)),
-    'face_chosen': ((0.30, 0.58, 1.00), (0.20, 0.50, 0.96)),
-    'edge': ((0.10, 0.12, 0.14), (0.16, 0.19, 0.23)),
-    'edge_wire': ((0.90, 0.93, 0.97), (0.10, 0.13, 0.18)),      # 不上色的显示样式里的边线: 要和背景分得开
-    'edge_hover': ((0.55, 0.82, 1.00), (0.10, 0.50, 0.95)),
-    'edge_chosen': ((1.00, 0.72, 0.25), (0.95, 0.50, 0.05)),
-    'sketch': ((0.40, 0.66, 1.00), (0.14, 0.41, 0.95)),
-    'sketch_chosen': ((1.00, 0.72, 0.25), (0.95, 0.50, 0.05)),
+    'back_top': ((0.215, 0.218, 0.228), (0.93, 0.955, 0.985)),
+    'back_bottom': ((0.105, 0.107, 0.115), (0.78, 0.835, 0.905)),
+    'grid_minor': ((1.0, 1.0, 1.0, 0.06), (0.05, 0.15, 0.35, 0.07)),
+    'grid_major': ((1.0, 1.0, 1.0, 0.14), (0.05, 0.15, 0.35, 0.15)),
+    'face': ((0.84, 0.84, 0.85), (0.76, 0.81, 0.88)),
+    'face_hover': ((0.74, 0.85, 1.00), (0.66, 0.80, 0.94)),
+    'face_chosen': ((0.45, 0.69, 1.00), (0.20, 0.50, 0.96)),
+    'edge': ((0.02, 0.02, 0.03), (0.16, 0.19, 0.23)),
+    'edge_wire': ((1.0, 1.0, 1.0), (0.10, 0.13, 0.18)),      # 不上色的显示样式里的边线: 要和背景分得开
+    'edge_hover': ((0.70, 0.84, 1.00), (0.10, 0.50, 0.95)),
+    'edge_chosen': ((0.40, 0.67, 1.00), (0.95, 0.50, 0.05)),
+    'sketch': ((0.55, 0.75, 1.00), (0.14, 0.41, 0.95)),
+    'sketch_chosen': ((1.0, 1.0, 1.0), (0.95, 0.50, 0.05)),
     # 草图编辑时: 已画好的轮廓 / 光标悬停 / 选中 / 正在画的
-    'draw': ((0.80, 0.86, 0.92), (0.12, 0.16, 0.22)),
-    'draw_hover': ((0.55, 0.82, 1.00), (0.10, 0.50, 0.95)),
-    'draw_chosen': ((1.00, 0.72, 0.25), (0.95, 0.50, 0.05)),
-    'draw_draft': ((0.40, 0.90, 0.62), (0.05, 0.62, 0.35)),
-    'plane': ((0.40, 0.66, 1.00), (0.14, 0.41, 0.95)),
+    # 草图: 没标尺寸的深蓝 (不发黑), 选中的浅蓝, 悬停橙色, 标过尺寸的和尺寸线是黑的 (深色界面上用白, 黑的看不见)
+    'draw': ((0.26, 0.48, 0.96), (0.09, 0.26, 0.66)),
+    'draw_hover': ((1.00, 0.66, 0.26), (0.96, 0.50, 0.06)),
+    'draw_chosen': ((0.62, 0.86, 1.00), (0.36, 0.68, 1.00)),
+    'draw_draft': ((0.55, 0.77, 1.00), (0.05, 0.62, 0.35)),
+    'draw_defined': ((0.94, 0.95, 0.97), (0.06, 0.07, 0.09)),
+    'plane': ((0.55, 0.75, 1.00), (0.14, 0.41, 0.95)),
 }
 
 
@@ -274,6 +195,10 @@ class Scene:
         self._faces, self._edges, self._sketches = _Buffer(), _Buffer(), _Buffer()
         self._plane_fill, self._plane_edge = _Buffer(), _Buffer()
         self._draw_lines, self._draw_points = _Buffer(), _Buffer()
+        self._extras = []               # 另外画的网格 (装配体里别的零件、应力云图): [(缓冲, 颜色, 有没有逐顶点的颜色, 不透明度)...]
+        self._covered = False           # 有一个盖在实体上的网格 (云图): 实体自己的面不画
+        self._tinted = False            # 实体有单独上了色的特征 (逐顶点颜色, 见 set_geometry)
+        self._glass = []                # 实体里半透明的三角面段, 不透明的画完再画
         self._ready = True
 
     # ---- 数据 (渲染线程在同步阶段调用) ----
@@ -283,11 +208,46 @@ class Scene:
             self._init()
         self._faces.attribute(0, geometry['verts'], 3)
         self._faces.attribute(1, geometry['normals'], 3)
+        self._faces.attribute(3, geometry.get('tints', EMPTY_TINTS), 3)       # 单独上色的特征的面 (-1 = 零件的颜色)
+        self._tinted = bool(geometry.get('tinted'))
+        self._glass = list(geometry.get('glass') or ())     # 半透明的三角面段 (排在最后): [(从第几个, 几个, 不透明度)...]
         self._faces.elements(geometry['tris'])
         self._edges.attribute(0, geometry['edge_points'], 3)
         self._edges.count = len(geometry['edge_points'])
         self._sketches.attribute(0, geometry['sketch_points'], 3)
         self._sketches.count = len(geometry['sketch_points'])
+
+    def set_extras(self, parts):
+        """另外画的网格: [{'verts', 'normals', 'tris', 'color'}...]。只画, 不参与拾取。
+        带 'tints' (每个顶点的颜色) 的按它着色; 带 'cover': True 的是盖在实体上的 (云图), 有它的时候实体自己的面不画。"""
+        if not self._ready:
+            self._init()
+        # 同一批数组 (装配体里没动的零件) 的缓冲照用, 只上传新的 (车门开着动画时每一帧只有门的网格是新的)。
+        # 缓存里连数组一起留着: 数组活着, 它的 id 就不会被别的新数组占去, 不会认错
+        cached, kept = getattr(self, '_extra_buffers', {}), {}
+        self._extras = []
+        for part in parts:
+            tints = part.get('tints')
+            key = (id(part['verts']), id(part['normals']), id(part['tris']), id(tints) if tints is not None else None)
+            entry = cached.pop(key, None) or kept.get(key)
+            if entry is None:
+                buffer = _Buffer()
+                buffer.attribute(0, part['verts'], 3)
+                buffer.attribute(1, part['normals'], 3)
+                buffer.attribute(2, np.zeros(len(part['verts']), dtype=np.float32), 1)
+                if tints is not None:
+                    buffer.attribute(3, tints, 3)
+                buffer.elements(part['tris'])
+                entry = (buffer, (part['verts'], part['normals'], part['tris'], tints))
+            kept[key] = entry
+            self._extras.append((entry[0], tuple(part.get('color') or (0.7, 0.7, 0.7)), tints is not None,
+                                 float(part.get('alpha', 1.0))))       # 装配体里的玻璃: 半透明, 最后画
+        for buffer, _ in cached.values():       # 这次没用上的: 删掉
+            glDeleteBuffers(len(buffer.buffers), list(buffer.buffers.values()))
+            glDeleteVertexArrays(1, [buffer.vao])
+        self._extra_buffers = kept
+        self._covered = any(part.get('cover') for part in parts)
+        self._ghost = any(part.get('ghost') for part in parts)      # 有预览体: 草图的线画在它上面 (不然被它盖住, 看不见也点不着)
 
     def set_states(self, states):
         """states: {'faces','edges','sketches'} 各是逐顶点的状态值。"""
@@ -351,7 +311,7 @@ class Scene:
         glEnable(GL_POLYGON_OFFSET_FILL)
         glPolygonOffset(1.0, 1.0)
         flat = style in ('hlr', 'hlv')
-        if self._faces.count and style != 'wire':
+        if self._faces.count and style != 'wire' and not self._covered:
             base = options.get('face') or PALETTE['face'][index]
             if flat:                    # 面和背景一个颜色: 只留下边线, 像一张线图
                 base = tuple((a + b) / 2 for a, b in zip(top, bottom))
@@ -364,8 +324,45 @@ class Scene:
                 glUniform3f(self._mesh.loc('chosen'), *PALETTE['face_chosen'][index])
                 glUniform1f(self._mesh.loc('flatShade'), 1.0 if flat else 0.0)
                 glUniform1f(self._mesh.loc('toon'), 1.0 if options.get('cartoon') else 0.0)
+                glUniform1f(self._mesh.loc('useTint'), 2.0 if self._tinted else 0.0)
+                glUniform1f(self._mesh.loc('alpha'), 1.0)
                 glBindVertexArray(self._faces.vao)
-                glDrawElements(GL_TRIANGLES, self._faces.count, GL_UNSIGNED_INT, None)
+                solid = self._glass[0][0] * 3 if self._glass else self._faces.count
+                glDrawElements(GL_TRIANGLES, solid, GL_UNSIGNED_INT, None)
+        if self._extras:
+            with self._mesh:
+                glUniformMatrix4fv(self._mesh.loc('mvp'), 1, GL_TRUE, matrix)
+                glUniform4f(self._mesh.loc('clip'), *clip)
+                glUniform3f(self._mesh.loc('eye'), *eye)
+                glUniform1f(self._mesh.loc('flatShade'), 0.0)
+                glUniform1f(self._mesh.loc('toon'), 0.0)
+                glUniform1f(self._mesh.loc('alpha'), 1.0)
+                for buffer, color, tinted, alpha in sorted(self._extras, key=lambda extra: extra[3] < 1.0):
+                    if alpha < 1.0:         # 半透明的 (玻璃) 排在后面: 不透明的都画完了才混合着画, 不写深度
+                        glEnable(GL_BLEND)
+                        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
+                        glDepthMask(GL_FALSE)
+                    glUniform1f(self._mesh.loc('alpha'), alpha)
+                    glUniform1f(self._mesh.loc('useTint'), 1.0 if tinted else 0.0)
+                    glUniform3f(self._mesh.loc('base'), *color)
+                    glBindVertexArray(buffer.vao)
+                    glDrawElements(GL_TRIANGLES, buffer.count, GL_UNSIGNED_INT, None)
+                glUniform1f(self._mesh.loc('alpha'), 1.0)
+                glDepthMask(GL_TRUE)
+                glDisable(GL_BLEND)
+        if self._glass and self._faces.count and style != 'wire' and not self._covered:
+            # 半透明的面 (玻璃): 不透明的都画完了才画, 混合、不写深度 — 隔着它看得见后面的内饰
+            glEnable(GL_BLEND)
+            glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
+            glDepthMask(GL_FALSE)
+            with self._mesh:
+                glBindVertexArray(self._faces.vao)
+                for start, count, alpha in self._glass:
+                    glUniform1f(self._mesh.loc('alpha'), alpha)
+                    glDrawElements(GL_TRIANGLES, count * 3, GL_UNSIGNED_INT, ctypes.c_void_p(start * 3 * 4))
+                glUniform1f(self._mesh.loc('alpha'), 1.0)
+            glDepthMask(GL_TRUE)
+            glDisable(GL_BLEND)
         glDisable(GL_POLYGON_OFFSET_FILL)
         glDisable(GL_CLIP_DISTANCE0)
 
@@ -426,7 +423,10 @@ class Scene:
                 glDrawArrays(GL_LINES, 0, buffer.count)
 
             if self._sketches.count:
-                strokes(self._sketches, 'sketch', 'sketch_chosen', 'sketch_chosen', 1.3, 0.85)
+                if getattr(self, '_ghost', False):
+                    glDisable(GL_DEPTH_TEST)
+                strokes(self._sketches, 'sketch', 'sketch_chosen', 'sketch_chosen', 1.6 if getattr(self, '_ghost', False) else 1.3, 0.85)
+                glEnable(GL_DEPTH_TEST)
             if self._edges.count:
                 # 实体的边线, 按显示样式: 带边线上色 = 深色细线; 上色 = 不画 (悬停、选中的那条还是亮出来);
                 # 消除隐藏线 / 线架图 = 和背景分得开的线; 隐藏线可见 = 被挡住的线也淡淡地画出来
@@ -449,6 +449,7 @@ class Scene:
                 glUniform3f(self._line.loc('hover'), *PALETTE['draw_hover'][index])
                 glUniform3f(self._line.loc('chosen'), *PALETTE['draw_chosen'][index])
                 glUniform3f(self._line.loc('draft'), *PALETTE['draw_draft'][index])
+                glUniform3f(self._line.loc('defined'), *PALETTE['draw_defined'][index])
                 glUniform1f(self._line.loc('alpha'), 1.0)
                 glUniform1f(self._line.loc('width'), 1.8)
                 glUniform1f(self._line.loc('widthActive'), 2.4)

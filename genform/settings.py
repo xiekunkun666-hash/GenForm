@@ -20,11 +20,17 @@ def path():
     return os.path.join(base, 'GenForm', 'settings.json')
 
 
+RECENT = 12
+
+
 class Settings:
     def __init__(self, file=None):
         self.file = file or path()
         self.keys = {}          # 动作 id → 快捷键 (只存和默认不一样的; '' = 用户把它清掉了)
         self.gestures = {}      # 'model' / 'sketch' → 8 个动作 id (只存改过的那一套)
+        self.language = 'zh'    # 界面语言: zh / en
+        self.rules = {}         # 设计规则里改过的 (见 genform/rules.py; 没改的用默认值)
+        self.recent = []        # 最近打开 / 保存过的文件 (新的在前, 最多 RECENT 个; 开始页上列出来)
         self.load()
 
     def load(self):
@@ -35,6 +41,13 @@ class Settings:
             return
         if not isinstance(data, dict):
             return
+        if data.get('language') in ('zh', 'en'):
+            self.language = data['language']
+        if isinstance(data.get('rules'), dict):
+            from . import rules
+            self.rules = rules.clean(data['rules'])
+        if isinstance(data.get('recent'), list):
+            self.recent = [str(item) for item in data['recent'] if isinstance(item, str) and item][:RECENT]
         keys = data.get('shortcuts')
         if isinstance(keys, dict):
             self.keys = {str(name): str(key) for name, key in keys.items() if name in actions.BY_ID}
@@ -49,9 +62,31 @@ class Settings:
         try:
             os.makedirs(os.path.dirname(self.file), exist_ok=True)
             with open(self.file, 'w', encoding='utf-8') as handle:
-                json.dump({'shortcuts': self.keys, 'gestures': self.gestures}, handle, ensure_ascii=False, indent=1)
+                data = {'shortcuts': self.keys, 'gestures': self.gestures}
+                if self.language != 'zh':
+                    data['language'] = self.language
+                if self.rules:
+                    data['rules'] = self.rules
+                if self.recent:
+                    data['recent'] = self.recent
+                json.dump(data, handle, ensure_ascii=False, indent=1)
         except OSError:
             pass
+
+    def remember(self, file):
+        """记一个最近用过的文件: 挪到最前面 (同一个文件只留一条, 不分大小写)。"""
+        file = os.path.normpath(os.path.abspath(file))
+        self.recent = [file] + [item for item in self.recent if os.path.normcase(item) != os.path.normcase(file)]
+        del self.recent[RECENT:]
+        self.save()
+
+    def forget(self, file):
+        self.recent = [item for item in self.recent if os.path.normcase(item) != os.path.normcase(os.path.normpath(file))]
+        self.save()
+
+    def set_language(self, code):
+        self.language = code
+        self.save()
 
     # ---- 快捷键 ----
     def key(self, identifier):

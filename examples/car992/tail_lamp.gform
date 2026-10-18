@@ -1,0 +1,64 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "PMMA 亚克力",
+  "color": "#5A060B"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "贯穿尾灯草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 4489.0,
+    "shapes": [
+     {
+      "type": "slot",
+      "x1": -735,
+      "y1": 878,
+      "x2": 735,
+      "y2": 878,
+      "w": 34
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "贯穿尾灯",
+   "params": {
+    "sketch": "f1",
+    "distance": 25.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "profile",
+    "why": "贯穿式 LED 尾灯。手动指定：每件 ¥7,500.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 7500.0,
+    "unit": 7500.0,
+    "tooling": 0.0,
+    "spec": "贯穿式 LED 尾灯"
+   }
+  }
+ ]
+}

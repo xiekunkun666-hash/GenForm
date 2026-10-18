@@ -104,6 +104,98 @@ class PickingTests(unittest.TestCase):
         self.assertIsNone(picking.pick(self.camera, 2, 2, W, H, self.model))
         self.assertIsNone(picking.pick(self.camera, 2, 2, W, H, {}))
 
+    def test_many_segments_match_a_full_scan_in_both_layouts(self):
+        # 线段多 (> 4000) 时先用空间包围盒筛: 结果要和把全部线段投影到屏幕上一条条比一样; 草图线是摊平成点给的
+        rng = np.random.default_rng(4)
+        start = rng.uniform(-20, 20, (6000, 3))
+        segments = np.stack([start, start + rng.normal(0, 1.5, (6000, 3))], axis=1).astype(np.float32)
+        for perspective in (True, False):
+            camera = Camera()
+            camera.perspective = perspective
+            camera.fit((-20, -20, -20), (20, 20, 20), W / H)
+            for _ in range(30):
+                camera.yaw += 3.0                   # 每次视角都变
+                x, y = rng.uniform(100, 700), rng.uniform(100, 500)
+                screen, depth = camera.project(segments.reshape(-1, 3), W, H)
+                a, b = screen[0::2], screen[1::2]
+                span = b - a
+                along = np.clip(np.einsum('ij,ij->i', [x, y] - a, span) / np.einsum('ij,ij->i', span, span), 0, 1)
+                gap = np.linalg.norm(a + span * along[:, None] - [x, y], axis=1)
+                gap[(depth[0::2] <= 0) | (depth[1::2] <= 0)] = np.inf
+                pairs = picking.nearest_segment(camera, x, y, W, H, segments)
+                flat = picking.nearest_segment(camera, x, y, W, H, segments.reshape(-1, 3), 'sketches')
+                self.assertEqual(flat[:2], pairs[:2])
+                if gap.min() <= picking.NEAR_PIXELS:        # 附近有线段: 必须找到真正最近的那条
+                    self.assertEqual(pairs[0], int(gap.argmin()))
+                    self.assertAlmostEqual(pairs[1], float(gap.min()), places=6)
+                else:                                       # 附近没有: 给出的 (如果有) 也够不着
+                    self.assertTrue(pairs[0] == -1 or pairs[1] > picking.NEAR_PIXELS)
+
+
+class HideSolidTests(unittest.TestCase):
+    """零件里有好几块不相连的实体时, 点中一块隐藏的只是那一块。"""
+
+    def setUp(self):
+        from genform.app import solid_blocks
+        from genform.view.viewport import _without_faces
+        self.blocks, self.without = solid_blocks, _without_faces
+        self.session = Session()
+        self.session.execute('sketch', {'shapes': [{'type': 'rect', 'cx': -30, 'cy': 0, 'w': 20, 'h': 20},
+                                                    {'type': 'rect', 'cx': 30, 'cy': 0, 'w': 20, 'h': 20}]})
+        self.session.execute('extrude', {'distance': 10})           # 两块分开的方块
+        self.model = self.session.model
+        self.camera = Camera()
+        self.camera.fit(self.model['props']['bbox_min'], self.model['props']['bbox_max'], W / H)
+
+    def at(self, model, point):
+        screen, _ = self.camera.project(np.asarray(point, dtype=float), W, H)
+        return picking.pick(self.camera, screen[0, 0], screen[0, 1], W, H, model)
+
+    def test_separate_solids_are_separate_blocks(self):
+        owner, blocks = self.blocks(self.model['faces'])
+        self.assertEqual(sorted(len(block) for block in blocks), [6, 6])
+        for block in blocks:
+            xs = {round(self.model['faces'][index]['center'][0]) > 0 for index in block}
+            self.assertEqual(len(xs), 1)                            # 一块里的面都在同一边
+        self.assertEqual(self.blocks([{'id': 0}, {'id': 1}])[1], [[0, 1]])      # 没有边的信息: 当成一整块
+
+    def test_hiding_one_block_keeps_the_other_drawn_and_pickable(self):
+        _, blocks = self.blocks(self.model['faces'])
+        left = next(block for block in blocks if self.model['faces'][block[0]]['center'][0] < 0)
+        shown = self.without(self.model, set(left))
+        self.assertFalse(np.isin(shown['tri_face'], left).any())
+        self.assertGreater(len(shown['tris']), 0)
+        kept_edges = set(shown['segment_edge'].tolist())
+        left_edges = {edge for index in left for edge in self.model['faces'][index]['edges']}
+        self.assertFalse(kept_edges & left_edges)                   # 隐藏那块的边也不画
+        self.assertIsNone(self.at(shown, [-30.0, 0.0, 10.0]))       # 点不着隐藏了的那块
+        hit = self.at(shown, [30.0, 0.0, 10.0])
+        self.assertEqual(hit[0], 'face')
+        self.assertNotIn(hit[1], left)
+        self.assertIs(self.without(self.model, set()), self.model)
+
+    def test_hide_clicked_part_or_whole_solid(self):
+        import types
+        from genform.app import AppController
+        session = Session()
+        plate(session)                                                  # 40×30×10 的板
+        session.execute('sketch', {'plane': 'XY', 'offset': 10, 'shapes': [{'type': 'circle', 'cx': 0, 'cy': 0, 'r': 5}]})
+        session.execute('extrude', {'distance': 8})                     # 板上长出一个圆柱: 和板连成一块
+        faces = session.model['faces']
+        fake = types.SimpleNamespace(session=session, _solid_cache=None, _hidden_keys=set())
+        for name in ('_solids', '_part_faces', '_solid_faces', '_set_faces_hidden', '_hidden_faces'):
+            setattr(fake, name, types.MethodType(getattr(AppController, name), fake))
+        fake._face_key = AppController._face_key
+        boss = next(face['id'] for face in faces if face['type'] == 'cylinder')
+        part = fake._part_faces(boss)
+        self.assertEqual({faces[index]['feature'] for index in part}, {faces[boss]['feature']})
+        self.assertLess(len(part), len(faces))                          # 只是圆柱那部分
+        self.assertEqual(sorted(fake._solid_faces([boss])), list(range(len(faces))))     # 整块实体 = 全部面
+        fake._set_faces_hidden(part, True)
+        self.assertEqual(fake._hidden_faces(), set(part))
+        fake._set_faces_hidden(part, False)
+        self.assertEqual(fake._hidden_faces(), set())
+
 
 class FormTests(unittest.TestCase):
     def setUp(self):

@@ -18,15 +18,16 @@ _COMMANDS = {}
 
 
 class Command:
-    def __init__(self, name, description, properties, required, mutates, handler):
+    def __init__(self, name, description, properties, required, mutates, handler, geometry=True):
         self.name, self.description, self.mutates, self.handler = name, description, mutates, handler
+        self.geometry = geometry        # False: 改了文档但不动几何 (改名…), 不用重算
         self.schema = {'type': 'object', 'properties': properties, 'required': list(required),
                        'additionalProperties': False}
 
 
-def command(name, description, properties=None, required=(), mutates=False):
+def command(name, description, properties=None, required=(), mutates=False, geometry=True):
     def register(handler):
-        _COMMANDS[name] = Command(name, description, properties or {}, required, mutates, handler)
+        _COMMANDS[name] = Command(name, description, properties or {}, required, mutates, handler, geometry)
         return handler
     return register
 
@@ -119,10 +120,14 @@ EDGES = {
 @command('sketch', '新建草图：在基准面上画一组图形（直线、圆弧、矩形、槽口、样条、文本…），围成封闭轮廓的部分供 extrude 使用。',
          {'plane': {'type': 'string', 'description': 'XY=上视(法向+Z)，XZ=前视(法向-Y)，YZ=右视(法向+X)；或基准面特征 (plane) 的 id'},
           'offset': {'type': 'number', 'description': '沿基准面法向偏移 (mm)，默认 0'},
-          'shapes': SHAPES, 'name': NAME},
+          'shapes': SHAPES, 'name': NAME,
+          'dims': {'type': 'array', 'items': {'type': 'object'},
+                   'description': '草图里标着的尺寸 (界面的智能尺寸放下的, 只是标出来; 一般不用写)'}},
          required=('shapes',), mutates=True)
 def _sketch(session, args):
     params = {'plane': args.get('plane', 'XY'), 'offset': float(args.get('offset', 0.0)), 'shapes': args['shapes']}
+    if args.get('dims'):
+        params['dims'] = list(args['dims'])
     try:
         table.plane_frame(params['plane'], session.document.features)
     except ValueError as error:
@@ -130,21 +135,39 @@ def _sketch(session, args):
     return {'id': session.document.add('sketch', params, args.get('name'))}
 
 
-@command('extrude', '拉伸草图成实体：op="add" 加料（没有实体时创建实体），op="cut" 从现有实体切除，op="common" 只留和现有实体重叠的部分。',
+@command('extrude', '拉伸草图成实体：op="add" 加料（没有实体时创建实体），op="cut" 从现有实体切除，op="common" 只留和现有实体重叠的部分；'
+                    '空心件 (钣金) 用 void 挖空腔 / fill 填空腔 / pocket 钣金凹槽，见 op 的说明。',
          {'sketch': {'type': 'string', 'description': '草图特征 id；不写则用最近的草图'},
-          'distance': {'type': 'number', 'description': '拉伸距离 (mm)，沿草图法向；负数反向'},
-          'op': {'enum': ['add', 'cut', 'common'], 'description': '默认 add'},
-          'symmetric': {'type': 'boolean', 'description': 'true 则以草图平面为中心两侧各拉一半'},
+          'distance': {'type': 'number', 'description': '拉伸距离 (mm)，沿草图法向；负数反向。end 是 blind / mid 时要写'},
+          'op': {'enum': [option['value'] for option in table.OPS], 'description': '默认 add。' + table.OP_HELP},
+          'wall': {'type': 'number', 'description': 'op="pocket" 时槽壁、槽底的壁厚 (mm)，默认 2'},
+          'symmetric': {'type': 'boolean', 'description': 'true 则以草图平面为中心两侧各拉一半 (等于 end="mid")'},
+          'end': {'enum': ['blind', 'through', 'vertex', 'surface', 'offset', 'body', 'mid'],
+                  'description': '拉到哪为止: blind 给定深度 (默认) / mid 两侧对称 / through 完全贯穿 / vertex 成形到顶点 / '
+                                 'surface 成形到面 / offset 到离指定面指定的距离 / body 成形到实体'},
+          'reverse': {'type': 'boolean', 'description': 'true = 往草图法向的反方向拉'},
+          'distance2': {'type': 'number', 'description': 'end="blind" 时反方向再拉这么多 (方向 2)；0 = 不要'},
+          'target': {'type': 'array', 'description': 'end 是 vertex 时: [{"point": 顶点坐标}]；surface / offset 时: [{"point": 面中心坐标}]'},
+          'gap': {'type': 'number', 'description': 'end="offset" 时离那张面还差多少 (mm)；负数 = 越过它'},
           'name': NAME},
-         required=('distance',), mutates=True)
+         mutates=True)
 def _extrude(session, args):
+    end = args.get('end') or ('mid' if args.get('symmetric') else 'blind')
+    if end in ('blind', 'mid') and args.get('distance') is None:
+        raise DocumentError('命令 extrude 缺少参数 distance')
     source = args.get('sketch') or session.document.last('sketch')
     if source is None:
         raise DocumentError('还没有草图，先用 sketch 画一个')
     if session.document.find(source)['type'] != 'sketch':
         raise DocumentError(f'{source} 不是草图')
-    params = {'sketch': source, 'distance': float(args['distance']), 'op': args.get('op', 'add'),
-              'symmetric': bool(args.get('symmetric', False))}
+    params = {'sketch': source, 'distance': float(args.get('distance') or 10.0), 'op': args.get('op', 'add'),
+              'symmetric': end == 'mid', 'end': end, 'reverse': bool(args.get('reverse', False)),
+              'distance2': float(args.get('distance2') or 0.0), 'gap': float(args.get('gap') or 0.0),
+              'target': list(args.get('target') or [])}
+    if params['op'] not in [option['value'] for option in table.OPS]:
+        raise DocumentError(f'不认识的方式 {params["op"]!r}')
+    if args.get('wall') is not None:
+        params['wall'] = float(args['wall'])
     return {'id': session.document.add('extrude', params, args.get('name'))}
 
 
@@ -208,14 +231,14 @@ def _register_feature(kind, spec):
             key = field['key']
             if key in args:
                 params[key] = table.clean(field, args[key])
-            elif field['kind'] == 'sketch':
+            elif field['kind'] == 'sketch' and not field.get('optional'):
                 params[key] = document.last('sketch')
                 if params[key] is None:
                     raise DocumentError('还没有草图，先用 sketch 画一个')
             else:
                 params[key] = copy.deepcopy(field['default'])
             wanted = REFERENCE_KINDS.get(field['kind'])
-            if wanted and document.find(params[key])['type'] not in wanted:
+            if wanted and (params[key] or not field.get('optional')) and document.find(params[key])['type'] not in wanted:
                 raise DocumentError(f'参数 {key}: {params[key]} 不是{"草图" if field["kind"] == "sketch" else "草图或曲线"}')
             if field['kind'] in ('sketches', 'features'):
                 for identifier in params[key]:
@@ -256,10 +279,157 @@ def _suppress(session, args):
 
 
 @command('rename_feature', '给特征改名。', {'id': FEATURE_ID, 'name': {'type': 'string'}},
-         required=('id', 'name'), mutates=True)
+         required=('id', 'name'), mutates=True, geometry=False)
 def _rename(session, args):
     session.document.rename(args['id'], args['name'])
     return {'id': args['id']}
+
+
+@command('set_folder', '把特征放进设计树的文件夹 (只是归类, 不影响几何, 不重算)：folder 用 / 分层，比如 "内饰/座椅"；'
+                       '写空 = 拿出文件夹。同一个文件夹里的特征最好排在一起 (隔开了树上会分成两段)。',
+         {'features': {'type': 'array', 'items': {'type': 'string'}, 'description': '特征 id 列表'},
+          'folder': {'type': 'string', 'description': '文件夹路径，/ 分层'}},
+         required=('features',), mutates=True, geometry=False)
+def _set_folder(session, args):
+    targets = list(args.get('features') or [])
+    if not targets:
+        raise DocumentError('要写上特征 id（features）')
+    session.document.set_folder(targets, args.get('folder') or '')
+    return {'features': targets, 'folder': args.get('folder') or None}
+
+
+def _design_rules(session):
+    from . import rules
+    return rules.effective(getattr(session, 'design_rules', None), session.document.props.get('rules'))
+
+
+def _geometry_unchanged(session, before):
+    """只改了工艺这类不影响几何的东西: 现成的模型照用 (和 execute 里 geometry=False 的命令一样)。"""
+    if not session.busy and session.model_revision == before:
+        session.model_revision = session.document.revision
+    session.notify()
+
+
+@command('list_processes', '列出软件认识的加工工艺：id、名称、类别、最小壁厚、最大尺寸、精度、交期。绑定工艺时按性价比在这些里面挑。')
+def _list_processes(session, args):
+    from . import manufacturing
+    return {'processes': manufacturing.catalog()}
+
+
+@command('get_design_rules', '查看设计规则 (设计检查按它判断)：公差、件与件最小间隙、连接最小压入量、最小壁厚、孔、内角圆角、字高、生产数量。')
+def _get_rules(session, args):
+    from . import rules
+    return {'rules': _design_rules(session), 'table': rules.table(), 'document': dict(session.document.props.get('rules') or {})}
+
+
+@command('set_design_rules', '改设计规则：values 写要改的键 (见 get_design_rules)；scope="document" 只对这个零件 (存进文档)，'
+                             '"user" 改用户设置里的默认值 (所有零件共用)。',
+         {'values': {'type': 'object', 'description': '规则键 → 数值'},
+          'scope': {'enum': ['document', 'user'], 'description': '默认 document'}},
+         required=('values',))
+def _set_rules(session, args):
+    from . import rules
+    values = rules.clean(args.get('values') or {})
+    if not values:
+        raise DocumentError('values 里没有认识的规则；可用: ' + '、'.join(rules.DEFAULTS))
+    if args.get('scope') == 'user':
+        if getattr(session, 'design_rules', None) is None:
+            raise DocumentError('没有打开界面，没有用户设置；用 scope="document"')
+        session.design_rules.update(values)
+        if getattr(session, 'save_rules', None):
+            session.save_rules()
+    else:
+        session.document.set_prop('rules', dict(session.document.props.get('rules') or {}, **values))
+    session.notify()
+    return {'rules': _design_rules(session)}
+
+
+@command('bind_processes', '自动给特征绑定现实里能做出来的加工工艺 (激光切割、折弯、冲压、手工钣金、CNC、车削、铸造、注塑、3D 打印、外购…)：'
+                           '按生产数量摊模具费，挑每件最便宜的那种；绑好后设计树里特征名前面显示工艺。手动指定过的不动。',
+         {'features': {'type': 'array', 'items': {'type': 'string'}, 'description': '只绑这些特征；不写 = 全部'},
+          'batch': {'type': 'integer', 'description': '生产数量；不写用设计规则里的'}})
+def _bind_processes(session, args):
+    from . import manufacturing
+    batch = int(args.get('batch') or _design_rules(session)['batch'])
+    only = set(args['features']) if args.get('features') else None
+    for identifier in only or ():
+        session.document.find(identifier)
+    material = session.document.props.get('material') or ''
+
+    def run(reply):
+        before = session.document.revision
+
+        def done(report, error):
+            if error:
+                reply({'ok': False, 'error': error})
+                return
+            bound = manufacturing.bind(session.document.features, report, batch, material, only)
+            changed = {identifier: process for identifier, process in bound.items()
+                       if session.document.find(identifier).get('process') != process}
+            if changed:
+                session.document.set_processes(changed)
+                _geometry_unchanged(session, before)
+            counts = {}
+            for process in bound.values():
+                label = process.get('name') or '没有合适的工艺'
+                counts[label] = counts.get(label, 0) + 1
+            reply({'ok': True, 'bound': len(bound), 'batch': batch, 'processes': counts,
+                   'features': {identifier: {'process': process.get('id'), 'name': process.get('name'), 'why': process.get('why')}
+                                for identifier, process in bound.items()}})
+        session.query('inspect', {}, done)
+    return run
+
+
+@command('set_process', '手动给一个特征指定加工工艺 (自动绑定不会再改它)；process 写 list_processes 里的 id，写空 = 解除。'
+                        'cost = 每件的价钱 (元，供应商报价；外购总成、标准件写上它物料清单才算得出成本)，spec = 规格型号。',
+         {'feature': FEATURE_ID, 'process': {'type': 'string', 'description': '工艺 id'},
+          'cost': {'type': 'number', 'minimum': 0, 'description': '每件多少钱 (元)'},
+          'spec': {'type': 'string', 'description': '规格型号 (标准件、外购件)'}},
+         required=('feature',), mutates=True, geometry=False)
+def _set_process(session, args):
+    from . import manufacturing
+    feature = session.document.find(args['feature'])
+    key = args.get('process') or ''
+    if not key:
+        session.document.set_processes({feature['id']: None})
+        return {'feature': feature['id'], 'process': None}
+    item = manufacturing.BY_ID.get(key)
+    if item is None:
+        raise DocumentError(f'没有这种工艺 {key!r}；可用: {"、".join(manufacturing.BY_ID)}')
+    process = {'id': item['id'], 'name': item['name'], 'short': item['short'], 'color': item['color'], 'auto': False,
+               'kind': (feature.get('process') or {}).get('kind'), 'why': '手动指定', 'alternatives': [],
+               'standard': item['id'] in manufacturing.STANDARD}
+    if args.get('cost') is not None:
+        cost = float(args['cost'])
+        if cost < 0:
+            raise DocumentError('cost 不能是负数')
+        process.update(cost=cost, unit=cost, tooling=0.0, why=f'手动指定：每件 ¥{cost:,.2f}')
+    if args.get('spec'):
+        process['spec'] = str(args['spec'])
+        process['why'] = f'{process["spec"]}。{process["why"]}'
+    session.document.set_processes({feature['id']: process})
+    return {'feature': feature['id'], 'process': key}
+
+
+@command('check_design', '设计检查 (像 PCB 的 DRC)：特征出错、实体无效、悬空的零件、件与件间隙太小 / 只贴着 / 压得太浅、没材质、没绑工艺、'
+                         '工艺做不了、壁太薄、孔太小太深、铣不出的尖内角、字太小、封闭空腔、成本汇总。按设计规则判断。')
+def _check_design(session, args):
+    from . import checks
+
+    def run(reply):
+        rules = _design_rules(session)
+
+        def done(report, error):
+            if error:
+                reply({'ok': False, 'error': error})
+                return
+            issues = checks.run(session.document.features, session.model, report, rules, session.document.props.get('material') or '')
+            session.last_check = issues
+            if getattr(session, 'on_check', None):
+                session.on_check(issues)
+            reply({'ok': True, 'counts': checks.summary(issues), 'issues': issues, 'red': checks.red_features(issues)})
+        session.query('inspect', {'rules': rules}, done)
+    return run
 
 
 @command('rollback', '把特征历史回滚到第 count 个特征之后（之后的特征暂不计算）；不写 count 则取消回滚。',
@@ -281,16 +451,51 @@ def _set_material(session, args):
     return {'material': name or None}
 
 
-@command('set_appearance', '改零件的外观颜色；color 不写或写空 = 跟随材质。',
-         {'color': {'type': 'string', 'description': '颜色，写成 #RRGGBB'}})
+@command('set_appearance', '改外观颜色：不写 features = 整个零件 (color 不写或写空 = 跟随材质)；'
+                           '写了 features = 只给这些特征做出来的面上色 (轮胎、玻璃、灯…；color 写空 = 回到零件的颜色)。'
+                           '阵列 / 镜像复制出来的面没单独上色时跟着原件的颜色。'
+                           'opacity (0.05~1) 让这些特征的面半透明 (玻璃、灯罩: 隔着能看见里面)，写 1 = 不透明；只给 opacity 不给 color 时颜色不变。',
+         {'color': {'type': 'string', 'description': '颜色，写成 #RRGGBB'},
+          'opacity': {'type': 'number', 'minimum': 0.05, 'maximum': 1, 'description': '不透明度，只对写了 features 的有用'},
+          'features': {'type': 'array', 'items': {'type': 'string'}, 'description': '特征 id 列表 (见 get_model)'}})
 def _set_appearance(session, args):
     from . import materials
     color = args.get('color') or ''
     if color and materials.rgb(color) is None:
         raise DocumentError('颜色要写成 #RRGGBB，比如 #4C94FF')
-    session.document.set_prop('color', color)
+    targets = list(args.get('features') or [])
+    if not targets:
+        session.document.set_prop('color', color)
+        session.notify()
+        return {'color': color or None}
+    known = {feature['id'] for feature in session.document.features}
+    missing = [identifier for identifier in targets if identifier not in known]
+    if missing:
+        raise DocumentError(f'没有这些特征: {", ".join(missing)}')
+    opacity = args.get('opacity')
+    if opacity is not None:
+        opacity = float(opacity)
+        if not 0.05 <= opacity <= 1.0:
+            raise DocumentError('opacity 要在 0.05 到 1 之间')
+        shades = dict(session.document.props.get('feature_opacity') or {})
+        for identifier in targets:
+            if opacity >= 1.0:
+                shades.pop(identifier, None)
+            else:
+                shades[identifier] = round(opacity, 3)
+        session.document.set_prop('feature_opacity', shades or None)
+        if not color and 'color' not in args:           # 只改透明度: 颜色不动
+            session.notify()
+            return {'opacity': opacity, 'features': targets}
+    colors = dict(session.document.props.get('feature_colors') or {})
+    for identifier in targets:
+        if color:
+            colors[identifier] = color
+        else:
+            colors.pop(identifier, None)
+    session.document.set_prop('feature_colors', colors or None)
     session.notify()
-    return {'color': color or None}
+    return {'color': color or None, 'opacity': opacity, 'features': targets}
 
 
 @command('undo', '撤销上一步操作。', mutates=True)
@@ -318,91 +523,23 @@ def _new(session, args):
          {'path': {'type': 'string', 'description': '保存路径；已保存过可以不写'}})
 def _save(session, args):
     session.document.save(args.get('path'))
+    if hasattr(session.builder, 'keep'):        # 算好的样子也存一份到磁盘缓存: 下次打开不用从头算
+        session.builder.keep(copy.deepcopy(session.document.features), session.document.upto)
     session.notify()
     return {'path': session.document.path}
+
+
+@command('load_layout', '装配体的布局草图：把 .gasm 里存着的草图载入现在这个（没有实体的）文档。界面打开装配体时用。',
+         {'data': {'type': 'object', 'description': 'Document.to_data() 的内容'}}, required=('data',), mutates=True)
+def _load_layout(session, args):
+    session.document.load_data(args['data'])
+    return {'features': len(session.document.features)}
 
 
 @command('open_document', '打开 .gform 文档。', {'path': {'type': 'string'}}, required=('path',), mutates=True)
 def _open(session, args):
     session.document.open(args['path'])
     return {'path': session.document.path}
-
-
-# ---------------------------------------------------------------------------
-# 查询 — AI 靠这些 "看" 模型
-# ---------------------------------------------------------------------------
-def describe(session):
-    """当前模型的文字描述: 特征树 (含每个特征算没算成) + 实体尺寸。"""
-    document, model = session.document, session.model
-    status = model.get('status', {})
-    features = [{'id': f['id'], 'type': f['type'], 'name': f['name'], 'params': f['params'],
-                 'status': status.get(f['id'], 'pending')} for f in document.features]
-    from . import materials
-    material = document.props.get('material')
-    result = {'features': features, 'rollback': document.upto, 'has_body': bool(model.get('has_body')),
-              'path': document.path, 'unsaved_changes': document.dirty,
-              'material': material, 'materials': materials.NAMES}
-    if model.get('has_body') and materials.density(material):
-        result['mass_g'] = round(model['props']['volume'] / 1000.0 * materials.density(material), 3)
-    if model.get('has_body'):
-        props = model['props']
-        result['body'] = {'size_mm': _round(props['size']), 'bbox_min': _round(props['bbox_min']),
-                          'bbox_max': _round(props['bbox_max']), 'volume_mm3': round(props['volume'], 3),
-                          'area_mm2': round(props['area'], 3), 'faces': len(model['faces']),
-                          'edges': len(model['edges'])}
-    return result
-
-
-def _round(values, digits=4):
-    return [round(float(value), digits) for value in values]
-
-
-@command('get_model', '查看当前模型：特征列表（id、类型、参数、是否计算成功）和实体的尺寸、体积。')
-def _get_model(session, args):
-    return describe(session)
-
-
-@command('list_edges', '列出实体的边：类型、中点坐标、长度、方向。fillet / chamfer 用中点坐标引用边。',
-         {'type': {'enum': ['line', 'circle', 'curve'], 'description': '只列这种类型'}})
-def _list_edges(session, args):
-    edges = session.model.get('edges') or []
-    wanted = args.get('type')
-    rows = []
-    for edge in edges:
-        if wanted and edge['type'] != wanted:
-            continue
-        row = {'type': edge['type'], 'point': _round(edge['mid']), 'length': round(edge['length'], 4)}
-        if edge.get('dir') is not None:
-            row['direction'] = _round(edge['dir'])
-        if 'radius' in edge:
-            row['radius'] = round(edge['radius'], 4)
-        rows.append(row)
-    return {'edges': rows}
-
-
-@command('list_faces', '列出实体的面：类型、中心坐标、面积，平面带法向，圆柱面带半径。')
-def _list_faces(session, args):
-    rows = []
-    for face in session.model.get('faces') or []:
-        row = {'type': face['type'], 'center': _round(face['center']), 'area': round(face['area'], 4)}
-        if face.get('normal') is not None:
-            row['normal'] = _round(face['normal'])
-        if 'radius' in face:
-            row['radius'] = round(face['radius'], 4)
-        rows.append(row)
-    return {'faces': rows}
-
-
-@command('get_selection', '查看用户在三维视图里选中了什么（面、边、基准面）。用户说 "这条边" "这个面" 时用它。')
-def _get_selection(session, args):
-    model, selection = session.model, session.selection
-    edges = {edge['id']: edge for edge in model.get('edges') or []}
-    faces = {face['id']: face for face in model.get('faces') or []}
-    return {'edges': [{'type': edges[i]['type'], 'point': _round(edges[i]['mid'])}
-                      for i in selection.get('edges', ()) if i in edges],
-            'faces': [{'type': faces[i]['type'], 'center': _round(faces[i]['center'])}
-                      for i in selection.get('faces', ()) if i in faces],
-            'feature': selection.get('feature'), 'plane': selection.get('plane')}
 
 
 # ---------------------------------------------------------------------------
@@ -426,3 +563,55 @@ def _set_view(session, args):
                    'description': '先切到这个方向再截图'}})
 def _screenshot(session, args):
     return session.view_call('screenshot', args.get('path'), args.get('view'))
+
+
+# ---------------------------------------------------------------------------
+# 一次做一串
+# ---------------------------------------------------------------------------
+@command('batch', '一次执行一串会改文档的命令，全部做完才重算一次——要连着加很多特征时用它，比一条条发快得多'
+                  '（一条条发每条都要等重算、等回复）。steps 里每一项是 {"cmd": 命令名, "args": 参数, "as": 可选的别名}。'
+                  '后面的步骤要引用前面步骤新建的特征时，把 id 写成 "$3"（第 3 步的结果，从 1 数）或 "$别名"。'
+                  '例如 [{"cmd": "sketch", "args": {...}, "as": "s"}, {"cmd": "extrude", "args": {"sketch": "$s", "distance": 5}}]。'
+                  '有一步参数不对就整串都不做（文档保持原样），并说出是第几步、错在哪。几何算不成的特征和单条命令一样留在特征列表里。',
+         {'steps': {'type': 'array', 'minItems': 1, 'items': {'type': 'object', 'properties': {
+             'cmd': {'type': 'string'}, 'args': {'type': 'object'}, 'as': {'type': 'string'}}, 'required': ['cmd']}}},
+         required=('steps',), mutates=True)
+def _batch(session, args):
+    document, made, names = session.document, [], {}
+    state = copy.deepcopy(vars(document))
+
+    def fill(value):
+        if isinstance(value, str) and value.startswith('$'):
+            key = value[1:]
+            found = made[int(key) - 1] if key.isdigit() and 0 < int(key) <= len(made) else names.get(key)
+            if found is None:
+                raise DocumentError(f'{value} 指的那一步还没有做出特征')
+            return found
+        if isinstance(value, list):
+            return [fill(item) for item in value]
+        if isinstance(value, dict):
+            return {key: fill(item) for key, item in value.items()}
+        return value
+
+    try:
+        for number, step in enumerate(args['steps'], 1):
+            try:
+                item = get(str(step.get('cmd')))
+                if not item.mutates or item.name in ('batch', 'undo', 'redo', 'new_document', 'open_document'):
+                    raise DocumentError(f'batch 里只能放新建和修改特征的命令，{item.name} 请单独发')
+                values = fill(dict(step.get('args') or {}))
+                check(item, values)
+                result = item.handler(session, values)
+            except (DocumentError, TypeError, ValueError, KeyError) as error:
+                raise DocumentError(f'第 {number} 步 ({step.get("cmd")}) 没做成：{error}。整串都没有执行') from None
+            made.append(result.get('id') if isinstance(result, dict) else None)
+            if step.get('as'):
+                names[str(step['as'])] = made[-1]
+    except Exception:
+        vars(document).clear()
+        vars(document).update(state)
+        raise
+    return {'ids': made, 'count': len(made)}
+
+
+from .queries import describe  # noqa: E402,F401  查询命令 (get_model、list_edges…) 在 queries.py 里登记

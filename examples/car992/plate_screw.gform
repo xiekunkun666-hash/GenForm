@@ -1,0 +1,114 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 4,
+ "upto": null,
+ "props": {
+  "material": "不锈钢 304",
+  "color": "#9DA3A8"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "盘头螺钉头草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 4511.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -200,
+      "cy": 676,
+      "r": 7
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "盘头螺钉头",
+   "params": {
+    "sketch": "f1",
+    "distance": 6.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "kind": "fastener",
+    "auto": true,
+    "batch": 1,
+    "cost": 1.5,
+    "tooling": 0.0,
+    "unit": 1.5,
+    "standard": true,
+    "spec": "GB/T 818 M6 十字盘头螺钉 (现在头部 14.0 mm, 标准是 12.0 mm)",
+    "why": "GB/T 818 M6 十字盘头螺钉 (现在头部 14.0 mm, 标准是 12.0 mm)。名字是 “盘头螺钉头” → 标准件 (按规格网购)：做 1 件, 每件约 ¥1.50",
+    "alternatives": []
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "螺丝杆草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 4479.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -200.0,
+      "cy": 676.0,
+      "r": 3
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "螺丝杆",
+   "params": {
+    "sketch": "f3",
+    "distance": 32.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "kind": "fastener",
+    "auto": true,
+    "batch": 1,
+    "cost": 1.5,
+    "tooling": 0.0,
+    "unit": 1.5,
+    "standard": true,
+    "spec": "GB/T 818 M3 十字盘头螺钉",
+    "why": "GB/T 818 M3 十字盘头螺钉。名字是 “螺丝杆” → 标准件 (按规格网购)：做 1 件, 每件约 ¥1.50",
+    "alternatives": []
+   }
+  }
+ ]
+}

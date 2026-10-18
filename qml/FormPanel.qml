@@ -46,6 +46,7 @@ Rectangle {
                 id: slot
                 required property var modelData
                 Layout.fillWidth: true
+                visible: modelData.hidden !== true          // 拉伸: 终止条件用不上的那几项收起来
                 function commit() { if (item && item.commit) item.commit() }
                 sourceComponent: modelData.type === "number" ? numberField
                                : modelData.type === "choice" ? choiceField
@@ -56,14 +57,23 @@ Rectangle {
             }
         }
 
+        Text {                              // 预览算不出来的原因
+            Layout.fillWidth: true
+            visible: text !== "" && !app.sketchActive
+            text: app.previewNote
+            wrapMode: Text.Wrap
+            color: Theme.cError
+            font.family: Theme.font; font.pixelSize: Theme.smallSize
+        }
+
         RowLayout {
             Layout.fillWidth: true
             Layout.topMargin: 2
             visible: panel.form ? panel.form.accept !== "" : false
             spacing: 8
             Item { Layout.fillWidth: true }
-            ToolBtn { visible: text !== ""; text: panel.form ? panel.form.cancel : ""; onClicked: app.cancelForm() }
-            ToolBtn { visible: text !== ""; text: panel.form ? panel.form.accept : ""; primary: true; onClicked: panel.accept() }
+            IconBtn { visible: tip !== ""; icon: "cancel"; iconSize: 20; tint: Theme.cText; tip: panel.form ? panel.form.cancel : ""; onClicked: app.cancelForm() }
+            IconBtn { visible: tip !== ""; icon: "finish"; iconSize: 20; tint: Theme.cAccent; active: true; tip: panel.form ? panel.form.accept : ""; onClicked: panel.accept() }
         }
     }
 
@@ -100,6 +110,7 @@ Rectangle {
                 }
                 onActiveFocusChanged: if (activeFocus) selectAll()
                 onEditingFinished: parent.commit()
+                onTextEdited: if (!app.sketchActive) parent.commit()     // 特征的面板: 边打字视图里的预览边跟着变
                 // 回车: 普通面板 = 确定; 草图里只是把这个尺寸填进去 (完成草图要点按钮, 免得填个数就退出了)
                 Keys.onReturnPressed: panel.enter(parent)
                 Keys.onEnterPressed: panel.enter(parent)
@@ -152,11 +163,13 @@ Rectangle {
             id: choiceRow
             property var field
             spacing: 8
-            Text {
+            Text {                          // 点这一项的名字: 接下来在视图里点的东西填这一项 (有两根轴要选时用)
+                readonly property bool active: panel.form && choiceRow.field && panel.form.active === choiceRow.field.key
                 text: field ? field.label : ""
-                color: Theme.cTextSec
-                font.family: Theme.font; font.pixelSize: Theme.textSize
+                color: active ? Theme.cAccent : Theme.cTextSec
+                font.family: Theme.font; font.pixelSize: Theme.textSize; font.bold: active
                 Layout.preferredWidth: 96
+                MouseArea { anchors.fill: parent; onClicked: if (choiceRow.field) app.focusField(choiceRow.field.key) }
             }
             Flow {
                 Layout.fillWidth: true
@@ -199,7 +212,7 @@ Rectangle {
             onFieldChanged: chosen = field ? field.value.slice() : []
             spacing: 4
             Text {
-                text: field ? field.label + (multiRow.chosen.length ? "（已选 " + multiRow.chosen.length + "）" : "") : ""
+                text: field ? field.label + (multiRow.chosen.length ? qsTr("（已选 %1）").arg(multiRow.chosen.length) : "") : ""
                 color: Theme.cTextSec
                 font.family: Theme.font; font.pixelSize: Theme.textSize
             }
@@ -236,7 +249,7 @@ Rectangle {
                 }
                 Text {
                     visible: multiRow.field ? multiRow.field.options.length === 0 : false
-                    text: "（还没有可选的）"
+                    text: qsTr("（还没有可选的）")
                     color: Theme.cTextMuted
                     font.family: Theme.font; font.pixelSize: Theme.smallSize
                 }

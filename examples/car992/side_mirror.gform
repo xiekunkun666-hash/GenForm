@@ -1,0 +1,179 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 4,
+ "upto": null,
+ "props": {
+  "material": "ABS",
+  "color": "#B5121B",
+  "feature_colors": {
+   "f4": "#202226"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "后视镜壳草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 1930.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        -830.482073207592,
+        940.8014952324465
+       ],
+       [
+        -835.3039183979298,
+        959.008694129711
+       ],
+       [
+        -852.7154923703364,
+        975.8444010097427
+       ],
+       [
+        -880.0660408238239,
+        988.7455321161196
+       ],
+       [
+        -913.1916906896879,
+        995.7480071869405
+       ],
+       [
+        -947.0493620606146,
+        995.7857628702677
+       ],
+       [
+        -976.4845313909356,
+        988.8530512055705
+       ],
+       [
+        -997.0159609805838,
+        976.0053146986114
+       ],
+       [
+        -1005.517926792408,
+        959.1985047675535
+       ],
+       [
+        -1000.6960816020702,
+        940.991305870289
+       ],
+       [
+        -983.2845076296636,
+        924.1555989902573
+       ],
+       [
+        -955.9339591761761,
+        911.2544678838804
+       ],
+       [
+        -922.8083093103121,
+        904.2519928130595
+       ],
+       [
+        -888.9506379393854,
+        904.2142371297323
+       ],
+       [
+        -859.5154686090644,
+        911.1469487944295
+       ],
+       [
+        -838.9840390194163,
+        923.9946853013886
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "后视镜壳",
+   "params": {
+    "sketch": "f1",
+    "distance": 125.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "prism",
+    "why": "电动折叠外后视镜总成。手动指定：每件 ¥3,200.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 3200.0,
+    "unit": 3200.0,
+    "tooling": 0.0,
+    "spec": "电动折叠外后视镜总成"
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "镜臂草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 2000.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": -800,
+      "cy": 890,
+      "w": 260,
+      "h": 40
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "镜臂",
+   "params": {
+    "sketch": "f3",
+    "distance": 48.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "prism",
+    "why": "电动折叠外后视镜总成。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "电动折叠外后视镜总成"
+   }
+  }
+ ]
+}

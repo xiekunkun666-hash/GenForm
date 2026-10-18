@@ -1,0 +1,64 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "普通碳钢",
+  "color": "#26282B"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "座椅滑轨草图",
+   "params": {
+    "plane": "XY",
+    "offset": 301.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 2760,
+      "cy": -160.0,
+      "w": 480,
+      "h": 26
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "座椅滑轨",
+   "params": {
+    "sketch": "f1",
+    "distance": 19.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "kind": "profile",
+    "auto": true,
+    "batch": 1,
+    "cost": 452.05,
+    "tooling": 300.0,
+    "unit": 152.05,
+    "standard": false,
+    "spec": "",
+    "why": "截面不变的长条 → 三轴 CNC 铣：做 1 件, 每件约 ¥452 (模具 / 工装 ¥300 摊下来 ¥300 + 单件 ¥152)",
+    "alternatives": []
+   }
+  }
+ ]
+}

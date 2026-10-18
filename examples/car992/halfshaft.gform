@@ -1,0 +1,62 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "合金钢",
+  "color": "#3A3D42"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "半轴草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 170.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 3410.0,
+      "cy": 344.0,
+      "r": 30
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "半轴",
+   "params": {
+    "sketch": "f1",
+    "distance": 530.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "revolved",
+    "why": "等速万向节半轴。手动指定：每件 ¥2,200.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 2200.0,
+    "unit": 2200.0,
+    "tooling": 0.0,
+    "spec": "等速万向节半轴"
+   }
+  }
+ ]
+}

@@ -146,6 +146,112 @@ class Editing(unittest.TestCase):
         self.assertAlmostEqual(made.shapes[1]['cx'], 50.0)
         self.assertAlmostEqual(made.shapes[0]['cx'], 0.0)
 
+    def test_dimension_two_points_dragged_out(self):
+        made = editor('dimension')
+        made.shapes = [{'type': 'line', 'x1': 0, 'y1': 0, 'x2': 30, 'y2': 10}, {'type': 'line', 'x1': 50, 'y1': 40, 'x2': 80, 'y2': 40}]
+        click(made, (0, 0), (50, 40))                   # 两个起点
+        made.move((25, 60), PIXEL)                      # 往上拉: 水平距离
+        self.assertEqual((made.operation['mode'], made.operation['distance']), ('h', 50.0))
+        made.move((-20, 20), PIXEL)                     # 往左拉: 竖直距离
+        self.assertEqual((made.operation['mode'], made.operation['distance']), ('v', 40.0))
+        click(made, (25, 60))                           # 放下: 存进草图, 选中它
+        self.assertIsNone(made.operation)
+        self.assertEqual((made.dims[-1]['mode'], made.relation), ('h', 'dim:0'))
+        made.set_field('dim_value', 60)                 # 属性管理器里改数
+        self.assertEqual(made.shapes[1], {'type': 'line', 'x1': 60.0, 'y1': 40.0, 'x2': 80, 'y2': 40})
+        self.assertEqual(made.params()['dims'][0]['mode'], 'h')
+
+    def test_dimension_single_shape_pulled_out(self):
+        made = editor('dimension')
+        made.shapes = [{'type': 'line', 'x1': 0, 'y1': 0, 'x2': 30, 'y2': 40}, {'type': 'circle', 'cx': 100, 'cy': 0, 'r': 10},
+                       {'type': 'arc', 'cx': 150, 'cy': 0, 'r': 8, 'a0': 0, 'a1': 180}, {'type': 'point', 'x': 0, 'y': 80}]
+        click(made, (15, 20))                           # 一条斜线: 尺寸跟着鼠标
+        for place, mode, value in (((15, 60), 'h', 30.0), ((60, 20), 'v', 40.0), ((40, 10), 'a', 50.0)):
+            made.move(place, PIXEL)
+            self.assertEqual((made.operation['mode'], made.operation['distance']), (mode, value))
+        click(made, (40, 10))                           # 点空白处放下
+        made.set_field('dim_value', 100)
+        self.assertAlmostEqual(math.hypot(made.shapes[0]['x2'], made.shapes[0]['y2']), 100.0)
+        click(made, (110, 0), (120, 20))                # 圆: 直径
+        self.assertTrue(made.dim_labels()[-1][0].startswith('Ø20'))
+        made.set_field('dim_value', 30)
+        self.assertEqual(made.shapes[1]['r'], 15.0)
+        click(made, (150, 8), (160, 15))                # 圆弧: 半径
+        made.set_field('dim_value', 5)
+        self.assertEqual(made.shapes[2]['r'], 5.0)
+        click(made, (0, 80))                            # 一个点: 不拉, 等第二处
+        self.assertIsNone(made.operation['single'])
+        self.assertEqual(len(made.dims), 3)
+
+    def test_dimension_between_parallel_lines(self):
+        made = editor('dimension')
+        made.shapes = [{'type': 'line', 'x1': 0, 'y1': 0, 'x2': 40, 'y2': 0}, {'type': 'line', 'x1': 10, 'y1': 15, 'x2': 30, 'y2': 15}]
+        click(made, (20, 0), (20, 15))
+        self.assertAlmostEqual(made.operation['distance'], 15.0)
+        made.set_field('distance', 25)
+        made.apply_operation()
+        self.assertEqual((made.shapes[1]['y1'], made.shapes[1]['y2']), (25.0, 25.0))
+
+    def test_dimension_rect_edges_and_corners(self):
+        made = editor('dimension')
+        made.shapes = [{'type': 'rect', 'cx': 0, 'cy': 0, 'w': 40, 'h': 20}, {'type': 'point', 'x': 50, 'y': 30}]
+        click(made, (0, -10), (0, 10))                  # 下边 → 上边: 高
+        self.assertEqual((made.operation['pa'], made.operation['pb'], made.operation['distance']), ('s0', 's2', 20.0))
+        made.set_field('distance', 30)
+        made.apply_operation()
+        self.assertEqual(made.shapes[0], {'type': 'rect', 'cx': 0.0, 'cy': 5.0, 'w': 40.0, 'h': 30.0})
+        click(made, (50, 30), (20, 20))                 # 点 → 右上角, 往上拉: 水平距离, 改了只挪那个角
+        made.move((35, 50), PIXEL)
+        self.assertEqual((made.operation['pb'], made.operation['mode'], made.operation['distance']), ('v2', 'h', 30.0))
+        made.set_field('distance', 40)
+        made.apply_operation()
+        self.assertEqual(made.shapes[0], {'type': 'rect', 'cx': -5.0, 'cy': 5.0, 'w': 30.0, 'h': 30.0})
+
+    def test_select_grabs_a_corner_without_selecting_first(self):
+        made = editor('select')
+        made.shapes = [{'type': 'rect', 'cx': 0, 'cy': 0, 'w': 40, 'h': 20}]
+        made.move((20, 10), PIXEL)
+        self.assertEqual(made.hover_point, (20.0, 10.0))
+        made.press((20, 10), PIXEL)
+        made.move((30, 15), PIXEL)
+        made.release((30, 15), PIXEL)
+        self.assertEqual(made.shapes[0], {'type': 'rect', 'cx': 5.0, 'cy': 2.5, 'w': 50.0, 'h': 25.0})
+
+    def test_relation_mark_can_be_picked_and_deleted(self):
+        made = editor('select')
+        made.shapes = [{'type': 'line', 'x1': 0, 'y1': 0, 'x2': 10, 'y2': 0}]
+        ident = made.relation_marks()[0][4]
+        made.select_relation(ident)
+        self.assertEqual(made.properties()['held'], ['水平'])
+        self.assertTrue(made.key('delete'))
+        self.assertEqual(made.relation_marks(), [])
+        self.assertEqual(made.shapes[0]['y2'], 0)       # 图形不动
+
+    def test_tool_page_and_ok(self):
+        made = editor('line')
+        self.assertEqual(made.properties()['tool'], 'line')
+        made.finish_tool()
+        self.assertEqual((made.tool, made.properties()), ('select', None))
+
+    def test_placed_dimension_can_be_dragged_again(self):
+        made = editor('select')
+        made.shapes = [{'type': 'line', 'x1': 0, 'y1': 0, 'x2': 40, 'y2': 0}, {'type': 'line', 'x1': 0, 'y1': 15, 'x2': 40, 'y2': 15}]
+        made.dims = [{'a': 0, 'pa': 'e0', 'b': 1, 'pb': 'e1', 'mode': 'h', 'place': [20, 30], 'ta': 'line', 'tb': 'line'}]
+        for start, end in (((20, 30), (25, 50)), ((10, 50), (10, 40))):     # 按住数字拖, 再按住尺寸线拖
+            made.move(start, PIXEL)
+            made.press(start, PIXEL)
+            made.move(end, PIXEL)
+            made.release(end, PIXEL)
+            self.assertEqual(made.dims[0]['place'], [float(end[0]), float(end[1])])
+        self.assertEqual((made.dims[0]['mode'], made.dim_labels()[0][0], made.relation), ('h', '40', 'dim:0'))
+        click(made, (0.3, 0.5))                         # 尺寸界线旁边压着图形: 还是选中图形
+        self.assertEqual(made.selection, [0])
+
+    def test_line_ends_get_dots(self):
+        made = editor('select')
+        made.shapes = [{'type': 'line', 'x1': 0, 'y1': 0, 'x2': 10, 'y2': 0}, {'type': 'line', 'x1': 10, 'y1': 0, 'x2': 10, 'y2': 8}]
+        self.assertEqual(sorted(spot for spot, _ in made.drawing()[1]), [(0.0, 0.0), (10.0, 0.0), (10.0, 8.0)])
+
     def test_dimension_line_to_point_uses_perpendicular(self):
         made = editor('dimension')
         made.shapes = [{'type': 'line', 'x1': 0, 'y1': 0, 'x2': 40, 'y2': 0}, {'type': 'circle', 'cx': 10, 'cy': 12, 'r': 3}]
@@ -320,3 +426,68 @@ class Kernel(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class SelectionToolsTest(unittest.TestCase):
+    """选中图形后的小工具条和属性栏: 关系、固定、构造线、无限长度。"""
+
+    def setUp(self):
+        from genform.sketcher import SketchEditor
+        self.editor = SketchEditor(shapes=[{'type': 'line', 'x1': 0, 'y1': 0, 'x2': 10, 'y2': 4},
+                                           {'type': 'line', 'x1': 0, 'y1': 10, 'x2': 10, 'y2': 10},
+                                           {'type': 'point', 'x': 50, 'y': 50}])
+        self.editor.set_tool('select')
+
+    def test_relation_applied_and_then_reported_as_held(self):
+        editor = self.editor
+        editor.selection = [0]
+        self.assertNotIn('horizontal', editor.relations_held())
+        editor.relate_now('horizontal')
+        self.assertAlmostEqual(editor.shapes[0]['y1'], editor.shapes[0]['y2'])
+        self.assertIn('horizontal', editor.relations_held())
+        self.assertIn('水平', editor.properties()['held'])
+
+    def test_fixed_shape_cannot_be_dragged_edited_or_moved_by_a_relation(self):
+        editor = self.editor
+        editor.selection = [0]
+        editor.toggle_flag('fixed')
+        before = dict(editor.shapes[0])
+        editor.press((5, 2), 0.1)
+        editor.move((30, 30), 0.1)
+        editor.release((30, 30), 0.1)
+        editor.selection = [0]
+        editor.set_field('len', 99)
+        editor.relate_now('vertical')
+        self.assertEqual(editor.shapes[0], before)
+        self.assertTrue(editor.message)
+
+    def test_infinite_line_becomes_construction(self):
+        editor = self.editor
+        editor.selection = [1]
+        editor.toggle_flag('infinite')
+        self.assertTrue(editor.shapes[1]['infinite'] and editor.shapes[1]['construction'])
+        lines, _, _ = editor.drawing()
+        self.assertTrue(any(abs(a[0]) > 100 for a, _, _ in lines))        # 画出去了
+        self.assertEqual(editor.bounds()[1][0], 50)                        # 范围不跟着变大
+
+    def test_click_sets_clicked_and_box_does_not_swallow_points(self):
+        editor = self.editor
+        editor.press((5, 10), 0.1)
+        editor.release((5, 10), 0.1)
+        self.assertTrue(editor.clicked)
+        self.assertEqual(editor.selection, [1])
+        self.assertIn('rel:horizontal', [row['id'] for row in editor.context_items()])
+        editor.press((-5, -5), 0.1)
+        editor.move((20, 20), 0.1)
+        editor.release((20, 20), 0.1)
+        self.assertFalse(editor.clicked)
+        self.assertEqual(sorted(editor.selection), [0, 1])                 # 远处的点不在框里
+
+    def test_two_lines_offer_pair_relations(self):
+        editor = self.editor
+        editor.selection = [1, 0]
+        ids = [row['id'] for row in editor.context_items()]
+        for wanted in ('rel:parallel', 'rel:perpendicular', 'rel:equal', 'rel:collinear'):
+            self.assertIn(wanted, ids)
+        editor.relate_now('parallel')
+        self.assertAlmostEqual(editor.shapes[0]['y1'], editor.shapes[0]['y2'])

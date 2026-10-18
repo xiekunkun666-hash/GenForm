@@ -1,0 +1,70 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "ABS",
+  "color": "#1A1A1A"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "中格栅草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 50.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 345,
+      "w": 580,
+      "h": 7
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "中格栅",
+   "params": {
+    "sketch": "f1",
+    "distance": 120.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "kind": "plate",
+    "auto": true,
+    "batch": 1,
+    "cost": 45.25,
+    "tooling": 0.0,
+    "unit": 45.25,
+    "standard": false,
+    "spec": "",
+    "why": "厚 7 mm 的平板 → 激光切割：做 1 件, 每件约 ¥45；第二是 水刀切割 ¥57",
+    "alternatives": [
+     {
+      "id": "waterjet",
+      "name": "水刀切割",
+      "cost": 57.34
+     }
+    ]
+   }
+  }
+ ]
+}

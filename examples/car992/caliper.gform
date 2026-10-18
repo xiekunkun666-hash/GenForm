@@ -1,0 +1,136 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 4,
+ "upto": null,
+ "props": {
+  "material": "铸造铝合金 A356",
+  "color": "#D4A017"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "刹车卡钳草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 845.0,
+    "shapes": [
+     {
+      "type": "arcslot",
+      "cx": 960.0,
+      "cy": 344.0,
+      "r": 168,
+      "a0": 20,
+      "a1": 70,
+      "w": 64
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "刹车卡钳",
+   "params": {
+    "sketch": "f1",
+    "distance": 55.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": true,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "bought",
+    "why": "六活塞刹车卡钳。手动指定：每件 ¥3,800.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 3800.0,
+    "unit": 3800.0,
+    "tooling": 0.0,
+    "spec": "六活塞刹车卡钳"
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "刹车盘截面",
+   "params": {
+    "plane": "XY",
+    "offset": 344.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        1045.0,
+        -832
+       ],
+       [
+        1150.0,
+        -832
+       ],
+       [
+        1150.0,
+        -806
+       ],
+       [
+        1045.0,
+        -806
+       ]
+      ]
+     },
+     {
+      "type": "line",
+      "x1": 960.0,
+      "y1": -1000,
+      "x2": 960.0,
+      "y2": -500,
+      "construction": true
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "revolve",
+   "name": "刹车盘（让位）",
+   "params": {
+    "sketch": "f3",
+    "axis": "CL",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "cut"
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "kind": "bought",
+    "auto": true,
+    "batch": 1,
+    "cost": 600.0,
+    "tooling": 0.0,
+    "unit": 600.0,
+    "standard": true,
+    "spec": "刹车盘（让位）",
+    "why": "刹车盘（让位）。名字是 “刹车盘（让位）” → 外购总成：做 1 件, 每件约 ¥600",
+    "alternatives": []
+   }
+  }
+ ]
+}

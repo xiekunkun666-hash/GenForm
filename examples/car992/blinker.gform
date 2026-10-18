@@ -1,0 +1,63 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "聚碳酸酯 PC",
+  "color": "#E98A3C"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "转向灯草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 62.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": -580,
+      "cy": 408,
+      "w": 230,
+      "h": 14
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "转向灯",
+   "params": {
+    "sketch": "f1",
+    "distance": 108.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "prism",
+    "why": "LED 转向灯条。手动指定：每件 ¥600.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 600.0,
+    "unit": 600.0,
+    "tooling": 0.0,
+    "spec": "LED 转向灯条"
+   }
+  }
+ ]
+}

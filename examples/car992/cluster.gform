@@ -1,0 +1,394 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 8,
+ "upto": null,
+ "props": {
+  "material": "聚碳酸酯 PC",
+  "color": "#0C0C0D",
+  "feature_colors": {
+   "f6": "#C8CCD0",
+   "f8": "#FF6A00"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "仪表壳草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 2030.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": -370,
+      "cy": 878,
+      "w": 560,
+      "h": 140
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "仪表壳",
+   "params": {
+    "sketch": "f1",
+    "distance": 10.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "plate",
+    "why": "五圆组合仪表。手动指定：每件 ¥6,000.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 6000.0,
+    "unit": 6000.0,
+    "tooling": 0.0,
+    "spec": "五圆组合仪表"
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "五圆仪表草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 2040.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -370,
+      "cy": 878,
+      "r": 58
+     },
+     {
+      "type": "circle",
+      "cx": -252,
+      "cy": 872,
+      "r": 46
+     },
+     {
+      "type": "circle",
+      "cx": -488,
+      "cy": 872,
+      "r": 46
+     },
+     {
+      "type": "circle",
+      "cx": -150,
+      "cy": 862,
+      "r": 38
+     },
+     {
+      "type": "circle",
+      "cx": -590,
+      "cy": 862,
+      "r": 38
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "五圆仪表",
+   "params": {
+    "sketch": "f3",
+    "distance": 14.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "revolved",
+    "why": "五圆组合仪表。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "五圆组合仪表"
+   }
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "仪表饰圈草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 2040.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -370,
+      "cy": 878,
+      "r": 64
+     },
+     {
+      "type": "circle",
+      "cx": -252,
+      "cy": 872,
+      "r": 52
+     },
+     {
+      "type": "circle",
+      "cx": -488,
+      "cy": 872,
+      "r": 52
+     },
+     {
+      "type": "circle",
+      "cx": -150,
+      "cy": 862,
+      "r": 44
+     },
+     {
+      "type": "circle",
+      "cx": -590,
+      "cy": 862,
+      "r": 44
+     },
+     {
+      "type": "circle",
+      "cx": -370,
+      "cy": 878,
+      "r": 58
+     },
+     {
+      "type": "circle",
+      "cx": -252,
+      "cy": 872,
+      "r": 46
+     },
+     {
+      "type": "circle",
+      "cx": -488,
+      "cy": 872,
+      "r": 46
+     },
+     {
+      "type": "circle",
+      "cx": -150,
+      "cy": 862,
+      "r": 38
+     },
+     {
+      "type": "circle",
+      "cx": -590,
+      "cy": 862,
+      "r": 38
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "仪表饰圈",
+   "params": {
+    "sketch": "f5",
+    "distance": 20.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "revolved",
+    "why": "五圆组合仪表。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "五圆组合仪表"
+   }
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "指针草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 2042.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        -371.91511110779743,
+        876.3930309757836
+       ],
+       [
+        -401.6894291575464,
+        915.7659910457656
+       ],
+       [
+        -368.08488889220257,
+        879.6069690242164
+       ],
+       [
+        -364.8576991225077,
+        871.8716444550482
+       ]
+      ]
+     },
+     {
+      "type": "polygon",
+      "points": [
+       [
+        -254.1650635094611,
+        873.25
+       ],
+       [
+        -232.45,
+        905.8615932879716
+       ],
+       [
+        -249.8349364905389,
+        870.75
+       ],
+       [
+        -256.0,
+        865.0717967697245
+       ]
+      ]
+     },
+     {
+      "type": "polygon",
+      "points": [
+       [
+        -489.25,
+        869.8349364905389
+       ],
+       [
+        -521.8615932879716,
+        891.55
+       ],
+       [
+        -486.75,
+        874.1650635094611
+       ],
+       [
+        -481.0717967697245,
+        868.0
+       ]
+      ]
+     },
+     {
+      "type": "polygon",
+      "points": [
+       [
+        -152.5,
+        862.0
+       ],
+       [
+        -150.0,
+        894.3
+       ],
+       [
+        -147.5,
+        862.0
+       ],
+       [
+        -150.0,
+        854.0
+       ]
+      ]
+     },
+     {
+      "type": "polygon",
+      "points": [
+       [
+        -592.3492315519647,
+        861.1449496416858
+       ],
+       [
+        -601.0472506294191,
+        892.3520716513848
+       ],
+       [
+        -587.6507684480353,
+        862.8550503583142
+       ],
+       [
+        -587.2638388533946,
+        854.4824590337128
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "指针",
+   "params": {
+    "sketch": "f7",
+    "distance": 18.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "profile",
+    "why": "五圆组合仪表。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "五圆组合仪表"
+   }
+  }
+ ]
+}

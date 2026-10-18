@@ -1,0 +1,195 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 6,
+ "upto": null,
+ "props": {
+  "material": "铸铁",
+  "color": "#7C8085",
+  "feature_colors": {
+   "f5": "#101010"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "刹车盘截面",
+   "params": {
+    "plane": "XY",
+    "offset": 344.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        1045.0,
+        -832
+       ],
+       [
+        1150.0,
+        -832
+       ],
+       [
+        1150.0,
+        -806
+       ],
+       [
+        1045.0,
+        -806
+       ]
+      ]
+     },
+     {
+      "type": "line",
+      "x1": 960.0,
+      "y1": -1000,
+      "x2": 960.0,
+      "y2": -500,
+      "construction": true
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "刹车盘",
+   "params": {
+    "sketch": "f1",
+    "axis": "CL",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "kind": "bought",
+    "auto": true,
+    "batch": 1,
+    "cost": 600.0,
+    "tooling": 0.0,
+    "unit": 600.0,
+    "standard": true,
+    "spec": "刹车盘",
+    "why": "刹车盘。名字是 “刹车盘” → 外购总成：做 1 件, 每件约 ¥600",
+    "alternatives": []
+   }
+  },
+  {
+   "id": "f3",
+   "type": "axis",
+   "name": "轮轴",
+   "params": {
+    "origin": [
+     [
+      960.0,
+      0.0,
+      344.0
+     ]
+    ],
+    "direction": [
+     [
+      0.0,
+      1.0,
+      0.0
+     ]
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "sketch",
+   "name": "刹车盘打孔草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 840.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 960.0,
+      "cy": 479.0,
+      "r": 5
+     },
+     {
+      "type": "circle",
+      "cx": 960.0,
+      "cy": 504.0,
+      "r": 5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "extrude",
+   "name": "刹车盘打孔",
+   "params": {
+    "sketch": "f4",
+    "distance": 40.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": true,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "kind": "bought",
+    "auto": true,
+    "batch": 1,
+    "cost": 1200.0,
+    "tooling": 0.0,
+    "unit": 1200.0,
+    "standard": true,
+    "spec": "刹车盘打孔",
+    "why": "刹车盘打孔。名字是 “刹车盘打孔” → 外购总成：做 1 件, 每件约 ¥1200",
+    "alternatives": []
+   }
+  },
+  {
+   "id": "f6",
+   "type": "pattern_circular",
+   "name": "打孔阵列",
+   "params": {
+    "features": [
+     "f5"
+    ],
+    "axis": "f3",
+    "count": 18,
+    "angle": 360.0
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "kind": "bought",
+    "auto": true,
+    "batch": 1,
+    "cost": 1200.0,
+    "tooling": 0.0,
+    "unit": 1200.0,
+    "standard": true,
+    "spec": "刹车盘打孔",
+    "why": "复制原件 → 和原件一样用外购总成",
+    "alternatives": []
+   }
+  }
+ ]
+}

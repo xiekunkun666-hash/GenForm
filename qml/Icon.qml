@@ -145,6 +145,23 @@ Canvas {
             eye(); break
         case "eye_off":
             eye(); c.lineWidth = 2; line(4.5, 19.5, 19.5, 4.5); break
+        case "isolate":     // 孤立: 中间一块留着, 四周的只剩淡淡的角
+            fill(0.85, 8, 8, 16, 8, 16, 16, 8, 16); closed(8, 8, 16, 8, 16, 16, 8, 16)
+            c.globalAlpha = 0.45; c.lineWidth = 1.2
+            line(3, 6, 3, 3, 6, 3); line(18, 3, 21, 3, 21, 6); line(21, 18, 21, 21, 18, 21); line(6, 21, 3, 21, 3, 18)
+            c.globalAlpha = 1; c.lineWidth = 1.7; break
+        case "tree_expand": // 全部展开: 两个往下的箭头
+            line(7, 6, 12, 11, 17, 6); line(7, 13, 12, 18, 17, 13); break
+        case "tree_collapse":
+            line(7, 11, 12, 6, 17, 11); line(7, 18, 12, 13, 17, 18); break
+        case "tree_chevron":    // 设计树的展开箭头 (朝右, 展开时界面把它转 90°)
+            line(9.5, 6.5, 15, 12, 9.5, 17.5); break
+        case "tree":        // 设计树页签: 一个根 + 往下分出去的几层
+            closed(4, 3.5, 10, 3.5, 10, 8.5, 4, 8.5); line(7, 8.5, 7, 18, 12, 18); line(7, 12, 12, 12)
+            closed(12, 10, 20, 10, 20, 14, 12, 14); closed(12, 16, 20, 16, 20, 20, 12, 20); break
+        case "props":       // PropertyManager 页签: 一张单子, 每行一个名称 + 值
+            closed(4, 3.5, 20, 3.5, 20, 20.5, 4, 20.5); line(7.5, 8.5, 10.5, 8.5); line(13, 8.5, 16.5, 8.5)
+            line(7.5, 12.5, 10.5, 12.5); line(13, 12.5, 16.5, 12.5); line(7.5, 16.5, 10.5, 16.5); line(13, 16.5, 16.5, 16.5); break
         case "appearance":  // 一个带高光的球
             ring(12, 12, 8.5); c.beginPath(); c.arc(9, 8.8, 2.3, 0, Math.PI * 2); c.fill(); c.globalAlpha = 0.35; c.beginPath(); c.arc(12, 12, 8.5, 0.15, Math.PI * 0.85); c.closePath(); c.fill(); c.globalAlpha = 1; break
         case "scene":
@@ -183,6 +200,8 @@ Canvas {
             line(8, 5, 4, 9, 8, 13); c.beginPath(); c.moveTo(4, 9); c.lineTo(14, 9); c.arc(14, 14, 5, -Math.PI / 2, Math.PI / 2); c.lineTo(8, 19); c.stroke(); break
         case "redo":
             line(16, 5, 20, 9, 16, 13); c.beginPath(); c.moveTo(20, 9); c.lineTo(10, 9); c.arc(10, 14, 5, -Math.PI / 2, Math.PI / 2, true); c.lineTo(16, 19); c.stroke(); break
+        case "drawing":     // 一张图纸: 上面两个视图, 右下角标题栏
+            closed(3, 4, 21, 4, 21, 20, 3, 20); closed(6, 7, 12, 7, 12, 11, 6, 11); ring(8.5, 15.5, 2.2); line(14, 16, 21, 16); line(14, 16, 14, 20); break
         case "new":
             closed(6, 3, 14, 3, 18, 7, 18, 21, 6, 21); line(14, 3, 14, 7, 18, 7); break
         case "open":
@@ -199,6 +218,10 @@ Canvas {
             closed(12, 3, 20, 7.5, 20, 16.5, 12, 21, 4, 16.5, 4, 7.5); line(4, 7.5, 12, 12, 20, 7.5); line(12, 12, 12, 21); break
         case "normal":      // 正对着一个面看
             closed(5, 8, 19, 8, 19, 20, 5, 20); line(12, 2, 12, 13); line(9, 10, 12, 13, 15, 10); break
+        case "folder":      // 设计树里的文件夹
+            closed(3, 6.5, 9.5, 6.5, 11.5, 9, 21, 9, 21, 19, 3, 19); line(3, 11.5, 21, 11.5); break
+        case "folder_open": // 展开着的文件夹
+            closed(3, 6.5, 9.5, 6.5, 11.5, 9, 19, 9, 19, 11.5); closed(3, 19, 6, 11.5, 22, 11.5, 19, 19); line(3, 6.5, 3, 19); break
         case "part":        // 零件 (设计树的根)
             closed(12, 3, 20, 7.5, 20, 16.5, 12, 21, 4, 16.5, 4, 7.5); line(4, 7.5, 12, 12, 20, 7.5); line(12, 12, 12, 21); break
         case "origin":      // 原点: 三根轴
@@ -267,6 +290,75 @@ Canvas {
             closed(3, 17, 10, 21, 21, 13, 14, 9); line(12, 15, 12, 3); line(9.8, 5.2, 12, 3, 14.2, 5.2); break
         case "curve":       // 螺旋线
             c.beginPath(); c.moveTo(5, 20); c.bezierCurveTo(22, 20, 22, 15, 12, 15); c.bezierCurveTo(2, 15, 2, 10, 12, 10); c.bezierCurveTo(22, 10, 22, 5, 12, 4); c.stroke(); break
+        case "rel_horizontal":      // 几何关系: 一条横线 + 两头的小竖杠
+            line(4, 12, 20, 12); line(4, 9, 4, 15); line(20, 9, 20, 15); break
+        case "rel_vertical":
+            line(12, 4, 12, 20); line(9, 4, 15, 4); line(9, 20, 15, 20); break
+        case "rel_parallel":
+            line(6, 20, 13, 4); line(12, 20, 19, 4); break
+        case "rel_perpendicular":
+            line(4, 19, 20, 19); line(12, 19, 12, 4); break
+        case "rel_collinear":
+            line(3, 15, 9.5, 11.5); line(14.5, 8.8, 21, 5.3); dot(12, 10.2); break
+        case "rel_equal":
+            line(5, 9, 19, 9); line(5, 15, 19, 15); break
+        case "rel_concentric":
+            ring(12, 12, 8); ring(12, 12, 3.5); break
+        case "rel_coincident":
+            ring(12, 12, 4.5); dot(12, 12); line(3, 21, 8.5, 15.5); break
+        case "rel_tangent":
+            ring(11, 14, 6.5); line(3, 5.5, 21, 9.5); break
+        case "lock":
+            closed(6, 11, 18, 11, 18, 20, 6, 20)
+            c.beginPath(); c.moveTo(8.5, 11); c.lineTo(8.5, 8); c.quadraticCurveTo(8.5, 4, 12, 4); c.quadraticCurveTo(15.5, 4, 15.5, 8); c.lineTo(15.5, 11); c.stroke()
+            dot(12, 15.5); break
+        case "stress":      // 一头固定的梁, 另一头有力往下压
+            line(4, 4, 4, 20); line(2, 7, 4, 5); line(2, 12, 4, 10); line(2, 17, 4, 15)
+            c.beginPath(); c.moveTo(4, 9); c.lineTo(20, 9); c.quadraticCurveTo(13, 14, 4, 15); c.stroke()
+            line(19, 2.5, 19, 7.5); line(16.8, 5.3, 19, 7.5, 21.2, 5.3); break
+        case "wind":        // 三道气流
+            c.beginPath(); c.moveTo(3, 8); c.lineTo(14, 8); c.quadraticCurveTo(18, 8, 17.5, 5); c.quadraticCurveTo(16.5, 2.8, 14.5, 4); c.stroke()
+            line(3, 12, 20, 12)
+            c.beginPath(); c.moveTo(3, 16); c.lineTo(13, 16); c.quadraticCurveTo(17, 16, 16.5, 19); c.quadraticCurveTo(15.5, 21.2, 13.5, 20); c.stroke(); break
+        case "assembly":    // 一个零件正往另一个里装
+            closed(3, 12, 21, 12, 21, 21, 3, 21); line(9, 12, 9, 16, 15, 16, 15, 12)
+            closed(9.5, 2.5, 14.5, 2.5, 14.5, 8, 9.5, 8); line(12, 9, 12, 14); line(10.2, 12.2, 12, 14, 13.8, 12.2); break
+        case "process":     // 绑定工艺: 一个零件挂着一块标签
+            closed(3, 9, 12, 4.5, 21, 9, 12, 13.5); line(3, 9, 3, 15, 12, 19.5, 12, 13.5); line(12, 19.5, 14, 18.5)
+            closed(15.5, 14, 21, 14, 22.5, 17, 21, 20, 15.5, 20); dot(18, 17); break
+        case "drc":         // 设计检查: 盾牌里一个勾
+            closed(12, 2.5, 20, 5.5, 20, 12, 12, 21.5, 4, 12, 4, 5.5); c.lineWidth = 2; line(8, 12, 11, 15, 16.5, 8.5); break
+        case "rules":       // 设计规则: 一把尺子 + 上下两道公差线
+            closed(3, 9, 21, 9, 21, 15, 3, 15); line(7, 9, 7, 12); line(11, 9, 11, 12.5); line(15, 9, 15, 12); line(19, 9, 19, 12.5)
+            c.lineWidth = 1.2; line(3, 5, 21, 5); line(3, 19, 21, 19); break
+        case "clash":       // 两个叠在一起的方块, 叠的那块涂实
+            closed(3, 3, 14, 3, 14, 14, 3, 14); closed(10, 10, 21, 10, 21, 21, 10, 21); fill(0.55, 10, 10, 14, 10, 14, 14, 10, 14); break
+        case "order":       // 1 2 3 的台阶
+            line(3, 20, 3, 15, 9, 15, 9, 10, 15, 10, 15, 5, 21, 5); line(18, 2.5, 21, 5, 18, 7.5); break
+        case "up":
+            line(12, 19, 12, 5); line(6.5, 10.5, 12, 5, 17.5, 10.5); break
+        case "down":
+            line(12, 5, 12, 19); line(6.5, 13.5, 12, 19, 17.5, 13.5); break
+        case "plus":
+            line(12, 5, 12, 19); line(5, 12, 19, 12); break
+        case "play":
+            closed(7, 4.5, 19, 12, 7, 19.5); break
+        case "pause":
+            line(8.5, 5, 8.5, 19); line(15.5, 5, 15.5, 19); break
+        case "hinge":       // 运动副 (铰链): 一扇门 + 绕着门轴的一道弧
+            line(5, 3.5, 5, 20.5); closed(5, 5, 13, 7.5, 13, 18.5, 5, 20); c.beginPath(); c.arc(5, 12, 13, -0.55, 0.55); c.stroke()
+            line(17, 18.4, 15.9, 19.5, 17.4, 20); break
+        case "motion":      // 动画: 一条时间轴 + 播放三角
+            closed(3, 6, 21, 6, 21, 18, 3, 18); closed(10, 9, 15, 12, 10, 15); line(3, 21, 21, 21); dot(8, 21); break
+        case "screw":       // 一颗螺丝: 圆柱头 + 带螺纹的杆
+            closed(6, 3, 18, 3, 18, 8, 6, 8); line(9.5, 8, 9.5, 19, 12, 21.5, 14.5, 19, 14.5, 8)
+            line(9.5, 11.5, 14.5, 10); line(9.5, 14.5, 14.5, 13); line(9.5, 17.5, 14.5, 16); break
+        case "measure":     // 一把斜放的尺子
+            closed(3, 15.5, 15.5, 3, 21, 8.5, 8.5, 21); line(7, 12.5, 9, 14.5); line(10, 9.5, 13, 12.5); line(13, 6.5, 15, 8.5); break
+        case "trash":
+            line(4.5, 7, 19.5, 7); line(9.5, 7, 9.5, 4.5, 14.5, 4.5, 14.5, 7); line(6.5, 7, 7.5, 20, 16.5, 20, 17.5, 7); line(10.3, 10.5, 10.3, 16.5); line(13.7, 10.5, 13.7, 16.5); break
+        case "flip":        // 两个相对的箭头
+            line(4, 9, 19, 9); line(15, 5, 19, 9, 15, 13); line(20, 16, 5, 16); line(9, 12, 5, 16, 9, 20); break
         case "gear":
             ring(12, 12, 3); ring(12, 12, 6.4); c.lineWidth = 2.4
             for (let k = 0; k < 8; k++) { const t = k * Math.PI / 4; line(12 + 6.6 * Math.cos(t), 12 + 6.6 * Math.sin(t), 12 + 9.2 * Math.cos(t), 12 + 9.2 * Math.sin(t)) }

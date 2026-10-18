@@ -1,0 +1,253 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 8,
+ "upto": null,
+ "props": {
+  "material": "不锈钢 304",
+  "color": "#9DA3A8"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "排气尾管草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 4330.0,
+    "shapes": [
+     {
+      "type": "slot",
+      "x1": -454,
+      "y1": 462,
+      "x2": -386,
+      "y2": 462,
+      "w": 54
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "排气尾管",
+   "params": {
+    "sketch": "f1",
+    "distance": 230.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "tube_bend",
+    "name": "管材弯管",
+    "short": "弯管",
+    "color": "#9DA3A8",
+    "kind": "tube",
+    "auto": true,
+    "batch": 1,
+    "cost": 1817.09,
+    "tooling": 1500.0,
+    "unit": 317.09,
+    "standard": false,
+    "spec": "",
+    "why": "名字是 “排气尾管” → 管材弯管：做 1 件, 每件约 ¥1817 (模具 / 工装 ¥1500 摊下来 ¥1500 + 单件 ¥317)",
+    "alternatives": []
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "尾管内孔草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 4325.0,
+    "shapes": [
+     {
+      "type": "slot",
+      "x1": -450,
+      "y1": 462,
+      "x2": -390,
+      "y2": 462,
+      "w": 42
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "尾管内孔",
+   "params": {
+    "sketch": "f3",
+    "distance": 240.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "kind": "pocket_cut",
+    "auto": true,
+    "batch": 1,
+    "cost": 716.2,
+    "tooling": 300.0,
+    "unit": 416.2,
+    "standard": false,
+    "spec": "",
+    "why": "切出来的槽、窗、缺口 → 三轴 CNC 铣：做 1 件, 每件约 ¥716 (模具 / 工装 ¥300 摊下来 ¥300 + 单件 ¥416)；第二是 慢走丝线切割 ¥1071",
+    "alternatives": [
+     {
+      "id": "edm",
+      "name": "慢走丝线切割",
+      "cost": 1071.26
+     },
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 1780.76
+     }
+    ]
+   }
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "左涡轮 压气端草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 330.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 4300,
+      "cy": 470,
+      "r": 68
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "左涡轮 压气端（让位）",
+   "params": {
+    "sketch": "f5",
+    "distance": 70.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "drill",
+    "name": "钻孔 / 攻丝",
+    "short": "钻孔",
+    "color": "#9A9EA3",
+    "kind": "hole",
+    "auto": true,
+    "batch": 1,
+    "cost": 7.33,
+    "tooling": 0.0,
+    "unit": 7.33,
+    "standard": false,
+    "spec": "",
+    "why": "圆孔 → 钻孔 / 攻丝：做 1 件, 每件约 ¥7.33；第二是 三轴 CNC 铣 ¥836",
+    "alternatives": [
+     {
+      "id": "cnc3",
+      "name": "三轴 CNC 铣",
+      "cost": 835.62
+     },
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 1967.67
+     }
+    ]
+   }
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "左涡轮 涡轮端草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 398.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 4300,
+      "cy": 470,
+      "r": 82
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "左涡轮 涡轮端（让位）",
+   "params": {
+    "sketch": "f7",
+    "distance": 52.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "drill",
+    "name": "钻孔 / 攻丝",
+    "short": "钻孔",
+    "color": "#9A9EA3",
+    "kind": "hole",
+    "auto": true,
+    "batch": 1,
+    "cost": 6.73,
+    "tooling": 0.0,
+    "unit": 6.73,
+    "standard": false,
+    "spec": "",
+    "why": "圆孔 → 钻孔 / 攻丝：做 1 件, 每件约 ¥6.73；第二是 三轴 CNC 铣 ¥872",
+    "alternatives": [
+     {
+      "id": "cnc3",
+      "name": "三轴 CNC 铣",
+      "cost": 871.72
+     },
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 2033.11
+     }
+    ]
+   }
+  }
+ ]
+}

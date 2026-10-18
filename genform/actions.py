@@ -40,7 +40,7 @@ _STYLES = [('shaded_edges', '带边线上色'), ('shaded', '上色'), ('hlr', '�
 
 
 def _build():
-    rows = [_a('file.new', '新零件', '文件', 'new', 'Ctrl+N'), _a('file.open', '打开', '文件', 'open', 'Ctrl+O'),
+    rows = [_a('file.new', '新建', '文件', 'new', 'Ctrl+N'), _a('file.open', '打开', '文件', 'open', 'Ctrl+O'),
             _a('file.save', '保存', '文件', 'save', 'Ctrl+S'), _a('file.export', '导出 STEP / STL', '文件', 'export', ''),
             _a('app.settings', '设置', '文件', 'gear', 'Ctrl+,'),
             _a('edit.undo', '撤销', '编辑', 'undo', 'Ctrl+Z'), _a('edit.redo', '重做', '编辑', 'redo', 'Ctrl+Y'),
@@ -55,6 +55,10 @@ def _build():
              _a('sketch.relation', '添加几何关系', '草图', 'relation'), _a('sketch.repair', '修复草图', '草图', 'repair'),
              _a('sketch.silhouette', '侧影实体', '草图', 'silhouette'), _a('sketch.section', '交叉曲线', '草图', 'section'),
              _a('sketch.rapid', '快速草图', '草图', 'rapid')]
+    rows += [_a('eval.measure', '测量', '评估', 'measure', 'Ctrl+M'), _a('eval.process', '绑定工艺', '评估', 'process'),
+             _a('eval.check', '设计检查', '评估', 'drc', 'F8')]
+    rows += [_a('sim.static', '静力分析', '仿真', 'stress'), _a('sim.drag', '风阻估算', '仿真', 'wind'),
+             _a('sim.assembly', '装配检查', '仿真', 'assembly')]
     rows += [_a(f'view:{name}', title, '视图', icon, key) for name, title, icon, key in _VIEWS]
     rows += [_a(f'style:{name}', title, '视图', name, '') for name, title in _STYLES]
     rows += [_a('view.section', '剖切视图 开/关', '视图', 'section', ''), _a('view.perspective', '透视图 开/关', '视图', 'perspective', ''),
@@ -74,7 +78,7 @@ _SHORT = {'view:fit': '适应', 'view:zoom_box': '局部放大', 'view:previous'
 def short(identifier):
     """手势轮的格子里写的名字: 地方小, 最多五个字。"""
     return _SHORT.get(identifier) or BY_ID[identifier]['title'].split('/')[0].split(' ')[0][:5]
-GROUPS = ['文件', '编辑', '特征', '草图', '视图']
+GROUPS = ['文件', '编辑', '特征', '草图', '评估', '仿真', '视图']
 
 # 右键手势轮: 8 格, 从 "右" 开始逆时针 (右, 右上, 上, 左上, 左, 左下, 下, 右下)。
 # 四个正方向和 SOLIDWORKS 的默认一致 (建模: 视图方向; 草图: 画图工具), 斜向放最常用的几个命令。

@@ -235,6 +235,14 @@ class PatternTests(unittest.TestCase):
         self.part.do('mirror', plane='XY')                              # 不写对象: 整个实体镜像后合在一起
         self.assertEqual(self.part.size, [100, 60, 20])
 
+    def test_pattern_of_a_pattern(self):
+        ring = self.part.do('mirror', features=[self.hole], plane='XZ')                  # 孔 (-40, -20) 照到 (-40, 20)
+        row = self.part.do('pattern_linear', features=[self.hole, ring], axis1='X', count1=2, spacing1=20, count2=1)
+        self.assertEqual(self.holes(), 4)                               # 镜像出来的也跟着阵列: x = -40, -20 各两个
+        self.part.do('mirror', features=[self.hole, ring, row], plane='YZ')       # 阵列出来的也跟着照过去
+        self.assertEqual(self.holes(), 8)
+        self.assertFalse(self.part.run('pattern_variable', features=[ring], rows='0,0,0')['ok'])
+
     def test_whole_body_pattern_and_boss_pattern(self):
         boss = self.part.do('extrude', sketch=self.part.sketch(circle(4, cx=40, cy=0), offset=10), distance=5)
         self.part.do('pattern_linear', features=[boss], axis1='X', count1=3, spacing1=-15, count2=1)
@@ -344,7 +352,7 @@ class TableTests(unittest.TestCase):
         edit = forms.feature_form(session.document.find(identifier), session)
         next(field for field in edit['fields'] if field['key'] == 'thickness')['value'] = 1.0
         name, args = forms.to_command(edit, session)
-        self.assertEqual((name, args['params']), ('edit_feature', {'thickness': 1.0}))      # 没重新选面: 不动原来的
+        self.assertEqual((name, args['params']), ('edit_feature', {'thickness': 1.0, 'walls': '', 'wall_thickness': 0.0}))  # 没重新选面: 不动原来的
         table = forms.new_form('pattern_table', session)
         next(field for field in table['fields'] if field['key'] == 'points')['value'] = '5,5; 10,5,3'
         self.assertEqual(forms.to_command(table, session)[1]['points'], [[5.0, 5.0], [10.0, 5.0, 3.0]])

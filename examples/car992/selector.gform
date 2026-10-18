@@ -1,0 +1,152 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 4,
+ "upto": null,
+ "props": {
+  "material": "ABS",
+  "color": "#1D1E21",
+  "feature_colors": {
+   "f4": "#C8CCD0"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "换挡拨杆草图",
+   "params": {
+    "plane": "XY",
+    "offset": 610.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 2410,
+      "cy": 0,
+      "w": 70,
+      "h": 34
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "换挡拨杆",
+   "params": {
+    "sketch": "f1",
+    "distance": 93.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "fdm",
+    "name": "FDM 熔融挤出打印",
+    "short": "FDM",
+    "color": "#E2B43C",
+    "kind": "prism",
+    "auto": true,
+    "batch": 1,
+    "cost": 103.54,
+    "tooling": 0.0,
+    "unit": 103.54,
+    "standard": false,
+    "spec": "",
+    "why": "有厚度的块 → FDM 熔融挤出打印：做 1 件, 每件约 ¥104；第二是 尼龙 SLS / MJF 打印 ¥296；做到 461 件以上换成 注塑 (开钢模) 更划算",
+    "alternatives": [
+     {
+      "id": "sls_print",
+      "name": "尼龙 SLS / MJF 打印",
+      "cost": 295.61
+     },
+     {
+      "id": "cnc3",
+      "name": "三轴 CNC 铣",
+      "cost": 426.69
+     },
+     {
+      "id": "sla",
+      "name": "SLA 光固化打印",
+      "cost": 428.41
+     }
+    ]
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "拨杆头草图",
+   "params": {
+    "plane": "XY",
+    "offset": 703.0,
+    "shapes": [
+     {
+      "type": "slot",
+      "x1": 2390,
+      "y1": 0,
+      "x2": 2440,
+      "y2": 0,
+      "w": 30
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "拨杆头",
+   "params": {
+    "sketch": "f3",
+    "distance": 14.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "fdm",
+    "name": "FDM 熔融挤出打印",
+    "short": "FDM",
+    "color": "#E2B43C",
+    "kind": "prism",
+    "auto": true,
+    "batch": 1,
+    "cost": 27.36,
+    "tooling": 0.0,
+    "unit": 27.36,
+    "standard": false,
+    "spec": "",
+    "why": "有厚度的块 → FDM 熔融挤出打印：做 1 件, 每件约 ¥27；第二是 尼龙 SLS / MJF 打印 ¥67；做到 1677 件以上换成 注塑 (开钢模) 更划算",
+    "alternatives": [
+     {
+      "id": "sls_print",
+      "name": "尼龙 SLS / MJF 打印",
+      "cost": 67.08
+     },
+     {
+      "id": "sla",
+      "name": "SLA 光固化打印",
+      "cost": 85.61
+     },
+     {
+      "id": "cnc3",
+      "name": "三轴 CNC 铣",
+      "cost": 413.97
+     }
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,167 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 6,
+ "upto": null,
+ "props": {
+  "material": "合金钢",
+  "color": "#D5D8DB"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "轮毂螺栓垫圈草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 884.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 960.0,
+      "cy": 406.0,
+      "r": 15
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "轮毂螺栓垫圈",
+   "params": {
+    "sketch": "f1",
+    "distance": 4.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "kind": "fastener",
+    "auto": true,
+    "batch": 1,
+    "cost": 1.5,
+    "tooling": 0.0,
+    "unit": 1.5,
+    "standard": true,
+    "spec": "GB/T 97.1 M16 平垫圈",
+    "why": "GB/T 97.1 M16 平垫圈。名字是 “轮毂螺栓垫圈” → 标准件 (按规格网购)：做 1 件, 每件约 ¥1.50",
+    "alternatives": []
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "轮毂螺栓头草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 888.0,
+    "shapes": [
+     {
+      "type": "ngon",
+      "cx": 960.0,
+      "cy": 406.0,
+      "r": 11,
+      "sides": 6,
+      "angle": 90
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "轮毂螺栓头",
+   "params": {
+    "sketch": "f3",
+    "distance": 18.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "kind": "fastener",
+    "auto": true,
+    "batch": 1,
+    "cost": 1.5,
+    "tooling": 0.0,
+    "unit": 1.5,
+    "standard": true,
+    "spec": "GB/T 5782 M12×36 六角头螺栓 (现在对边 19.1 mm, 标准是 18 mm: 改成 18 mm 才买得到)",
+    "why": "GB/T 5782 M12×36 六角头螺栓 (现在对边 19.1 mm, 标准是 18 mm: 改成 18 mm 才买得到)。名字是 “轮毂螺栓头” → 标准件 (按规格网购)：做 1 件, 每件约 ¥1.50",
+    "alternatives": []
+   }
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "轮毂螺栓杆草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 826.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 960.0,
+      "cy": 406.0,
+      "r": 7
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "轮毂螺栓杆",
+   "params": {
+    "sketch": "f5",
+    "distance": 58.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "kind": "fastener",
+    "auto": true,
+    "batch": 1,
+    "cost": 1.5,
+    "tooling": 0.0,
+    "unit": 1.5,
+    "standard": true,
+    "spec": "轮毂螺栓杆",
+    "why": "轮毂螺栓杆。名字是 “轮毂螺栓杆” → 标准件 (按规格网购)：做 1 件, 每件约 ¥1.50",
+    "alternatives": []
+   }
+  }
+ ]
+}

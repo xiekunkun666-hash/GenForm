@@ -1,0 +1,151 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 4,
+ "upto": null,
+ "props": {
+  "material": "ABS",
+  "color": "#1D1E21"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "中控台草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        1990,
+        690
+       ],
+       [
+        2045,
+        690
+       ],
+       [
+        2750,
+        560
+       ],
+       [
+        2750,
+        301.0
+       ],
+       [
+        1990,
+        301.0
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "中控台",
+   "params": {
+    "sketch": "f1",
+    "distance": 190.0,
+    "op": "add",
+    "symmetric": true,
+    "end": "mid",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "kind": "prism",
+    "auto": true,
+    "batch": 1,
+    "cost": 3270.04,
+    "tooling": 300.0,
+    "unit": 2970.04,
+    "standard": false,
+    "spec": "",
+    "why": "有厚度的块 → 三轴 CNC 铣：做 1 件, 每件约 ¥3270 (模具 / 工装 ¥300 摊下来 ¥300 + 单件 ¥2970)；第二是 五轴 CNC 铣 ¥6797；做到 115 件以上换成 注塑 (开钢模) 更划算",
+    "alternatives": [
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 6796.83
+     },
+     {
+      "id": "injection",
+      "name": "注塑 (开钢模)",
+      "cost": 204826.37
+     }
+    ]
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "换挡拨杆草图",
+   "params": {
+    "plane": "XY",
+    "offset": 610.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 2410,
+      "cy": 0,
+      "w": 70,
+      "h": 34
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "换挡拨杆（让位）",
+   "params": {
+    "sketch": "f3",
+    "distance": 93.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "kind": "pocket_cut",
+    "auto": true,
+    "batch": 1,
+    "cost": 426.69,
+    "tooling": 300.0,
+    "unit": 126.69,
+    "standard": false,
+    "spec": "",
+    "why": "切出来的槽、窗、缺口 → 三轴 CNC 铣：做 1 件, 每件约 ¥427 (模具 / 工装 ¥300 摊下来 ¥300 + 单件 ¥127)；第二是 五轴 CNC 铣 ¥1337",
+    "alternatives": [
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 1336.53
+     }
+    ]
+   }
+  }
+ ]
+}

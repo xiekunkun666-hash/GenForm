@@ -1,0 +1,322 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 8,
+ "upto": null,
+ "props": {
+  "material": "聚碳酸酯 PC",
+  "color": "#C0C6CC",
+  "feature_opacity": {
+   "f2": 0.35
+  },
+  "feature_colors": {
+   "f2": "#DDE6EE",
+   "f4": "#FFFFFF"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "灯罩草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 170.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        -530.0,
+        672.0
+       ],
+       [
+        -534.796461403075,
+        699.8115294937453
+       ],
+       [
+        -548.7163345512552,
+        724.9006727063226
+       ],
+       [
+        -570.3970452753376,
+        744.8115294937453
+       ],
+       [
+        -597.7163345512552,
+        757.5950864665638
+       ],
+       [
+        -628.0,
+        762.0
+       ],
+       [
+        -658.2836654487448,
+        757.5950864665638
+       ],
+       [
+        -685.6029547246624,
+        744.8115294937453
+       ],
+       [
+        -707.2836654487448,
+        724.9006727063226
+       ],
+       [
+        -721.203538596925,
+        699.8115294937453
+       ],
+       [
+        -726.0,
+        672.0
+       ],
+       [
+        -721.2035385969251,
+        644.1884705062548
+       ],
+       [
+        -707.2836654487448,
+        619.0993272936774
+       ],
+       [
+        -685.6029547246624,
+        599.1884705062547
+       ],
+       [
+        -658.2836654487448,
+        586.4049135334362
+       ],
+       [
+        -628.0,
+        582.0
+       ],
+       [
+        -597.7163345512552,
+        586.4049135334362
+       ],
+       [
+        -570.3970452753376,
+        599.1884705062547
+       ],
+       [
+        -548.7163345512552,
+        619.0993272936774
+       ],
+       [
+        -534.796461403075,
+        644.1884705062547
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "灯罩",
+   "params": {
+    "sketch": "f1",
+    "distance": 10.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "lens",
+    "why": "LED 大灯总成 (左右各一)。手动指定：每件 ¥9,000.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 9000.0,
+    "unit": 9000.0,
+    "tooling": 0.0,
+    "spec": "LED 大灯总成 (左右各一)"
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "四点日行灯草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 180.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -582.7451660040609,
+      "cy": 713.0121933088197,
+      "r": 9
+     },
+     {
+      "type": "circle",
+      "cx": -673.2548339959391,
+      "cy": 713.0121933088197,
+      "r": 9
+     },
+     {
+      "type": "circle",
+      "cx": -673.2548339959391,
+      "cy": 630.9878066911803,
+      "r": 9
+     },
+     {
+      "type": "circle",
+      "cx": -582.7451660040609,
+      "cy": 630.9878066911803,
+      "r": 9
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "四点日行灯",
+   "params": {
+    "sketch": "f3",
+    "distance": 16.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "revolved",
+    "why": "LED 大灯总成 (左右各一)。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "LED 大灯总成 (左右各一)"
+   }
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "反光碗草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 196.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -628,
+      "cy": 672,
+      "r": 74
+     },
+     {
+      "type": "circle",
+      "cx": -628,
+      "cy": 672,
+      "r": 34
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "反光碗",
+   "params": {
+    "sketch": "f5",
+    "distance": 12.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "plate",
+    "why": "LED 大灯总成 (左右各一)。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "LED 大灯总成 (左右各一)"
+   }
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "投射透镜草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 200.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -628,
+      "cy": 672,
+      "r": 34
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "投射透镜",
+   "params": {
+    "sketch": "f7",
+    "distance": 70.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "lens",
+    "why": "LED 大灯总成 (左右各一)。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "LED 大灯总成 (左右各一)"
+   }
+  }
+ ]
+}

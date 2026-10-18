@@ -26,7 +26,8 @@ class Document:
     def __init__(self):
         self.features = []
         self.upto = None            # 回滚线: 只算前 upto 个特征; None = 全部
-        self.props = {}             # 零件的属性: material 材质名, color 外观颜色 '#RRGGBB' (不影响几何, 不进撤销)
+        self.props = {}             # 零件的属性: material 材质名, color 外观颜色 '#RRGGBB', feature_colors {特征 id: 颜色}
+                                    # (不影响几何, 不进撤销)
         self.path = None
         self.dirty = False
         self.revision = 0           # 每次内容变化加一: 界面和内核用它判断结果是不是过期了
@@ -92,6 +93,29 @@ class Document:
             raise DocumentError('名称不能为空')
         self._checkpoint()
         feature['name'] = str(name).strip()
+        self._changed()
+
+    def set_folder(self, identifiers, folder):
+        """把这些特征放进文件夹 folder ('车身/车窗' 这样用 / 分层; 写空 = 拿出文件夹)。只是设计树里怎么归类, 不影响几何。"""
+        parts = [part.strip() for part in str(folder or '').replace(chr(92), '/').split('/') if part.strip()]
+        features = [self.find(identifier) for identifier in identifiers]
+        self._checkpoint()
+        for feature in features:
+            if parts:
+                feature['folder'] = '/'.join(parts)
+            else:
+                feature.pop('folder', None)
+        self._changed()
+
+    def set_processes(self, bound):
+        """给特征绑加工工艺: {特征 id: 工艺字典 (见 manufacturing.choose); None = 解除}。不影响几何, 但记进撤销。"""
+        self._checkpoint()
+        for identifier, process in bound.items():
+            feature = self.find(identifier)
+            if process:
+                feature['process'] = process
+            else:
+                feature.pop('process', None)
         self._changed()
 
     def suppress(self, identifier, suppressed=True):

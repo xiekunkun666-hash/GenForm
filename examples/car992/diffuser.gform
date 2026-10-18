@@ -1,0 +1,223 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 6,
+ "upto": null,
+ "props": {
+  "material": "聚丙烯 PP",
+  "color": "#1A1A1A"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "扩散器底板草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 4469.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 470,
+      "w": 1180,
+      "h": 80
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "扩散器底板",
+   "params": {
+    "sketch": "f1",
+    "distance": 3.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "kind": "plate",
+    "auto": true,
+    "batch": 1,
+    "cost": 32.84,
+    "tooling": 0.0,
+    "unit": 32.84,
+    "standard": false,
+    "spec": "",
+    "why": "厚 3 mm 的平板 → 激光切割：做 1 件, 每件约 ¥33；第二是 水刀切割 ¥45",
+    "alternatives": [
+     {
+      "id": "waterjet",
+      "name": "水刀切割",
+      "cost": 45.03
+     }
+    ]
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "扩散器导流片草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 4472.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": -300,
+      "cy": 470,
+      "w": 10,
+      "h": 80
+     },
+     {
+      "type": "rect",
+      "cx": -150,
+      "cy": 470,
+      "w": 10,
+      "h": 80
+     },
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 470,
+      "w": 10,
+      "h": 80
+     },
+     {
+      "type": "rect",
+      "cx": 150,
+      "cy": 470,
+      "w": 10,
+      "h": 80
+     },
+     {
+      "type": "rect",
+      "cx": 300,
+      "cy": 470,
+      "w": 10,
+      "h": 80
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "扩散器导流片",
+   "params": {
+    "sketch": "f3",
+    "distance": 47.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "kind": "profile",
+    "auto": true,
+    "batch": 1,
+    "cost": 1858.74,
+    "tooling": 300.0,
+    "unit": 1558.74,
+    "standard": false,
+    "spec": "",
+    "why": "截面不变的长条 → 三轴 CNC 铣：做 1 件, 每件约 ¥1859 (模具 / 工装 ¥300 摊下来 ¥300 + 单件 ¥1559)；第二是 型材挤压 ¥1.0 万；做到 7 件以上换成 型材挤压 更划算",
+    "alternatives": [
+     {
+      "id": "extrusion",
+      "name": "型材挤压",
+      "cost": 10068.44
+     }
+    ]
+   }
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "尾管草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 4330.0,
+    "shapes": [
+     {
+      "type": "slot",
+      "x1": -454,
+      "y1": 462,
+      "x2": -386,
+      "y2": 462,
+      "w": 54
+     },
+     {
+      "type": "slot",
+      "x1": 386,
+      "y1": 462,
+      "x2": 454,
+      "y2": 462,
+      "w": 54
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "尾管（让位）",
+   "params": {
+    "sketch": "f5",
+    "distance": 230.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "kind": "pocket_cut",
+    "auto": true,
+    "batch": 1,
+    "cost": 2334.85,
+    "tooling": 300.0,
+    "unit": 2034.85,
+    "standard": false,
+    "spec": "",
+    "why": "切出来的槽、窗、缺口 → 三轴 CNC 铣：做 1 件, 每件约 ¥2335 (模具 / 工装 ¥300 摊下来 ¥300 + 单件 ¥2035)；第二是 五轴 CNC 铣 ¥5674",
+    "alternatives": [
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 5674.27
+     }
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,106 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "铝合金 6061",
+  "color": "#C9A227"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "引擎盖徽标草图",
+   "params": {
+    "plane": "XY",
+    "offset": 625.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        175,
+        -24
+       ],
+       [
+        175,
+        24
+       ],
+       [
+        205,
+        26
+       ],
+       [
+        228,
+        18
+       ],
+       [
+        238,
+        0
+       ],
+       [
+        228,
+        -18
+       ],
+       [
+        205,
+        -26
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "引擎盖徽标",
+   "params": {
+    "sketch": "f1",
+    "distance": 35.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "kind": "prism",
+    "auto": true,
+    "batch": 1,
+    "cost": 427.93,
+    "tooling": 300.0,
+    "unit": 127.93,
+    "standard": false,
+    "spec": "",
+    "why": "有厚度的块 → 三轴 CNC 铣：做 1 件, 每件约 ¥428 (模具 / 工装 ¥300 摊下来 ¥300 + 单件 ¥128)；第二是 五轴 CNC 铣 ¥1321；做到 2342 件以上换成 高压压铸 (开钢模) 更划算",
+    "alternatives": [
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 1321.14
+     },
+     {
+      "id": "slm",
+      "name": "金属 SLM 打印",
+      "cost": 2655.5
+     },
+     {
+      "id": "investment",
+      "name": "熔模精密铸造",
+      "cost": 6131.77
+     }
+    ]
+   }
+  }
+ ]
+}

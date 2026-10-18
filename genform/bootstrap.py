@@ -12,7 +12,7 @@ import sys
 
 def run(argv):
     from PySide6.QtCore import QUrl, qInstallMessageHandler
-    from PySide6.QtGui import QGuiApplication, QSurfaceFormat
+    from PySide6.QtGui import QGuiApplication, QIcon, QSurfaceFormat
     from PySide6.QtQml import QQmlApplicationEngine, qmlRegisterType
     from PySide6.QtQuick import QQuickWindow, QSGRendererInterface
 
@@ -33,7 +33,15 @@ def run(argv):
             sys.stderr.flush()
     qInstallMessageHandler(qt_message)
 
+    if sys.platform == 'win32':
+        # 任务栏上算一个独立的程序 (用自己的图标、自己一组), 不然会被归到 python 名下、显示 python 的图标
+        import ctypes
+        try:
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('GenForm.GenForm')
+        except (AttributeError, OSError):
+            pass
     application = QGuiApplication(argv)
+    application.setWindowIcon(QIcon(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'genform.png')))
     application.setApplicationName('GenForm')
     application.setOrganizationName('GenForm')
 
@@ -55,25 +63,46 @@ def run(argv):
         try:
             server = ApiServer(session, port)
             server.controller = controller
+            controller.api_port = server.port
             api_text = f'AI 接口 127.0.0.1:{server.port}'
         except OSError:
             api_text = f'AI 接口没开起来（端口 {port} 被占用）'
 
+    # 界面语言: QML 里的 qsTr("中文") 都来问这个翻译器, 它去查 i18n 的对照表; 换语言时让引擎把文字重新取一遍
+    from PySide6.QtCore import QTranslator
+    from . import i18n
+
+    class Translator(QTranslator):
+        def isEmpty(self):
+            return False
+
+        def translate(self, context, source, disambiguation=None, n=-1):
+            return i18n.tr(source)
+
+    translator = Translator(application)
+    application.installTranslator(translator)
+
     from PySide6.QtQuickControls2 import QQuickStyle
     QQuickStyle.setStyle('Basic')       # 系统原生样式不让改控件外观 (输入框背景等)
     qmlRegisterType(Viewport, 'GenForm', 1, 0, 'Viewport')
+    from .view.sheet import SheetView
+    qmlRegisterType(SheetView, 'GenForm', 1, 0, 'SheetView')
     engine = QQmlApplicationEngine()
     context = engine.rootContext()
     context.setContextProperty('app', controller)
+    context.setContextProperty('sim', controller.sim)
+    context.setContextProperty('drawing', controller.drawing)
     context.setContextProperty('apiText', api_text)
     qml_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'qml')
     engine.load(QUrl.fromLocalFile(os.path.join(qml_dir, 'Main.qml')))
     if not engine.rootObjects():
         builder.close()
         return 1
+    controller.languageChanged.connect(engine.retranslate)
     window = engine.rootObjects()[0]
     controller.attach_window(window)
     controller.attach_viewport(window.findChild(Viewport, 'viewport'))
+    controller.drawing.attach(window.findChild(SheetView, 'sheetView'))
 
     if len(argv) > 1 and os.path.isfile(argv[1]):
         controller.openDocument(argv[1])

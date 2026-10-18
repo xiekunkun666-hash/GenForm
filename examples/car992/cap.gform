@@ -1,0 +1,79 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "铝合金 6061",
+  "color": "#9DA3A8"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "中心盖草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 884.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 960.0,
+      "cy": 344.0,
+      "r": 46
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "中心盖",
+   "params": {
+    "sketch": "f1",
+    "distance": 10.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "kind": "plate",
+    "auto": true,
+    "batch": 1,
+    "cost": 33.23,
+    "tooling": 0.0,
+    "unit": 33.23,
+    "standard": false,
+    "spec": "",
+    "why": "厚 10 mm 的平板 → 激光切割：做 1 件, 每件约 ¥33；第二是 水刀切割 ¥42；做到 85 件以上换成 数控冲床 更划算",
+    "alternatives": [
+     {
+      "id": "waterjet",
+      "name": "水刀切割",
+      "cost": 42.13
+     },
+     {
+      "id": "edm",
+      "name": "慢走丝线切割",
+      "cost": 449.6
+     },
+     {
+      "id": "bend",
+      "name": "激光切割 + 折弯 + 焊接",
+      "cost": 649.95
+     }
+    ]
+   }
+  }
+ ]
+}

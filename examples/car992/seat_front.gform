@@ -1,0 +1,478 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 14,
+ "upto": null,
+ "props": {
+  "material": "皮革 + 海绵",
+  "color": "#7A4A2C",
+  "feature_colors": {
+   "f14": "#101010"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "坐垫草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 110.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        2560,
+        320
+       ],
+       [
+        2985,
+        320
+       ],
+       [
+        2995,
+        440
+       ],
+       [
+        2560,
+        470
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "坐垫",
+   "params": {
+    "sketch": "f1",
+    "distance": 440.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "upholstery",
+    "name": "软包 (发泡 + 皮革缝制)",
+    "short": "软包",
+    "color": "#7A4A2C",
+    "kind": "soft",
+    "auto": true,
+    "batch": 1,
+    "cost": 3071.13,
+    "tooling": 2000.0,
+    "unit": 1071.13,
+    "standard": false,
+    "spec": "",
+    "why": "名字是 “坐垫” → 软包 (发泡 + 皮革缝制)：做 1 件, 每件约 ¥3071 (模具 / 工装 ¥2000 摊下来 ¥2000 + 单件 ¥1071)",
+    "alternatives": []
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "靠背草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 135.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        2930,
+        430
+       ],
+       [
+        3045,
+        420
+       ],
+       [
+        3150,
+        1040
+       ],
+       [
+        3135,
+        1095
+       ],
+       [
+        3055,
+        1100
+       ],
+       [
+        2950,
+        560
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "靠背",
+   "params": {
+    "sketch": "f3",
+    "distance": 390.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "upholstery",
+    "name": "软包 (发泡 + 皮革缝制)",
+    "short": "软包",
+    "color": "#7A4A2C",
+    "kind": "soft",
+    "auto": true,
+    "batch": 1,
+    "cost": 3290.41,
+    "tooling": 2000.0,
+    "unit": 1290.41,
+    "standard": false,
+    "spec": "",
+    "why": "名字是 “靠背” → 软包 (发泡 + 皮革缝制)：做 1 件, 每件约 ¥3290 (模具 / 工装 ¥2000 摊下来 ¥2000 + 单件 ¥1290)",
+    "alternatives": []
+   }
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "坐垫内侧包边草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 110.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        2580,
+        450
+       ],
+       [
+        2960,
+        430
+       ],
+       [
+        2970,
+        515
+       ],
+       [
+        2600,
+        530
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "坐垫内侧包边",
+   "params": {
+    "sketch": "f5",
+    "distance": 55.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "upholstery",
+    "name": "软包 (发泡 + 皮革缝制)",
+    "short": "软包",
+    "color": "#7A4A2C",
+    "kind": "soft",
+    "auto": true,
+    "batch": 1,
+    "cost": 2319.41,
+    "tooling": 2000.0,
+    "unit": 319.41,
+    "standard": false,
+    "spec": "",
+    "why": "名字是 “坐垫内侧包边” → 软包 (发泡 + 皮革缝制)：做 1 件, 每件约 ¥2319 (模具 / 工装 ¥2000 摊下来 ¥2000 + 单件 ¥319)",
+    "alternatives": []
+   }
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "坐垫外侧包边草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 495.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        2580,
+        450
+       ],
+       [
+        2960,
+        430
+       ],
+       [
+        2970,
+        515
+       ],
+       [
+        2600,
+        530
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "坐垫外侧包边",
+   "params": {
+    "sketch": "f7",
+    "distance": 55.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "upholstery",
+    "name": "软包 (发泡 + 皮革缝制)",
+    "short": "软包",
+    "color": "#7A4A2C",
+    "kind": "soft",
+    "auto": true,
+    "batch": 1,
+    "cost": 2319.41,
+    "tooling": 2000.0,
+    "unit": 319.41,
+    "standard": false,
+    "spec": "",
+    "why": "名字是 “坐垫外侧包边” → 软包 (发泡 + 皮革缝制)：做 1 件, 每件约 ¥2319 (模具 / 工装 ¥2000 摊下来 ¥2000 + 单件 ¥319)",
+    "alternatives": []
+   }
+  },
+  {
+   "id": "f9",
+   "type": "sketch",
+   "name": "靠背内侧包边草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 135.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        2905,
+        560
+       ],
+       [
+        2950,
+        540
+       ],
+       [
+        3060,
+        1000
+       ],
+       [
+        3020,
+        1010
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f10",
+   "type": "extrude",
+   "name": "靠背内侧包边",
+   "params": {
+    "sketch": "f9",
+    "distance": 55.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "upholstery",
+    "name": "软包 (发泡 + 皮革缝制)",
+    "short": "软包",
+    "color": "#7A4A2C",
+    "kind": "soft",
+    "auto": true,
+    "batch": 1,
+    "cost": 2297.88,
+    "tooling": 2000.0,
+    "unit": 297.88,
+    "standard": false,
+    "spec": "",
+    "why": "名字是 “靠背内侧包边” → 软包 (发泡 + 皮革缝制)：做 1 件, 每件约 ¥2298 (模具 / 工装 ¥2000 摊下来 ¥2000 + 单件 ¥298)",
+    "alternatives": []
+   }
+  },
+  {
+   "id": "f11",
+   "type": "sketch",
+   "name": "靠背外侧包边草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 470.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        2905,
+        560
+       ],
+       [
+        2950,
+        540
+       ],
+       [
+        3060,
+        1000
+       ],
+       [
+        3020,
+        1010
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f12",
+   "type": "extrude",
+   "name": "靠背外侧包边",
+   "params": {
+    "sketch": "f11",
+    "distance": 55.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "upholstery",
+    "name": "软包 (发泡 + 皮革缝制)",
+    "short": "软包",
+    "color": "#7A4A2C",
+    "kind": "soft",
+    "auto": true,
+    "batch": 1,
+    "cost": 2297.88,
+    "tooling": 2000.0,
+    "unit": 297.88,
+    "standard": false,
+    "spec": "",
+    "why": "名字是 “靠背外侧包边” → 软包 (发泡 + 皮革缝制)：做 1 件, 每件约 ¥2298 (模具 / 工装 ¥2000 摊下来 ¥2000 + 单件 ¥298)",
+    "alternatives": []
+   }
+  },
+  {
+   "id": "f13",
+   "type": "sketch",
+   "name": "头枕开口草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 250.0,
+    "shapes": [
+     {
+      "type": "slot",
+      "x1": 3080,
+      "y1": 990,
+      "x2": 3098,
+      "y2": 1050,
+      "w": 30
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f14",
+   "type": "extrude",
+   "name": "头枕开口",
+   "params": {
+    "sketch": "f13",
+    "distance": 160.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "kind": "pocket_cut",
+    "auto": true,
+    "batch": 1,
+    "cost": 585.74,
+    "tooling": 300.0,
+    "unit": 285.74,
+    "standard": false,
+    "spec": "",
+    "why": "切出来的槽、窗、缺口 → 三轴 CNC 铣：做 1 件, 每件约 ¥586 (模具 / 工装 ¥300 摊下来 ¥300 + 单件 ¥286)；第二是 五轴 CNC 铣 ¥1656",
+    "alternatives": [
+     {
+      "id": "cnc5",
+      "name": "五轴 CNC 铣",
+      "cost": 1655.95
+     }
+    ]
+   }
+  }
+ ]
+}

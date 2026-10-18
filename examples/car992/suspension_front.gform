@@ -1,0 +1,296 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 10,
+ "upto": null,
+ "props": {
+  "material": "合金钢",
+  "color": "#3A3D42",
+  "feature_colors": {
+   "f8": "#D4A017"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "转向节草图",
+   "params": {
+    "plane": "XZ",
+    "offset": 636.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 960.0,
+      "cy": 344.0,
+      "w": 90,
+      "h": 300
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "转向节",
+   "params": {
+    "sketch": "f1",
+    "distance": 64.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "prism",
+    "why": "双叉臂前悬挂模块 (转向节 + 摆臂 + 减振器)。手动指定：每件 ¥5,500.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 5500.0,
+    "unit": 5500.0,
+    "tooling": 0.0,
+    "spec": "双叉臂前悬挂模块 (转向节 + 摆臂 + 减振器)"
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "下摆臂草图",
+   "params": {
+    "plane": "XY",
+    "offset": 198.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        700.0,
+        -554.0
+       ],
+       [
+        1120.0,
+        -554.0
+       ],
+       [
+        990.0,
+        -660
+       ],
+       [
+        930.0,
+        -660
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "下摆臂",
+   "params": {
+    "sketch": "f3",
+    "distance": 24.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "prism",
+    "why": "双叉臂前悬挂模块 (转向节 + 摆臂 + 减振器)。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "双叉臂前悬挂模块 (转向节 + 摆臂 + 减振器)"
+   }
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "上摆臂草图",
+   "params": {
+    "plane": "XY",
+    "offset": 452.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        700.0,
+        -554.0
+       ],
+       [
+        1120.0,
+        -554.0
+       ],
+       [
+        990.0,
+        -660
+       ],
+       [
+        930.0,
+        -660
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "上摆臂",
+   "params": {
+    "sketch": "f5",
+    "distance": 20.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "prism",
+    "why": "双叉臂前悬挂模块 (转向节 + 摆臂 + 减振器)。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "双叉臂前悬挂模块 (转向节 + 摆臂 + 减振器)"
+   }
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "减振器草图",
+   "params": {
+    "plane": "XY",
+    "offset": 214.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 1030.0,
+      "cy": -600,
+      "r": 28
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "减振器",
+   "params": {
+    "sketch": "f7",
+    "distance": 530.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "bought",
+    "why": "双叉臂前悬挂模块 (转向节 + 摆臂 + 减振器)。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "双叉臂前悬挂模块 (转向节 + 摆臂 + 减振器)"
+   }
+  },
+  {
+   "id": "f9",
+   "type": "sketch",
+   "name": "弹簧座草图",
+   "params": {
+    "plane": "XY",
+    "offset": 554.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 1030.0,
+      "cy": -600,
+      "r": 38
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f10",
+   "type": "extrude",
+   "name": "弹簧座",
+   "params": {
+    "sketch": "f9",
+    "distance": 8.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": "plate",
+    "why": "双叉臂前悬挂模块 (转向节 + 摆臂 + 减振器)。手动指定：每件 ¥0.00",
+    "alternatives": [],
+    "standard": true,
+    "cost": 0.0,
+    "unit": 0.0,
+    "tooling": 0.0,
+    "spec": "双叉臂前悬挂模块 (转向节 + 摆臂 + 减振器)"
+   }
+  }
+ ]
+}

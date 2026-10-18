@@ -23,10 +23,22 @@ import numpy as np
 
 from . import planes
 
-OPS = [{'value': 'add', 'label': '加料'}, {'value': 'cut', 'label': '切除'}, {'value': 'common', 'label': '相交'}]
+OPS = [{'value': 'add', 'label': '加料'}, {'value': 'cut', 'label': '切除'}, {'value': 'common', 'label': '相交'},
+       {'value': 'void', 'label': '挖空腔'}, {'value': 'fill', 'label': '填空腔'}, {'value': 'pocket', 'label': '钣金凹槽'}]
 HOLE_SIZES = {      # 螺纹规格 → (通孔直径, 沉头孔直径, 沉头孔深, 90° 锥形沉头的大端直径)。常用的中等配合值, 要紧的地方以所用标准为准
     'M3': (3.4, 6.5, 3.4, 6.72), 'M4': (4.5, 8.0, 4.6, 8.96), 'M5': (5.5, 10.0, 5.7, 11.2), 'M6': (6.6, 11.0, 6.8, 13.44),
     'M8': (9.0, 15.0, 9.0, 17.92), 'M10': (11.0, 18.0, 11.0, 22.4), 'M12': (13.5, 20.0, 13.0, 26.88),
+}
+
+
+TAP_DRILLS = {'M3': 2.5, 'M4': 3.3, 'M5': 4.2, 'M6': 5.0, 'M8': 6.8, 'M10': 8.5, 'M12': 10.2}     # 粗牙螺纹攻丝前的底孔直径
+SCREW_SIZES = {     # 螺丝规格 → 头型 → (头直径, 头高, 内六角对边, 内六角深); 杆的直径就是规格的数。
+    # cap 内六角圆柱头 (ISO 4762)、button 内六角盘头 (ISO 7380)、flat 内六角沉头 (ISO 10642, 头直径是理论值), 都取标称尺寸
+    'M3': {'cap': (5.5, 3.0, 2.5, 1.3), 'button': (5.7, 1.65, 2.0, 1.04), 'flat': (6.72, 1.86, 2.0, 1.1)},
+    'M4': {'cap': (7.0, 4.0, 3.0, 2.0), 'button': (7.6, 2.2, 2.5, 1.3), 'flat': (8.96, 2.48, 2.5, 1.5)},
+    'M5': {'cap': (8.5, 5.0, 4.0, 2.5), 'button': (9.5, 2.75, 3.0, 1.56), 'flat': (11.2, 3.1, 3.0, 1.9)},
+    'M6': {'cap': (10.0, 6.0, 5.0, 3.0), 'button': (10.5, 3.3, 4.0, 2.08), 'flat': (13.44, 3.72, 4.0, 2.2)},
+    'M8': {'cap': (13.0, 8.0, 6.0, 4.0), 'button': (14.0, 4.4, 5.0, 2.6), 'flat': (17.92, 4.96, 5.0, 3.0)},
 }
 
 
@@ -34,8 +46,12 @@ def F(key, kind, label, default=None, **more):
     return dict(key=key, kind=kind, label=label, default=default, **more)
 
 
+OP_HELP = ('add 加料 / cut 切除 / common 相交 (只留和现有实体重叠的部分) / void 挖空腔 (整个在实体里面, 变成封闭的空腔: '
+           '外形、内形各做一次就是钣金壳) / fill 填空腔 (只在空腔里长材料: 地板、隔板) / pocket 钣金凹槽 (空心件上挖槽, 槽壁留一层壁厚)')
+
+
 def _op(default='add'):
-    return F('op', 'choice', '方式', default, options=OPS, help='add 加料 / cut 切除 / common 相交 (只留和现有实体重叠的部分)')
+    return F('op', 'choice', '方式', default, options=OPS, help=OP_HELP)
 
 
 def _options(*pairs):
@@ -52,7 +68,8 @@ SPECS = {
                     fields=[F('sketch', 'sketch', '草图'),
                             F('axis', 'axis', '旋转轴', 'SY', sketch_axes=True,
                               help='CL = 草图里的第一条中心线 (构造线)；SX / SY = 草图平面的 X / Y 轴 (过草图原点)；X / Y / Z = 坐标轴；或基准轴特征的 id'),
-                            F('angle', 'number', '角度', 360.0, unit='°'), _op()]),
+                            F('angle', 'number', '角度', 360.0, unit='°'),
+                            F('reverse', 'bool', '反向', False), F('symmetric', 'bool', '两侧对称', False), _op()]),
     'sweep': dict(title='扫描', short='扫描', mark='扫', tint='#57B894', tool=True, cut='扫描切除',
                   about='让轮廓草图沿一条路径扫过去。轮廓要画在路径的起点处，并且大致垂直于路径。',
                   fields=[F('sketch', 'sketch', '轮廓'), F('path', 'path', '路径', help='草图 (首尾相接的一条线) 或曲线特征的 id'), _op()]),
@@ -63,13 +80,19 @@ SPECS = {
     'boundary': dict(title='边界凸台/基体', short='边界', mark='界', tint='#57B894', tool=True,
                      about='在几个草图轮廓之间做光顺过渡的实体。目前只支持方向 1 的轮廓，没有方向 2 的引导线。',
                      fields=[F('sketches', 'sketches', '方向 1 轮廓', [], help='至少两个草图 id，按顺序'), _op()]),
+    'import_step': dict(title='导入实体', short='导入', mark='导', tint='#57B894', tool=True,
+                        about='把别的 CAD 导出的 STEP 文件 (.step / .stp) 读进来当作实体，后面可以接着切除、打孔、倒圆角。'
+                              '文档里只记文件路径，每次重算从文件读；文件改了重算就跟着变。只有曲面的 STEP (SOLIDWORKS '
+                              '按曲面导出的) 会先缝合成实体，平面上缺的面自动补上。',
+                        fields=[F('path', 'text', 'STEP 文件', '', help='STEP 文件的完整路径'), _op()]),
     # ---- 孔和螺纹 ----
     'hole': dict(title='异形孔向导', short='孔', mark='孔', tint='#E07A5F', tool=True,
                  about='在草图的每个点 (和圆心) 处打孔，方向垂直于草图平面、朝草图法向的反方向。',
                  fields=[F('sketch', 'sketch', '位置草图', help='孔打在这个草图的点和圆心上'),
-                         F('kind', 'choice', '类型', 'simple', options=_options(('simple', '简单孔'), ('counterbore', '柱形沉头孔'), ('countersink', '锥形沉头孔'))),
+                         F('kind', 'choice', '类型', 'simple', options=_options(('simple', '简单孔'), ('counterbore', '柱形沉头孔'), ('countersink', '锥形沉头孔'), ('tapped', '螺纹底孔')),
+                           help='螺纹底孔：按规格打攻丝前的底孔 (M3 是 2.5、M4 是 3.3)，螺纹牙要另外攻或用“螺纹线”'),
                          F('size', 'choice', '规格', 'custom', options=_options(('custom', '自定义'), *((name, name) for name in HOLE_SIZES)),
-                           help='选了 M 规格就用它的通孔和沉头尺寸，下面的直径不起作用'),
+                           help='选了 M 规格就用它的通孔 (螺纹底孔类型时是底孔) 和沉头尺寸，下面的直径不起作用'),
                          F('diameter', 'number', '孔直径', 5.0), F('through', 'bool', '完全贯穿', True), F('depth', 'number', '孔深', 10.0),
                          F('head_diameter', 'number', '沉头直径', 10.0), F('head_depth', 'number', '沉头深度', 5.0),
                          F('flip', 'bool', '反向', False)]),
@@ -87,6 +110,13 @@ SPECS = {
                  about='在草图的每个点处立一根圆柱螺柱 (朝草图法向)，端部带倒角。要真实的螺纹牙再对它的端边用“螺纹线”。',
                  fields=[F('sketch', 'sketch', '位置草图'), F('diameter', 'number', '直径', 6.0), F('length', 'number', '长度', 15.0),
                          F('chamfer', 'number', '端部倒角', 0.5), F('flip', 'bool', '反向', False)]),
+    'screw': dict(title='螺丝', short='螺丝', mark='钉', tint='#E07A5F', tool=True,
+                  about='在草图的每个点处放一颗内六角螺丝：头在草图平面上 (沉头的头埋在平面里)，杆朝草图法向的反方向伸进去。杆是光杆，不画螺纹牙。',
+                  fields=[F('sketch', 'sketch', '位置草图', help='螺丝放在这个草图的点和圆心上'),
+                          F('size', 'choice', '规格', 'M3', options=_options(*((name, name) for name in SCREW_SIZES))),
+                          F('head', 'choice', '头型', 'cap', options=_options(('cap', '圆柱头'), ('button', '盘头'), ('flat', '沉头'))),
+                          F('length', 'number', '长度', 10.0, help='圆柱头和盘头：头下面的杆长；沉头：连头一起的总长'),
+                          F('flip', 'bool', '反向', False)]),
     # ---- 修改实体 ----
     'rib': dict(title='筋', short='筋', mark='筋', tint='#D9A441',
                 about='用一条开口的草图线做加强筋：在草图平面内朝实体延伸到碰上实体为止，厚度沿草图法向两侧各一半。',
@@ -96,8 +126,10 @@ SPECS = {
                   fields=[F('faces', 'faces', '拔模面', [], pick='face'), F('plane', 'plane', '中性面', 'XY'),
                           F('offset', 'number', '中性面偏移', 0.0), F('angle', 'number', '角度', 3.0, unit='°'), F('flip', 'bool', '反向', False)]),
     'shell': dict(title='抽壳', short='抽壳', mark='壳', tint='#D9A441',
-                  about='把实体掏空成等厚的壳；选中的面被拿掉成为开口 (不选 = 封闭的空腔)。',
-                  fields=[F('faces', 'faces', '开口的面', [], pick='face', optional=True), F('thickness', 'number', '壁厚', 2.0)]),
+                  about='把实体掏空成等厚的壳；选中的面被拿掉成为开口 (不选 = 封闭的空腔)。封闭抽壳可以留隔板: '
+                        '隔板草图里每段直线沿草图法向贯穿实体, 成为一块和外壳连在一起的平板 (地板、防火墙)。',
+                  fields=[F('faces', 'faces', '开口的面', [], pick='face', optional=True), F('thickness', 'number', '壁厚', 2.0),
+                          F('walls', 'sketch', '隔板草图', '', optional=True), F('wall_thickness', 'number', '隔板厚度', 0.0)]),
     'wrap': dict(title='包裹', short='包裹', mark='裹', tint='#D9A441',
                  about='把草图轮廓贴到一个圆柱面上，凸起或凹进去。草图的 X/Y 被展开成沿圆周 / 沿轴线的长度。',
                  fields=[F('sketch', 'sketch', '草图'), F('faces', 'faces', '圆柱面', [], pick='face', count=1),
@@ -197,7 +229,7 @@ SPECS = {
 TOOL_KINDS = ('extrude',) + tuple(kind for kind, spec in SPECS.items() if spec.get('tool'))    # 留得下 "工具体" 的特征: 能被阵列和镜像
 CURVE_KINDS = tuple(kind for kind, spec in SPECS.items() if spec.get('curve'))
 MENUS = [       # 工具栏上的下拉菜单
-    ('hole', '异形孔向导', ['hole', 'hole_adv', 'thread', 'stud']),
+    ('hole', '异形孔向导', ['hole', 'hole_adv', 'thread', 'stud', 'screw']),
     ('pattern', '线性阵列', ['pattern_linear', 'pattern_circular', 'mirror', 'pattern_curve', 'pattern_sketch', 'pattern_table',
                          'pattern_fill', 'pattern_variable']),
     ('reference', '参考几何体', ['plane', 'axis', 'csys', 'point', 'com', 'bbox']),
@@ -310,6 +342,14 @@ def _plane_of(params, features, depth):
 def axis_of(ref, features, sketch_frame=None):
     """轴的引用 → (过点, 方向), numpy 向量。"""
     name = str(ref)
+    if name.startswith('@'):            # 在视图里点出来的一条线 (实体的直边、圆边的轴线、草图里的直线): "@过点;方向"
+        try:
+            origin, direction = ([float(value) for value in part.split(',')] for part in name[1:].split(';'))
+            if len(origin) != 3 or len(direction) != 3:
+                raise ValueError
+        except ValueError:
+            raise ValueError(f'轴 {ref!r} 写得不对（要写成 "@x,y,z;dx,dy,dz"）') from None
+        return np.asarray(origin, dtype=float), _unit(direction)
     if name.upper() in ('X', 'Y', 'Z'):
         return np.zeros(3), np.eye(3)['XYZ'.index(name.upper())]
     if name.upper() in ('SX', 'SY') and sketch_frame is not None:

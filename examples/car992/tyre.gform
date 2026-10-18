@@ -1,0 +1,107 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "橡胶",
+  "color": "#161616"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "轮胎截面",
+   "params": {
+    "plane": "XY",
+    "offset": 344.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        1216.0,
+        -902
+       ],
+       [
+        1226.0,
+        -912
+       ],
+       [
+        1276.0,
+        -916
+       ],
+       [
+        1298.0,
+        -902
+       ],
+       [
+        1304.0,
+        -880
+       ],
+       [
+        1304.0,
+        -690
+       ],
+       [
+        1298.0,
+        -672
+       ],
+       [
+        1276.0,
+        -660
+       ],
+       [
+        1226.0,
+        -662
+       ],
+       [
+        1216.0,
+        -672
+       ]
+      ]
+     },
+     {
+      "type": "line",
+      "x1": 960.0,
+      "y1": -1000,
+      "x2": 960.0,
+      "y2": -500,
+      "construction": true
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "轮胎",
+   "params": {
+    "sketch": "f1",
+    "axis": "CL",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false,
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "kind": "tyre",
+    "auto": true,
+    "batch": 1,
+    "cost": 1800.0,
+    "tooling": 0.0,
+    "unit": 1800.0,
+    "standard": true,
+    "spec": "255/40 R19 轮胎",
+    "why": "255/40 R19 轮胎。名字是 “轮胎” → 标准件 (按规格网购)：做 1 件, 每件约 ¥1800",
+    "alternatives": []
+   }
+  }
+ ]
+}

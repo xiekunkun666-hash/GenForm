@@ -9,6 +9,7 @@
 """
 from __future__ import annotations
 
+import base64
 import json
 import os
 import socket
@@ -16,35 +17,65 @@ import sys
 
 PROTOCOL = '2024-11-05'
 INSTRUCTIONS = (
-    'GenForm 是参数化三维建模软件：模型由按顺序执行的特征组成（草图 → 拉伸 → 圆角/倒角）。单位毫米。'
-    '典型流程：sketch 画轮廓 → extrude 拉伸成实体 → fillet/chamfer 修边 → export 导出。'
-    '每次修改都会返回最新的特征列表和实体尺寸；某个特征失败时 ok=false 并说明原因，'
-    '可以用 edit_feature 改参数或 undo 撤销。引用边之前先用 list_edges 看边的中点坐标，'
-    '或直接用选择器（如 "|Z"、">Z"）。想确认形状可以用 screenshot 看图。'
+    'GenForm 是参数化三维建模软件：零件由一串按顺序执行的特征组成，单位毫米，Z 朝上。'
+    '基准面：XY = 上视，XZ = 前视，YZ = 右视。\n'
+    '典型流程：sketch（在基准面上画封闭轮廓）→ extrude（拉伸成实体；op=cut 是切除）→ fillet / chamfer（修边）→ export（导出 STEP / STL）。'
+    '除此之外还有旋转、扫描、放样、孔、抽壳、拔模、筋、镜像、各种阵列、基准面/轴/点、曲线等，全部在工具清单里，每个工具的说明和参数都写在它自己的描述里。\n'
+    '要连着做很多步时用 batch：把一串命令一次发过来，全部做完才重算一次，比一条条发快得多（见它的说明，"$1" 引用前面步骤的结果）。\n'
+    '要点：\n'
+    '1. 每次修改都会返回最新的特征列表（id、类型、名称、状态，如 f1、f2；只有这次新建 / 改的特征带参数）和实体尺寸；'
+    '后面的命令用这些 id 引用草图和特征。要看别的特征的参数用 get_model（特征多时写 id 只看一个）。\n'
+    '2. 某个特征算失败时 ok=false 并写明原因；用 edit_feature 改参数重试，或 undo 撤销。不要在失败的基础上继续往后做。\n'
+    '3. 引用边 / 面：先用 list_edges / list_faces 看它们的位置，再用返回的坐标点引用；常见情况也可以直接用选择器（"|Z" 平行于 Z 的边，">Z" 最高处的）。\n'
+    '4. 不确定现在是什么样：get_model 看特征和尺寸，screenshot 看图（图片直接附在结果里；需要 GenForm 窗口开着）。\n'
+    '5. 做完一步检查一步：比对返回的实体尺寸和体积是否符合预期，再做下一步。\n'
+    '用户能在窗口里看到你做的每一步，也可能自己动手改；开始前先 get_model 看一下现状。'
 )
 
 
 class WindowBackend:
-    """把工具调用转给正在运行的 GenForm (本地端口)。"""
+    """把工具调用转给正在运行的 GenForm (本地端口)。一直用同一条连接: 本机上每次新建连接要十几毫秒,
+    比查询命令本身 (不到 1 毫秒) 还慢得多。"""
 
     def __init__(self, port):
         self._port = port
+        self._link = self._stream = None
+
+    def _drop(self):
+        for item in (self._stream, self._link):
+            try:
+                if item is not None:
+                    item.close()
+            except OSError:
+                pass
+        self._link = self._stream = None
+
+    def _send(self, payload):
+        if self._stream is None:
+            self._link = socket.create_connection(('127.0.0.1', self._port), timeout=5)
+            self._link.settimeout(320)
+            self._stream = self._link.makefile('rwb')
+        self._stream.write(payload)
+        self._stream.flush()
+        line = self._stream.readline()
+        if not line.endswith(b'\n'):
+            raise ConnectionError('GenForm 断开了连接')
+        return json.loads(line.decode('utf-8'))
 
     def _ask(self, request):
+        payload = (json.dumps(request, ensure_ascii=False) + '\n').encode('utf-8')
+        reused = self._stream is not None
         try:
-            with socket.create_connection(('127.0.0.1', self._port), timeout=5) as link:
-                link.settimeout(320)
-                link.sendall((json.dumps(request, ensure_ascii=False) + '\n').encode('utf-8'))
-                data = b''
-                while not data.endswith(b'\n'):
-                    chunk = link.recv(1 << 16)
-                    if not chunk:
-                        break
-                    data += chunk
-            return json.loads(data.decode('utf-8'))
+            return self._send(payload)
         except OSError:
-            return {'ok': False, 'error': f'连不上 GenForm（端口 {self._port}）。请先启动 GenForm，'
-                                          '或者用 --headless 参数以无界面方式运行本服务。'}
+            self._drop()
+        if reused:                          # 用的是上次留下的连接 (GenForm 可能重开过): 新建一条再试一次
+            try:
+                return self._send(payload)
+            except OSError:
+                self._drop()
+        return {'ok': False, 'error': f'连不上 GenForm（端口 {self._port}）。请先启动 GenForm，'
+                                      '或者用 --headless 参数以无界面方式运行本服务。'}
 
     def tools(self):
         answer = self._ask({'cmd': 'tools'})
@@ -75,6 +106,17 @@ class HeadlessBackend:
         return box[0] if box else {'ok': False, 'error': '命令没有返回结果'}
 
 
+def _image(name, answer):
+    """截图的结果: 把图片直接附上 (AI 不用再去读这个文件, 读不到本机文件的 AI 也能看)。"""
+    path = answer.get('path') if name == 'screenshot' and answer.get('ok') else None
+    try:
+        with open(path, 'rb') as handle:
+            data = base64.b64encode(handle.read()).decode('ascii')
+    except (OSError, TypeError):
+        return []
+    return [{'type': 'image', 'data': data, 'mimeType': 'image/png'}]
+
+
 def respond(backend, message):
     """处理一条 JSON-RPC 消息 → 应答字典 (通知类消息返回 None)。"""
     method, identifier = message.get('method'), message.get('id')
@@ -92,7 +134,8 @@ def respond(backend, message):
         params = message.get('params') or {}
         answer = backend.call(str(params.get('name')), params.get('arguments') or {})
         from .wire import encode
-        result = {'content': [{'type': 'text', 'text': encode(answer)}], 'isError': not answer.get('ok', False)}
+        result = {'content': [{'type': 'text', 'text': encode(answer)}] + _image(params.get('name'), answer),
+                  'isError': not answer.get('ok', False)}
     else:
         return {'jsonrpc': '2.0', 'id': identifier, 'error': {'code': -32601, 'message': f'不支持的方法 {method}'}}
     return {'jsonrpc': '2.0', 'id': identifier, 'result': result}

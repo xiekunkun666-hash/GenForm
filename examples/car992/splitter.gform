@@ -1,0 +1,78 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "聚丙烯 PP",
+  "color": "#1A1B1E"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "下扰流草图",
+   "params": {
+    "plane": "XY",
+    "offset": 196.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        40,
+        -700
+       ],
+       [
+        40,
+        700
+       ],
+       [
+        260,
+        760
+       ],
+       [
+        260,
+        -760
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "下扰流",
+   "params": {
+    "sketch": "f1",
+    "distance": 22.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "kind": "prism",
+    "auto": true,
+    "batch": 1,
+    "cost": 865.75,
+    "tooling": 300.0,
+    "unit": 565.75,
+    "standard": false,
+    "spec": "",
+    "why": "有厚度的块 → 三轴 CNC 铣：做 1 件, 每件约 ¥866 (模具 / 工装 ¥300 摊下来 ¥300 + 单件 ¥566)",
+    "alternatives": []
+   }
+  }
+ ]
+}

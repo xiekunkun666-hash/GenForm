@@ -37,6 +37,7 @@ ApplicationWindow {
                     sequence: modelData.key
                     // 正在输入框里打字: 单个字母、Delete 让给输入框; 带 Ctrl 的照常
                     enabled: !settingsDialog.opened && (!root.typing || modelData.key.indexOf("Ctrl+") >= 0)
+                             && (!app.startPage || modelData.id === "file.new" || modelData.id === "file.open" || modelData.id === "app.settings")
                     onActivated: app.runAction(modelData.id)
                 }
             }
@@ -45,7 +46,8 @@ ApplicationWindow {
     Connections {
         target: app
         function onDialogRequested(which) {
-            if (which === "open") openDialog.open()
+            if (which === "new") newDialog.open()
+            else if (which === "open") openDialog.open()
             else if (which === "save") saveDialog.open()
             else if (which === "export") exportDialog.open()
             else if (which === "settings") settingsDialog.open()
@@ -64,31 +66,79 @@ ApplicationWindow {
         }
     }
     SettingsDialog { id: settingsDialog }
+    NewDialog { id: newDialog }
 
+    // 文件拖进窗口: 打开装配体 / 工程图 / 零件, 装配体里拖零件 = 插入零部件 (app.dropFiles 按扩展名分)
+    DropArea {
+        id: fileDrop
+        anchors.fill: parent
+        z: 1000
+        onEntered: (drag) => drag.accepted = drag.hasUrls
+        onDropped: (drop) => { if (drop.hasUrls) { app.dropFiles(drop.urls); drop.accept(Qt.CopyAction) } }
+        Rectangle {
+            anchors.fill: parent; anchors.margins: 8
+            visible: fileDrop.containsDrag
+            radius: 10
+            color: Qt.rgba(0.16, 0.42, 0.85, 0.12)
+            border.width: 2; border.color: Theme.cAccent
+            Rectangle {
+                anchors.centerIn: parent
+                width: dropHint.implicitWidth + 40; height: dropHint.implicitHeight + 24; radius: 8
+                color: Theme.cAccentStrong
+                Text {
+                    id: dropHint
+                    anchors.centerIn: parent
+                    horizontalAlignment: Text.AlignHCenter
+                    text: root.kind === "assembly" ? qsTr("松开：零件 (.gform / .step) 插入为零部件，.gasm / .gdrw 直接打开")
+                                                   : qsTr("松开：打开 (.gform / .gasm / .gdrw)")
+                    color: "#FFFFFF"; font.family: Theme.font; font.pixelSize: Theme.textSize + 1
+                }
+            }
+        }
+    }
+
+    // 文件对话框跟着开着的文档走: 零件 .gform / 装配体 .gasm / 工程图 .gdrw
+    readonly property string kind: app.docKind
     FileDialog {
         id: openDialog
-        title: "打开零件"
-        nameFilters: ["GenForm 零件 (*.gform)"]
+        title: qsTr("打开")
+        nameFilters: [qsTr("GenForm 文件和 STEP (*.gform *.gasm *.gdrw *.step *.stp)"), qsTr("GenForm 零件 (*.gform)"), qsTr("GenForm 装配体 (*.gasm)"), qsTr("GenForm 工程图 (*.gdrw)"), qsTr("STEP 文件，导入成新零件 (*.step *.stp)")]
         onAccepted: app.openDocument(selectedFile)
     }
     FileDialog {
         id: saveDialog
-        title: "保存零件"
+        title: qsTr("保存")
         fileMode: FileDialog.SaveFile
-        defaultSuffix: "gform"
-        nameFilters: ["GenForm 零件 (*.gform)"]
+        defaultSuffix: root.kind === "assembly" ? "gasm" : (root.kind === "drawing" ? "gdrw" : "gform")
+        nameFilters: root.kind === "assembly" ? [qsTr("GenForm 装配体 (*.gasm)")]
+                   : (root.kind === "drawing" ? [qsTr("GenForm 工程图 (*.gdrw)")] : [qsTr("GenForm 零件 (*.gform)")])
         onAccepted: app.saveDocument(selectedFile)
     }
     FileDialog {
         id: exportDialog
-        title: "导出"
+        title: qsTr("导出")
         fileMode: FileDialog.SaveFile
-        defaultSuffix: "step"
-        nameFilters: ["STEP 精确几何 (*.step *.stp)", "STL 三角网格 (*.stl)"]
+        defaultSuffix: root.kind === "drawing" ? "pdf" : "step"
+        nameFilters: root.kind === "drawing" ? [qsTr("PDF 文档 (*.pdf)"), qsTr("DXF 图形，给别的 CAD 用 (*.dxf)"), qsTr("SVG 矢量图 (*.svg)"), qsTr("PNG 图片 (*.png)")]
+                   : (root.kind === "assembly" ? [qsTr("STEP 精确几何 (*.step *.stp)")]
+                                               : [qsTr("STEP 精确几何 (*.step *.stp)"), qsTr("STL 三角网格 (*.stl)")])
         onAccepted: app.exportModel(selectedFile)
     }
+    FileDialog {                            // 装配体的物料清单
+        id: bomDialog
+        title: qsTr("保存物料清单")
+        fileMode: FileDialog.SaveFile
+        defaultSuffix: "csv"
+        nameFilters: [qsTr("CSV 表格 (*.csv)")]
+        onAccepted: sim.exportBill(selectedFile)
+    }
+    FileDialog {                            // 装配体里插入零件 / 工程图选要画的零件
+        id: partDialog
+        title: root.kind === "drawing" ? qsTr("选择零件") : qsTr("插入零件")
+        nameFilters: [qsTr("零件 (*.gform *.step *.stp)")]
+        onAccepted: root.kind === "drawing" ? drawing.setPart(selectedFile) : sim.addPart(selectedFile)
+    }
 
-    component Separator: Rectangle { width: 1; height: 34; color: Theme.cDivider; Layout.leftMargin: 6; Layout.rightMargin: 6 }
     component SectionTitle: Text {
         color: Theme.cTextMuted
         font.family: Theme.font; font.pixelSize: 11; font.bold: true
@@ -100,74 +150,7 @@ ApplicationWindow {
         spacing: 0
 
         // ================= 标题栏 =================
-        Rectangle {
-            id: titleBar
-            Layout.fillWidth: true
-            height: 38
-            color: Theme.cBgTitle
-
-            // 拖动标题栏移动窗口, 双击最大化 / 还原。真的拖动了才开始移动: 不然最大化时单击一下窗口就缩回去
-            MouseArea {
-                anchors.fill: parent
-                property point pressAt
-                property bool moving: false
-                onPressed: (mouse) => { pressAt = Qt.point(mouse.x, mouse.y); moving = false }
-                onPositionChanged: (mouse) => {
-                    if (!pressed || moving) return
-                    const slop = Qt.styleHints.startDragDistance
-                    if (Math.abs(mouse.x - pressAt.x) < slop && Math.abs(mouse.y - pressAt.y) < slop) return
-                    moving = true
-                    if (root.maximized) {
-                        const at = titleBar.mapToGlobal(mouse.x, mouse.y)
-                        const ratio = mouse.x / Math.max(1, titleBar.width)
-                        root.showNormal()
-                        root.x = Math.round(at.x - root.width * ratio)
-                        root.y = Math.round(at.y - mouse.y)
-                    }
-                    root.startSystemMove()
-                }
-                onDoubleClicked: app.toggleMaximize()
-            }
-
-            RowLayout {
-                anchors.fill: parent
-                anchors.leftMargin: 14
-                spacing: 2
-                Rectangle {                 // 标志: 一个蓝色小方块 + 名字
-                    width: 16; height: 16; radius: 4
-                    color: Theme.cAccentStrong
-                    Rectangle { x: 4; y: 4; width: 8; height: 8; radius: 2; color: "transparent"; border.width: 1.5; border.color: "#FFFFFF" }
-                    Layout.rightMargin: 6
-                }
-                Text {
-                    text: "GenForm"
-                    color: Theme.cText
-                    font.family: Theme.font; font.pixelSize: 14; font.bold: true
-                    Layout.rightMargin: 14
-                }
-                IconBtn { icon: "new"; tip: "新零件"; action: "file.new"; onClicked: app.runAction("file.new") }
-                IconBtn { icon: "open"; tip: "打开零件"; action: "file.open"; onClicked: app.runAction("file.open") }
-                IconBtn { icon: "save"; tip: "保存零件"; action: "file.save"; onClicked: app.runAction("file.save") }
-                IconBtn { icon: "export"; tip: "导出：STEP 精确几何 / STL 三角网格"; action: "file.export"; onClicked: app.runAction("file.export") }
-                Rectangle { width: 1; height: 18; color: Theme.cDivider; Layout.leftMargin: 6; Layout.rightMargin: 6 }
-                IconBtn { icon: "undo"; tip: "撤销"; action: "edit.undo"; enabled: app.canUndo; onClicked: app.undo() }
-                IconBtn { icon: "redo"; tip: "重做"; action: "edit.redo"; enabled: app.canRedo; onClicked: app.redo() }
-                Item { Layout.fillWidth: true }
-                IconBtn { icon: "gear"; tip: "设置：快捷键、鼠标笔势（右键手势轮）、AI 接口"; action: "app.settings"; onClicked: settingsDialog.open() }
-                IconBtn { icon: "theme"; tip: Theme.darkMode ? "换成浅色界面" : "换成深色界面"; onClicked: Theme.darkMode = !Theme.darkMode }
-                Item { width: 6 }
-                IconBtn { icon: "min"; implicitWidth: 44; implicitHeight: 38; radius: 0; onClicked: root.showMinimized() }
-                IconBtn { icon: root.maximized ? "restore" : "max"; implicitWidth: 44; implicitHeight: 38; radius: 0; onClicked: app.toggleMaximize() }
-                IconBtn { icon: "close"; danger: true; implicitWidth: 44; implicitHeight: 38; radius: 0; onClicked: root.close() }
-            }
-            // 文档名放在正中 (不参与上面一行的排布, 所以不会被两边的按钮挤偏)
-            Text {
-                anchors.centerIn: parent
-                text: app.title + (app.busy ? "　·　计算中…" : "")
-                color: Theme.cTextSec
-                font.family: Theme.font; font.pixelSize: Theme.smallSize
-            }
-        }
+        TitleBar { onOpenSettings: settingsDialog.open() }
 
         // ================= 工具栏: 特征 / 草图 两页 (和 SOLIDWORKS 的命令管理器一样, 只是翻页, 不换界面) =================
         Rectangle {
@@ -177,229 +160,78 @@ ApplicationWindow {
             Rectangle { anchors.bottom: parent.bottom; width: parent.width; height: 1; color: Theme.cDivider }
 
             // ---- 特征页 (和 SOLIDWORKS 的特征页一个顺序: 凸台 | 切除和孔 | 修改 | 阵列、参考几何体、曲线) ----
-            Flickable {
-                id: featureRibbon
-                x: 12; y: 6; height: 54
-                width: parent.width - 24
-                visible: app.tab === "feature"
-                contentWidth: featureRow.implicitWidth; contentHeight: 54
-                clip: true
-                boundsBehavior: Flickable.StopAtBounds
-                flickableDirection: Flickable.HorizontalFlick
-                interactive: contentWidth > width
-                WheelHandler {
-                    onWheel: (event) => featureRibbon.contentX = Math.max(0, Math.min(featureRibbon.contentWidth - featureRibbon.width,
-                                                                                      featureRibbon.contentX - event.angleDelta.y))
-                }
-                RowLayout {
-                    id: featureRow
-                    height: 54
-                    spacing: 1
-                    RibbonBtn { icon: "extrude"; text: "拉伸凸台"; tip: "拉伸凸台/基体：把草图拉伸成实体。正在画草图时点它：先保存草图，接着就拉伸它"; action: "cmd:extrude"; onClicked: app.startCommand("extrude") }
-                    RibbonBtn { icon: "revolve"; text: "旋转凸台"; tip: "旋转凸台/基体：把草图绕一根轴旋转成实体"; onClicked: app.startCommand("revolve") }
-                    RibbonBtn { icon: "sweep"; text: "扫描"; tip: "让轮廓草图沿一条路径 (草图或曲线) 扫过去"; onClicked: app.startCommand("sweep") }
-                    RibbonBtn { icon: "loft"; text: "放样凸台"; tip: "放样凸台/基体：在几个草图轮廓之间过渡"; onClicked: app.startCommand("loft") }
-                    RibbonBtn { icon: "boundary"; text: "边界凸台"; tip: "边界凸台/基体：轮廓之间光顺过渡 (目前只有方向 1)"; onClicked: app.startCommand("boundary") }
-                    Separator {}
-                    RibbonBtn { icon: "cut"; text: "拉伸切除"; tip: "用草图从实体上切掉一块"; onClicked: app.startCommand("cut") }
-                    RibbonMenu { icon: "hole"; text: "异形孔"; tip: "异形孔向导、高级孔、螺纹线、螺柱向导"; items: app.featureMenus[0].items; onPicked: (id) => app.startCommand(id) }
-                    RibbonBtn { icon: "revolve"; text: "旋转切除"; tip: "把草图绕轴旋转, 从实体上切掉"; onClicked: app.startCommand("revolve_cut") }
-                    RibbonBtn { icon: "sweep"; text: "扫描切除"; tip: "轮廓沿路径扫过去, 从实体上切掉"; onClicked: app.startCommand("sweep_cut") }
-                    RibbonBtn { icon: "loft"; text: "放样切除"; tip: "在几个轮廓之间过渡, 从实体上切掉"; onClicked: app.startCommand("loft_cut") }
-                    Separator {}
-                    RibbonBtn { icon: "fillet"; text: "圆角"; tip: "圆角：给选中的边倒圆角"; action: "cmd:fillet"; onClicked: app.startCommand("fillet") }
-                    RibbonBtn { icon: "chamfer"; text: "倒角"; tip: "给选中的边倒斜角"; onClicked: app.startCommand("chamfer") }
-                    RibbonBtn { icon: "rib"; text: "筋"; tip: "用一条开口的草图线做加强筋"; onClicked: app.startCommand("rib") }
-                    RibbonBtn { icon: "draft"; text: "拔模"; tip: "把选中的面相对中性面倾斜一个角度"; onClicked: app.startCommand("draft") }
-                    RibbonBtn { icon: "shell"; text: "抽壳"; tip: "掏空成等厚的壳, 选中的面成为开口"; onClicked: app.startCommand("shell") }
-                    RibbonBtn { icon: "wrap"; text: "包裹"; tip: "把草图轮廓贴到圆柱面上, 凸起或凹进"; onClicked: app.startCommand("wrap") }
-                    RibbonBtn { icon: "mirror"; text: "镜像"; tip: "关于一个基准面镜像特征或整个实体"; onClicked: app.startCommand("mirror") }
-                    Separator {}
-                    RibbonMenu { icon: "pattern"; text: "阵列"; tip: "线性、圆周、镜像、曲线驱动、草图驱动、表格驱动、填充、变量阵列"; items: app.featureMenus[1].items; onPicked: (id) => app.startCommand(id) }
-                    RibbonMenu { icon: "reference"; text: "参考几何体"; tip: "基准面、基准轴、坐标系、点、质心、边界框"; items: app.featureMenus[2].items; onPicked: (id) => app.startCommand(id) }
-                    RibbonMenu { icon: "curve"; text: "曲线"; tip: "分割线、投影曲线、组合曲线、通过点的曲线、螺旋线/涡状线"; items: app.featureMenus[3].items; onPicked: (id) => app.startCommand(id) }
-                }
-            }
+            FeatureRibbon {}
 
             // ---- 草图页 (工具多, 窗口窄时可以左右滚) ----
-            Flickable {
-                id: sketchRibbon
+            SketchRibbon {}
+
+            // ---- 评估页: 量和查 ----
+            RowLayout {
                 x: 12; y: 6; height: 54
-                width: parent.width - 24
-                visible: app.tab === "sketch"
-                contentWidth: sketchRow.implicitWidth; contentHeight: 54
-                clip: true
-                boundsBehavior: Flickable.StopAtBounds
-                flickableDirection: Flickable.HorizontalFlick
-                interactive: contentWidth > width
-                WheelHandler {
-                    onWheel: (event) => sketchRibbon.contentX = Math.max(0, Math.min(sketchRibbon.contentWidth - sketchRibbon.width,
-                                                                                    sketchRibbon.contentX - event.angleDelta.y))
-                }
-                RowLayout {
-                    id: sketchRow
-                    height: 54
-                    spacing: 1
-                    RibbonBtn {
-                        icon: app.sketchActive ? "exit" : "sketch"
-                        text: app.sketchActive ? "退出草图" : "草图绘制"
-                        active: app.sketchActive
-                        tip: app.sketchActive ? "退出草图：保存这个草图并退出" : "草图绘制：选一个基准面开始画草图"
-                        action: app.sketchActive ? "sketch.finish" : "sketch.start"
-                        onClicked: app.startSketch()
-                    }
-                    Separator {}
-                    RibbonBtn { enabled: app.sketchActive; icon: "dimension"; text: "智能尺寸"; tip: "智能尺寸：点一个图形改它的尺寸；再点另一个图形 = 改它们之间的距离"; action: "tool:dimension"; active: app.sketchTool === "dimension"; onClicked: app.useSketchTool("dimension") }
-                    Separator {}
-                    RibbonMenu {
-                        icon: "line"; text: "直线"; tip: "直线：直线、中心线、中点线"; action: "tool:line"
-                        active: ["line", "centerline", "midline"].indexOf(app.sketchTool) >= 0
-                        items: [{id: "line", title: "直线"}, {id: "centerline", title: "中心线"}, {id: "midline", title: "中点线"}]
-                        onPicked: (id) => app.sketchPick(id)
-                    }
-                    RibbonMenu {
-                        icon: "rect"; text: "矩形"; tip: "矩形：边角矩形、中心矩形、3 点边角矩形、3 点中心矩形、平行四边形、多边形"; action: "tool:rect"
-                        active: ["rect", "crect", "rect3", "crect3", "pgram", "ngon"].indexOf(app.sketchTool) >= 0
-                        items: [{id: "rect", title: "边角矩形"}, {id: "crect", title: "中心矩形"}, {id: "rect3", title: "3 点边角矩形"},
-                                {id: "crect3", title: "3 点中心矩形"}, {id: "pgram", title: "平行四边形"}, {id: "ngon", title: "多边形"}]
-                        onPicked: (id) => app.sketchPick(id)
-                    }
-                    RibbonMenu {
-                        icon: "slot"; text: "槽口"; tip: "直槽口、中心点直槽口、三点圆弧槽口、中心点圆弧槽口"
-                        active: ["slot", "cslot", "aslot3", "caslot"].indexOf(app.sketchTool) >= 0
-                        items: [{id: "slot", title: "直槽口"}, {id: "cslot", title: "中心点直槽口"}, {id: "aslot3", title: "三点圆弧槽口"},
-                                {id: "caslot", title: "中心点圆弧槽口"}]
-                        onPicked: (id) => app.sketchPick(id)
-                    }
-                    RibbonMenu {
-                        icon: "circle"; text: "圆"; tip: "圆：圆心 + 半径；周边圆：圆周上三个点；椭圆：中心 → 长轴 → 短轴"; action: "tool:circle"
-                        active: ["circle", "circle3", "ellipse"].indexOf(app.sketchTool) >= 0
-                        items: [{id: "circle", title: "圆"}, {id: "circle3", title: "周边圆"}, {id: "ellipse", title: "椭圆"}]
-                        onPicked: (id) => app.sketchPick(id)
-                    }
-                    RibbonBtn { icon: "arc"; text: "圆弧"; tip: "圆弧：圆心/起/终点画弧"; action: "tool:arc"; active: app.sketchTool === "arc"; onClicked: app.useSketchTool("arc") }
-                    RibbonMenu {
-                        icon: "spline"; text: "样条"; tip: "样条曲线、样式样条曲线、方程式驱动的曲线"
-                        active: ["spline", "sspline", "equation"].indexOf(app.sketchTool) >= 0
-                        items: [{id: "spline", title: "样条曲线"}, {id: "sspline", title: "样式样条曲线"}, {id: "equation", title: "方程式驱动的曲线"}]
-                        onPicked: (id) => app.sketchPick(id)
-                    }
-                    RibbonBtn { icon: "point"; text: "点"; tip: "绘制一个点：单击放置"; active: app.sketchTool === "point"; onClicked: app.useSketchTool("point") }
-                    RibbonBtn { icon: "text"; text: "文本"; tip: "单击放置一行字；先选中一条曲线再点这里 = 沿这条曲线排"; active: app.sketchTool === "text"; onClicked: app.useSketchTool("text") }
-                    Separator {}
-                    RibbonBtn { enabled: app.sketchActive; icon: "fillet"; text: "圆角"; tip: "绘制圆角：点两条直线相交的尖角"; active: app.sketchTool === "fillet"; onClicked: app.useSketchTool("fillet") }
-                    RibbonMenu {
-                        enabled: app.sketchActive
-                        icon: "trim"; text: "剪裁"; tip: "剪裁实体：点要剪掉的那一段；延伸实体：点要延长的那一头"; action: "tool:trim"
-                        active: ["trim", "extend"].indexOf(app.sketchTool) >= 0
-                        items: [{id: "trim", title: "剪裁实体"}, {id: "extend", title: "延伸实体"}]
-                        onPicked: (id) => app.sketchPick(id)
-                    }
-                    RibbonBtn { enabled: app.sketchActive; icon: "offset"; text: "等距"; tip: "等距实体：点一个图形，再点一下定距离和方向"; action: "tool:offset"; active: app.sketchTool === "offset"; onClicked: app.useSketchTool("offset") }
-                    RibbonBtn { enabled: app.sketchActive; icon: "mirror"; text: "镜向"; tip: "镜向实体：先选图形，再点两点定镜向轴"; active: app.sketchTool === "mirror"; onClicked: app.useSketchTool("mirror") }
-                    RibbonMenu {
-                        enabled: app.sketchActive
-                        icon: "pattern"; text: "阵列"; tip: "先选图形。线性草图阵列：填数量和间距；圆周草图阵列：填数量、总角度和中心"
-                        active: app.sketchOperation === "pattern" || app.sketchOperation === "cpattern"
-                        items: [{id: "pattern", title: "线性草图阵列"}, {id: "cpattern", title: "圆周草图阵列"}]
-                        onPicked: (id) => app.sketchPick(id)
-                    }
-                    RibbonBtn { enabled: app.sketchActive; icon: "move"; text: "移动"; tip: "移动实体：先选图形，再点起点和终点"; action: "tool:move"; active: app.sketchTool === "move"; onClicked: app.useSketchTool("move") }
-                    RibbonMenu {
-                        enabled: app.sketchActive
-                        icon: "convert"; text: "转换引用"; tip: "转换实体引用：把实体的边拷进草图；侧影实体：曲面转过去的轮廓线；交叉曲线：草图平面切开实体的交线"
-                        active: app.sketchTool === "convert"
-                        items: [{id: "convert", title: "转换实体引用"}, {id: "silhouette", title: "侧影实体"}, {id: "section", title: "交叉曲线"}]
-                        onPicked: (id) => app.sketchPick(id)
-                    }
-                    Separator {}
-                    RibbonMenu {
-                        enabled: app.sketchActive
-                        icon: "relation"; text: "几何关系"; tip: "添加几何关系：先选图形（第一个不动），再选水平 / 竖直 / 平行 / 垂直 / 相等 / 同心 / 相切…；修复草图：找出废线、重复的线、没接上的端点"
-                        active: app.sketchOperation === "relation" || app.sketchOperation === "repair"
-                        items: [{id: "relation", title: "添加几何关系"}, {id: "repair", title: "修复草图"}]
-                        onPicked: (id) => app.sketchPick(id)
-                    }
-                    RibbonBtn {
-                        id: snapButton
-                        icon: "snap"; text: "捕捉"
-                        tip: "捕捉：每一种可以单独开关；右边一列是快速捕捉（下一次点击只吸到这一种点）"
-                        active: app.quickSnap !== ""
-                        onClicked: snapMenu.opened ? snapMenu.close() : snapMenu.open()
-                        Popup {
-                            id: snapMenu
-                            y: parent.height + 6
-                            padding: 8
-                            onAboutToShow: x = Math.min(0, root.width - 8 - snapButton.mapToItem(null, 0, 0).x - implicitWidth)
-                            background: Rectangle { color: Theme.cBg; radius: 8; border.width: 1; border.color: Theme.cDivider }
-                            contentItem: Row {
-                                spacing: 8
-                                Column {
-                                    spacing: 2
-                                    Text { x: 8; height: 24; verticalAlignment: Text.AlignVCenter; text: "一直开着"; color: Theme.cTextMuted; font.family: Theme.font; font.pixelSize: Theme.textSize - 1 }
-                                    Repeater {
-                                        model: app.snapToggles
-                                        delegate: Rectangle {
-                                            required property var modelData
-                                            width: 150; height: 30; radius: 5
-                                            color: toggleArea.containsMouse ? Theme.cBgHover : "transparent"
-                                            Text {
-                                                anchors.verticalCenter: parent.verticalCenter
-                                                x: 10; width: 16
-                                                text: modelData.on ? "✓" : ""
-                                                color: Theme.cAccent
-                                                font.family: Theme.font; font.pixelSize: Theme.textSize
-                                            }
-                                            Text {
-                                                anchors.verticalCenter: parent.verticalCenter
-                                                x: 30
-                                                text: modelData.text
-                                                color: modelData.on ? Theme.cText : Theme.cTextMuted
-                                                font.family: Theme.font; font.pixelSize: Theme.textSize
-                                            }
-                                            MouseArea {
-                                                id: toggleArea
-                                                anchors.fill: parent; hoverEnabled: true
-                                                onClicked: app.toggleSnap(modelData.id)
-                                            }
-                                        }
-                                    }
-                                }
-                                Rectangle { width: 1; height: parent.height; color: Theme.cDivider }
-                                Column {
-                                    spacing: 2
-                                    Text { x: 8; height: 24; verticalAlignment: Text.AlignVCenter; text: "只用一次"; color: Theme.cTextMuted; font.family: Theme.font; font.pixelSize: Theme.textSize - 1 }
-                                    Repeater {
-                                        model: app.quickSnaps
-                                        delegate: Rectangle {
-                                            required property var modelData
-                                            readonly property bool on: app.quickSnap === modelData.id
-                                            width: 138; height: 30; radius: 5
-                                            opacity: app.sketchActive ? 1 : 0.45
-                                            color: on ? Theme.cAccentSoft : (snapArea.containsMouse ? Theme.cBgHover : "transparent")
-                                            Text {
-                                                anchors.verticalCenter: parent.verticalCenter
-                                                x: 12
-                                                text: modelData.text
-                                                color: parent.on ? Theme.cAccent : Theme.cText
-                                                font.family: Theme.font; font.pixelSize: Theme.textSize
-                                            }
-                                            MouseArea {
-                                                id: snapArea
-                                                anchors.fill: parent; hoverEnabled: true
-                                                onClicked: { app.setQuickSnap(modelData.id); snapMenu.close() }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    RibbonMenu { icon: "sketch3d"; text: "3D 草图"; tip: "3D 草图：按空间坐标点连成的线；曲面上的样条曲线：贴在一张面上的样条"; items: app.featureMenus[4].items; onPicked: (id) => app.startCommand(id) }
-                    RibbonBtn { icon: "rapid"; text: "快速草图"; tip: "快速草图：进草图不转视角，画完一个接着点下一个基准面"; active: app.rapidSketch; onClicked: app.toggleRapidSketch() }
-                    Separator { visible: app.sketchActive }
-                    RibbonBtn { visible: app.sketchActive; icon: "select"; text: "选择"; tip: "选择：选中、移动、改形状（按 Esc 也回到这里）"; active: app.sketchTool === "select" && app.sketchOperation === ""; onClicked: app.useSketchTool("select") }
-                }
+                visible: app.tab === "evaluate" && root.kind === "part"
+                spacing: 1
+                RibbonBtn { icon: "measure"; text: qsTr("测量"); tip: qsTr("测量：点一个面、边或顶点看它的尺寸；点两个看它们之间的最短距离、夹角、中心距"); action: "eval.measure"; active: app.measuring; onClicked: app.toggleMeasure() }
+                RibbonSeparator {}
+                RibbonBtn { icon: "process"; text: app.binding ? qsTr("绑定中…") : qsTr("绑定工艺"); tip: qsTr("绑定工艺：按性价比自动给每个特征挑现实里能做的加工工艺（激光切割、折弯、冲压、手工钣金、CNC、车削、铸造、注塑、3D 打印、外购…），按设计规则里的生产数量摊模具费；绑好后设计树的特征名前面显示工艺，悬停看为什么"); action: "eval.process"; enabled: !app.binding; onClicked: app.bindProcesses() }
+                RibbonBtn { icon: "drc"; text: app.checkBusy ? qsTr("检查中…") : qsTr("设计检查"); tip: qsTr("设计检查：像 PCB 的 DRC，全部查一遍——特征出错、悬空的零件、件与件间隙太小或只贴着、工艺做不了、壁太薄、孔、尖内角、字太小、成本汇总；有问题的件标红，结果在底部的日志窗口"); action: "eval.check"; active: app.checkOpen; enabled: !app.checkBusy; onClicked: app.runCheck() }
+                RibbonBtn { icon: "rules"; text: qsTr("设计规则"); tip: qsTr("设计规则：公差、件与件最小间隙、连接最小压入量、最小壁厚、孔、内角圆角、字高、生产数量（在设置里）"); onClicked: settingsDialog.openPage("rules") }
+            }
+
+            // ---- 仿真页: 受力、风阻、装配 ----
+            RowLayout {
+                x: 12; y: 6; height: 54
+                visible: app.tab === "simulate"
+                spacing: 1
+                RibbonBtn { icon: "stress"; text: qsTr("静力分析"); tip: qsTr("静力分析：选固定面和受力面、填力的大小，估算应力、变形和安全系数"); action: "sim.static"; active: sim.mode === "static"; onClicked: sim.open("static") }
+                RibbonBtn { icon: "wind"; text: qsTr("风阻估算"); tip: qsTr("风阻估算：按迎风面积和阻力系数估算空气阻力（不是流场计算）"); action: "sim.drag"; active: sim.mode === "drag"; onClicked: sim.open("drag") }
+                RibbonSeparator {}
+                RibbonBtn { icon: "assembly"; text: qsTr("装配检查"); tip: qsTr("装配检查：把几个零件摆到一起，查有没有干涉，查按顺序能不能一个个装进去"); action: "sim.assembly"; active: sim.mode === "assembly"; onClicked: sim.open("assembly") }
+            }
+
+            // ---- 装配体页: 零部件 (装配体文档有 装配体 / 草图 / 评估 三页, 和 SOLIDWORKS 的装配体一样) ----
+            RowLayout {
+                x: 12; y: 6; height: 54
+                visible: app.tab === "assembly"
+                spacing: 1
+                RibbonBtn { icon: "plus"; text: qsTr("插入零件"); tip: qsTr("插入零件：选一个 .gform 或 .step 文件，排在装配顺序的最后"); onClicked: partDialog.open() }
+                RibbonSeparator {}
+                RibbonBtn { icon: "motion"; text: sim.motion.playing ? qsTr("暂停动画") : qsTr("播放动画"); tip: qsTr("播放动画（运动算例）：所有运动副（车门、车盖…）一起打开、停一下、再关上；视图下面出一条时间轴，可以拖着看。也可以在视图里按住车门直接拖"); active: motionBar.shown; enabled: sim.motion.count > 0; onClicked: { motionBar.shown = true; sim.playMotion() } }
+                RibbonSeparator {}
+                RibbonBtn { icon: "export"; text: qsTr("导出 STEP"); tip: qsTr("整个装配体导出成一个 STEP 文件：每个零件一个实体，都在摆好的位置上"); onClicked: app.runAction("file.export") }
+                RibbonBtn { icon: "cube"; text: qsTr("回到零件"); tip: qsTr("回到零件：离开装配体，继续改现在打开的零件"); onClicked: app.backToPart() }
+            }
+
+            // ---- 装配体的评估页: 测量、干涉、装配顺序、设计检查、实时检查、物料清单 ----
+            RowLayout {
+                x: 12; y: 6; height: 54
+                visible: app.tab === "evaluate" && root.kind === "assembly"
+                spacing: 1
+                RibbonBtn { icon: "measure"; text: qsTr("测量"); tip: qsTr("测量：点一个零部件看它的长宽高、体积、表面积；点两个看它们之间最短的距离和 ΔX ΔY ΔZ（视图里连一条线）"); action: "eval.measure"; active: app.measuring; onClicked: app.toggleMeasure() }
+                RibbonSeparator {}
+                RibbonBtn { icon: "clash"; text: qsTr("干涉检查"); tip: qsTr("干涉检查：零件两两求重叠，有重叠的标出来"); onClicked: sim.runInterference() }
+                RibbonBtn { icon: "order"; text: qsTr("装配顺序"); tip: qsTr("装配顺序检查：按列表的顺序，每个零件能不能沿 ±X ±Y ±Z 直线装进去"); onClicked: sim.runSequence() }
+                RibbonSeparator {}
+                RibbonBtn { icon: "drc"; text: app.checkBusy ? qsTr("检查中…") : qsTr("设计检查"); tip: qsTr("装配体的设计检查：零件之间有没有压进去（干涉）、间隙是不是太小、有没有悬空没装在任何东西上的零件、零件绑没绑工艺，再按标准件 / 外购件 / 非标件汇总物料清单和成本；有问题的零件标红，结果在底部的日志窗口"); active: app.checkOpen; enabled: !app.checkBusy; onClicked: app.runCheck() }
+                RibbonBtn { icon: "check"; text: qsTr("实时检查"); tip: qsTr("实时检查（像画 PCB 的在线 DRC）：插入、挪动、转、镜像一个零件以后马上在后台查件与件——压进去了就在视图里画一个红叉，设计树上也打红叉；算过的、没变的几对不重算。再点一下关掉"); active: sim.live.on; onClicked: sim.toggleLive() }
+                RibbonSeparator {}
+                RibbonBtn { icon: "props"; text: qsTr("物料清单"); tip: qsTr("物料清单（BOM）：每种零件几件、标准件还是非标件、规格、工艺、材质、估算单价，存成 CSV（Excel 能直接打开）"); onClicked: bomDialog.open() }
+                RibbonBtn { icon: "rules"; text: qsTr("设计规则"); tip: qsTr("设计规则：公差、件与件最小间隙…（在设置里）；实时检查和设计检查都按它查"); onClicked: settingsDialog.openPage("rules") }
+            }
+
+            // ---- 工程图页 ----
+            RowLayout {
+                x: 12; y: 6; height: 54
+                visible: app.tab === "drawing"
+                spacing: 1
+                RibbonBtn { icon: "open"; text: qsTr("选择零件"); tip: qsTr("选择零件：这张图纸画哪个零件（.gform 或 .step 文件）"); onClicked: partDialog.open() }
+                RibbonSeparator {}
+                RibbonBtn { icon: "dimension"; text: qsTr("智能尺寸"); tip: qsTr("智能尺寸：点两个点（线的端点、圆心），再点一下放下——上下拉出去是水平尺寸，左右拉出去是竖直尺寸；点一个圆 = 标直径"); active: drawing.state.tool === "dimension"; onClicked: drawing.useTool("dimension") }
+                RibbonBtn { icon: "trash"; text: qsTr("删除尺寸"); tip: qsTr("删除选中的那个尺寸（先点一下它的数字；按 Delete 也行）"); enabled: drawing.state.selected; onClicked: drawing.deleteSelected() }
+                RibbonSeparator {}
+                RibbonBtn { icon: "fit"; text: qsTr("整张图纸"); tip: qsTr("把整张图纸放满窗口"); onClicked: drawing.fit() }
+                RibbonSeparator {}
+                RibbonBtn { icon: "export"; text: qsTr("导出"); tip: qsTr("导出：PDF / DXF / SVG / PNG"); onClicked: app.runAction("file.export") }
+                RibbonBtn { icon: "cube"; text: qsTr("回到零件"); tip: qsTr("回到零件：离开工程图，继续改现在打开的零件"); onClicked: app.backToPart() }
             }
 
             // ---- 页签 ----
@@ -408,7 +240,9 @@ ApplicationWindow {
                 anchors.bottom: parent.bottom; anchors.bottomMargin: 6
                 spacing: 4
                 Repeater {
-                    model: [{ id: "feature", text: "特征" }, { id: "sketch", text: "草图" }]
+                    model: root.kind === "assembly" ? [{ id: "assembly", text: qsTr("装配体") }, { id: "sketch", text: qsTr("草图") }, { id: "evaluate", text: qsTr("评估") }]
+                         : (root.kind === "drawing" ? [{ id: "drawing", text: qsTr("工程图") }]
+                         : [{ id: "feature", text: qsTr("特征") }, { id: "sketch", text: qsTr("草图") }, { id: "evaluate", text: qsTr("评估") }, { id: "simulate", text: qsTr("仿真") }])
                     delegate: Rectangle {
                         required property var modelData
                         readonly property bool on: app.tab === modelData.id
@@ -425,6 +259,28 @@ ApplicationWindow {
                         MouseArea { id: tabArea; anchors.fill: parent; hoverEnabled: true; onClicked: app.setTab(modelData.id) }
                     }
                 }
+                // 从装配体打开的零件 (或 "回到零件" 过来的): 改完点它回装配体; 零件改过就先存
+                Rectangle {
+                    id: backChip
+                    visible: app.returnAssembly !== ""
+                    readonly property bool unsaved: app.title.endsWith(" *")
+                    width: backRow.implicitWidth + 24; height: 24; radius: 12
+                    color: backArea.containsMouse ? Theme.cAccentSoft : Theme.cBgWorkspace
+                    border.width: 1; border.color: Theme.cAccentLine
+                    Row {
+                        id: backRow
+                        anchors.centerIn: parent; spacing: 5
+                        Icon { anchors.verticalCenter: parent.verticalCenter; size: 14; name: "assembly"; color: Theme.cAccent }
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: (backChip.unsaved ? qsTr("保存并返回装配体 ") : qsTr("返回装配体 ")) + app.returnAssembly
+                            color: Theme.cAccent; font.family: Theme.font; font.pixelSize: Theme.smallSize; font.bold: true
+                        }
+                    }
+                    MouseArea { id: backArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: app.backToAssembly() }
+                    Tip { shown: backArea.containsMouse; text: app.sketchActive ? qsTr("正在编辑草图：先点“完成草图”或“放弃”，再返回装配体")
+                                                                              : qsTr("回到装配体：零件改过会先保存，装配体里它跟着重算") }
+                }
             }
         }
 
@@ -434,45 +290,8 @@ ApplicationWindow {
             Layout.fillHeight: true
             spacing: 0
 
-            // ---- 左: 基准面 + 特征历史 ----
-            Rectangle {
-                Layout.preferredWidth: 264
-                Layout.fillHeight: true
-                color: Theme.cBg
-                ColumnLayout {
-                    anchors.fill: parent
-                    anchors.margins: 10
-                    anchors.topMargin: 12
-                    spacing: 8
-
-                    RowLayout {
-                        Layout.fillWidth: true
-                        spacing: 6
-                        Rectangle { width: 3; height: 12; radius: 1.5; color: Theme.cAccent; Layout.leftMargin: 4 }
-                        Text { text: "设计树"; color: Theme.cTextSec; font.family: Theme.font; font.pixelSize: Theme.smallSize; font.bold: true }
-                        Item { Layout.fillWidth: true }
-                    }
-                    DesignTree { Layout.fillWidth: true; Layout.fillHeight: true }
-                    Rectangle {                 // 实体的大小: 一张小卡片
-                        Layout.fillWidth: true
-                        implicitHeight: bodyInfo.implicitHeight + 18
-                        radius: 8
-                        color: Theme.cBgCard
-                        border.width: 1; border.color: Theme.cDivider
-                        Text {
-                            id: bodyInfo
-                            x: 12; y: 9
-                            width: parent.width - 24
-                            text: app.bodyText
-                            wrapMode: Text.Wrap
-                            lineHeight: 1.35
-                            color: Theme.cTextSec
-                            font.family: Theme.font; font.pixelSize: Theme.smallSize
-                        }
-                    }
-                }
-                Rectangle { anchors.right: parent.right; width: 1; height: parent.height; color: Theme.cDivider }
-            }
+            // ---- 左: 设计树 / PropertyManager 两页 ----
+            LeftPanel { onChoosePart: partDialog.open() }
 
             // ---- 中: 三维视图 ----
             Item {
@@ -485,31 +304,21 @@ ApplicationWindow {
                     id: viewport
                     objectName: "viewport"
                     anchors.fill: parent
+                    visible: root.kind !== "drawing"
                     dark: Theme.darkMode
                 }
 
-                // 视图里的文字: 基准面的名字、草图的尺寸
-                Repeater {
-                    model: viewport.labels
-                    delegate: Rectangle {
-                        required property var modelData
-                        readonly property bool size: modelData.kind === "size"
-                        x: modelData.x; y: modelData.y
-                        width: labelText.implicitWidth + (size ? 12 : 0)
-                        height: labelText.implicitHeight + (size ? 6 : 0)
-                        radius: 4
-                        color: size ? Qt.rgba(Theme.cBg.r, Theme.cBg.g, Theme.cBg.b, 0.88) : "transparent"
-                        border.width: size ? 1 : 0
-                        border.color: Theme.cDivider
-                        Text {
-                            id: labelText
-                            anchors.centerIn: parent
-                            text: modelData.text
-                            color: size ? Theme.cText : Theme.cAccent
-                            opacity: size ? 1.0 : 0.85
-                            font.family: Theme.font; font.pixelSize: size ? Theme.smallSize : 11
-                        }
-                    }
+                // 视图里的文字: 基准面的名字、草图的尺寸; 草图里的几何关系小图标 (kind "relation", x / y 是中心;
+                // 点它 = 选中这个关系, 属性管理器里能删, 也可以按 Delete)
+                ViewLabels { view: viewport }
+
+                // 装配体的动画: 时间轴 (播放 / 暂停 / 拖着看)
+                MotionBar {
+                    id: motionBar
+                    visible: shown && motion.count > 0 && root.kind === "assembly"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.bottom: parent.bottom; anchors.bottomMargin: app.checkOpen ? 320 : 20
+                    z: 15
                 }
 
                 // 右键拖动出现的手势轮
@@ -544,6 +353,104 @@ ApplicationWindow {
                     anchors.top: parent.top; anchors.topMargin: 10
                     anchors.horizontalCenter: parent.horizontalCenter
                     view: viewport
+                }
+
+                // 视图里右键单击 (没拖成手势轮): 弹出右键菜单, 和设计树里右键那个特征的一样; 点在空白处是零件的菜单
+                MenuList {
+                    id: viewMenu
+                    property string target: ""
+                    itemWidth: 196
+                    onPicked: (id) => {
+                        if (target.startsWith("part:")) sim.partAction(parseInt(target.slice(5)), id)       // 装配体的零部件
+                        else if (target === "") app.treeAction("root", "", id)
+                        else if (id === "rename") { viewRename.target = target; viewRename.x = viewMenu.x; viewRename.y = viewMenu.y; viewRename.open() }
+                        else if (id === "delete") app.deleteFeature(target)
+                        else app.contextAction(target, id)
+                    }
+                }
+                Popup {                     // 右键菜单里点了 "重命名": 光标那里弹一个输入框
+                    id: viewRename
+                    property string target: ""
+                    width: 220; height: 30
+                    padding: 0
+                    background: Rectangle { color: Theme.cBgInput; radius: 6; border.width: 1; border.color: Theme.cAccent }
+                    onOpened: { viewRenameInput.text = app.featureName(target); viewRenameInput.selectAll(); viewRenameInput.forceActiveFocus() }
+                    contentItem: TextInput {
+                        id: viewRenameInput
+                        leftPadding: 8; rightPadding: 8
+                        verticalAlignment: TextInput.AlignVCenter
+                        color: Theme.cText
+                        selectionColor: Theme.cAccentStrong
+                        font.family: Theme.font; font.pixelSize: Theme.textSize
+                        selectByMouse: true
+                        clip: true
+                        onAccepted: { app.renameFeature(viewRename.target, text); viewRename.close() }
+                        Keys.onEscapePressed: viewRename.close()
+                    }
+                }
+                Connections {
+                    target: app
+                    function onViewMenuRequested(identifier, x, y) {
+                        const items = identifier.startsWith("part:") ? sim.partMenu(parseInt(identifier.slice(5)))
+                                    : identifier !== "" ? app.featureMenu(identifier) : app.treeMenu("root", "")
+                        if (items.length === 0) return
+                        viewMenu.target = identifier
+                        viewMenu.items = items
+                        viewMenu.x = Math.min(x, viewArea.width - viewMenu.itemWidth - 12)
+                        viewMenu.y = Math.min(y, Math.max(0, viewArea.height - 40 - items.length * 32))
+                        viewMenu.open()
+                    }
+                }
+
+                // 设计检查的日志: 从视图底部滑上来 (评估 → 设计检查)
+                CheckLog {
+                    z: 20
+                    anchors.left: parent.left; anchors.right: parent.right
+                    anchors.leftMargin: 10; anchors.rightMargin: 10
+                    allowed: root.kind === "part" || root.kind === "assembly"
+                }
+
+                // 孤立中: 工具条下面一条提示, 点 "退出孤立" 回到原来的样子
+                Rectangle {
+                    objectName: "isolateBar"
+                    visible: app.isolatedName !== ""
+                    anchors.top: viewBar.bottom; anchors.topMargin: 8
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    width: isolateRow.implicitWidth + 20; height: 34
+                    radius: 9
+                    color: Theme.cBgCard
+                    border.width: 1; border.color: Theme.cAccentLine
+                    Row {
+                        id: isolateRow
+                        anchors.centerIn: parent
+                        spacing: 10
+                        Icon { anchors.verticalCenter: parent.verticalCenter; name: "isolate"; size: 17; color: Theme.cAccent }
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: qsTr("孤立：") + app.isolatedName
+                            color: Theme.cText
+                            font.family: Theme.font; font.pixelSize: Theme.smallSize
+                        }
+                        Rectangle {
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: exitText.implicitWidth + 20; height: 24; radius: 6
+                            color: exitArea.containsMouse ? Theme.cAccentStrong : Theme.cAccentSoft
+                            Text {
+                                id: exitText
+                                anchors.centerIn: parent
+                                text: qsTr("退出孤立")
+                                color: exitArea.containsMouse ? "#FFFFFF" : Theme.cAccent
+                                font.family: Theme.font; font.pixelSize: Theme.smallSize
+                            }
+                            MouseArea {
+                                id: exitArea
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: app.toggleShow("isolate_exit")
+                            }
+                        }
+                    }
                 }
 
                 // 局部放大时拖出来的框
@@ -584,15 +491,15 @@ ApplicationWindow {
                     spacing: 8
                     visible: app.sketchActive
                     Repeater {
-                        model: [{ icon: "finish", tint: "#3FB97F", tip: "完成草图：保存并退出" },
-                                { icon: "cancel", tint: "#E5484D", tip: "放弃：不保存这次画的，退出草图" }]
+                        model: [{ icon: "finish", tint: Theme.cGood, tip: qsTr("完成草图：保存并退出") },
+                                { icon: "cancel", tint: Theme.cBad, tip: qsTr("放弃：不保存这次画的，退出草图") }]
                         delegate: Rectangle {
                             required property var modelData
                             required property int index
                             width: 44; height: 44; radius: 22
                             color: cornerArea.containsMouse ? modelData.tint : Qt.rgba(Theme.cBg.r, Theme.cBg.g, Theme.cBg.b, 0.88)
                             border.width: 1.5; border.color: modelData.tint
-                            Icon { anchors.centerIn: parent; size: 24; name: modelData.icon; color: cornerArea.containsMouse ? "#FFFFFF" : modelData.tint }
+                            Icon { anchors.centerIn: parent; size: 24; name: modelData.icon; color: cornerArea.containsMouse ? (index === 1 && Theme.darkMode ? "#000000" : "#FFFFFF") : modelData.tint }
                             MouseArea {
                                 id: cornerArea
                                 anchors.fill: parent; hoverEnabled: true
@@ -602,6 +509,16 @@ ApplicationWindow {
                         }
                     }
                 }
+                // 重算的进度条: 视图下方正中
+                ProgressCard { anchors.horizontalCenter: parent.horizontalCenter; anchors.bottom: parent.bottom; anchors.bottomMargin: 28 }
+
+                // 草图里选中图形时的属性栏: 在左栏的 PropertyManager 页 (见上面 leftPanel)
+
+                // 测量结果: 浮在视图左上角
+                MeasurePanel { anchors.left: parent.left; anchors.leftMargin: 12; anchors.top: parent.top; anchors.topMargin: 12 }
+                // 仿真面板: 也在左上角
+                SimPanel { anchors.left: parent.left; anchors.leftMargin: 12; anchors.top: parent.top; anchors.topMargin: 12 }
+
                 // 参数面板: 浮在视图左上角
                 FormPanel {
                     anchors.left: parent.left; anchors.leftMargin: 12
@@ -613,7 +530,7 @@ ApplicationWindow {
                     anchors.top: parent.top; anchors.topMargin: 14
                     anchors.left: parent.left; anchors.leftMargin: 14
                     visible: app.sketchActive
-                    text: "正在编辑　" + app.sketchTitle
+                    text: qsTr("正在编辑　") + app.sketchTitle
                     color: Theme.cAccent
                     font.family: Theme.font; font.pixelSize: Theme.smallSize
                 }
@@ -623,6 +540,29 @@ ApplicationWindow {
                     anchors.left: parent.left; anchors.bottom: parent.bottom
                     anchors.leftMargin: 10; anchors.bottomMargin: 8
                     axes: viewport.axes
+                }
+
+                // 工程图: 一张图纸盖住三维视图 (连同上面那些三维用的小按钮)
+                SheetView {
+                    objectName: "sheetView"
+                    anchors.fill: parent
+                    visible: root.kind === "drawing"
+                    dark: Theme.darkMode
+                }
+                Rectangle {                 // 标尺寸时下一步该点什么
+                    anchors.top: parent.top; anchors.topMargin: 14
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    visible: root.kind === "drawing" && sheetHint.text !== ""
+                    width: sheetHint.implicitWidth + 28; height: 30; radius: 15
+                    color: Qt.rgba(Theme.cBg.r, Theme.cBg.g, Theme.cBg.b, 0.92)
+                    border.width: 1; border.color: Theme.cAccentLine
+                    Text {
+                        id: sheetHint
+                        anchors.centerIn: parent
+                        text: drawing.state.running ? qsTr("正在投影…") : drawing.state.hint
+                        color: Theme.cText
+                        font.family: Theme.font; font.pixelSize: Theme.smallSize
+                    }
                 }
 
                 // 提示条: 出错原因等, 几秒后自己消失, 点一下立刻关掉
@@ -652,7 +592,7 @@ ApplicationWindow {
                     MouseArea { anchors.fill: parent; onClicked: toast.opacity = 0 }
                     Connections {
                         target: app
-                        function onNotice(text) { toast.text = text; toast.opacity = 1; toastTimer.restart() }
+                        function onNotice(text) { toast.text = app.tr(text); toast.opacity = 1; toastTimer.restart() }
                     }
                 }
             }
@@ -660,36 +600,16 @@ ApplicationWindow {
         }
 
         // ================= 状态栏 =================
-        Rectangle {
-            Layout.fillWidth: true
-            height: 26
-            color: Theme.cBgTitle
-            RowLayout {
-                anchors.fill: parent
-                anchors.leftMargin: 14; anchors.rightMargin: 14
-                Text {
-                    text: app.hoverText !== "" ? app.hoverText : app.selectionText
-                    color: Theme.cTextSec
-                    font.family: Theme.font; font.pixelSize: Theme.smallSize
-                    Layout.fillWidth: true
-                    elide: Text.ElideRight
-                }
-                Text {
-                    text: (app.sketchActive ? "左键 画 / 选" : "左键 选择（Ctrl 多选，拖动框选）")
-                          + "　·　中键 旋转　·　Ctrl+中键 平移　·　滚轮 缩放　·　右键拖动 手势轮"
-                    color: Theme.cTextMuted
-                    font.family: Theme.font; font.pixelSize: 11
-                    visible: root.width > 1180
-                }
-                Rectangle { width: 1; height: 12; color: Theme.cDivider; Layout.leftMargin: 8; Layout.rightMargin: 8; visible: root.width > 1180 }
-                Rectangle { width: 6; height: 6; radius: 3; color: Theme.cAccent }
-                Text {
-                    text: apiText
-                    color: Theme.cTextMuted
-                    font.family: Theme.font; font.pixelSize: Theme.smallSize
-                }
-            }
-        }
+        StatusBar {}
+    }
+
+    // ================= 开始页: 刚打开软件先选新建哪一种 / 打开文件 (盖住标题栏下面的部分) =================
+    StartPage {
+        anchors.fill: parent
+        anchors.topMargin: 38
+        anchors.margins: root.maximized ? 0 : 1
+        z: 800
+        onOpenRequested: openDialog.open()
     }
 
     // 窗口描边 (没有系统边框了, 深色窗口叠在深色桌面上要有条边才分得开)

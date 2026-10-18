@@ -4,6 +4,8 @@
 - 一次只让工作进程算一件事; 它忙的时候新来的重算请求只留最新的一份 (拖着改尺寸时不排长队),
   被合并掉的请求的回调跟着最新那份一起回复 — 它们的修改都已经包含在里面了。
 - 工作进程崩了: 当前请求回复错误, 自动换一个新进程, 文档不受影响。
+- 工作进程卡死了 (OpenCascade 在某些曲面上会一直算下去): 一个特征超过 STUCK_AFTER 还没算完就结束它、换新进程,
+  回复是哪个特征卡住了 — 不然界面一直显示 "正在重算", 怎么都等不到结果。
 """
 from __future__ import annotations
 
@@ -11,9 +13,15 @@ import multiprocessing
 import threading
 from collections import deque
 
-from PySide6.QtCore import QObject, Signal
+from PySide6.QtCore import QObject, QTimer, Signal
 
 from . import worker
+
+
+STUCK_AFTER = 120_000          # 毫秒: 一个特征 (或一次导出、试算) 算这么久还没完, 当作卡死了
+
+
+BODY_KEYS = ('verts', 'normals', 'tris', 'tri_face', 'faces', 'segments', 'segment_edge', 'edges', 'props', 'vertices')
 
 
 class ProcessBuilder(QObject):
@@ -26,11 +34,20 @@ class ProcessBuilder(QObject):
         self._sequence = 0
         self._generation = 0
         self._closed = False
+        self._body = None                   # 上一次重算送回来的实体显示数据 (实体没变时内核不再重送)
+        self.on_progress = None             # 重算做到哪了: on_progress(第几个特征, 一共几个, 特征名)
+        self.on_query_progress = None       # 查询自己报的进度: on_query_progress(第几个, 一共几个, 名字, 哪一种: parts 加载零件 / motion 运动干涉)
         self._arrived.connect(self._on_arrived)
+        self._watch = QTimer(self)          # 看门狗: 每开始算一个特征重新计时, 到点了还没动静 = 卡死
+        self._watch.setSingleShot(True)
+        self._watch.timeout.connect(self._stuck)
+        self._step = None                   # 正在算的特征名 (最近一条进度)
+        self._stuck_text = None             # 是看门狗把进程停掉的: 回复用这句话
         self._start()
 
     def _start(self):
         self._generation += 1
+        self._body = None                   # 新的工作进程不知道上一个送过什么
         context = multiprocessing.get_context('spawn')
         self._connection, child = context.Pipe()
         self._process = context.Process(target=worker.run, args=(child,), name='genform-kernel', daemon=True)
@@ -61,11 +78,19 @@ class ProcessBuilder(QObject):
             self._jobs.append(['build', (features, upto), [done]])
         self._pump()
 
+    def keep(self, features, upto):
+        """文档刚保存: 让内核把算好的样子存进磁盘缓存 (下次打开直接读)。"""
+        self._jobs.append(['keep', (features, upto), []])
+        self._pump()
+
     def export(self, features, upto, path, done):
         self._jobs.append(['export', (features, upto, path), [done]])
         self._pump()
 
     def outline(self, features, upto, mode, frame, done):
+        if mode == 'preview':               # 预览只要最新的: 还排着没发出去的旧预览直接扔掉, 不然连着点几下就排成长队, 后面的操作全被堵住
+            for job in [job for job in self._jobs if job[0] == 'outline' and job[1][2] == 'preview']:
+                self._jobs.remove(job)
         self._jobs.append(['outline', (features, upto, mode, frame), [done]])
         self._pump()
 
@@ -86,10 +111,29 @@ class ProcessBuilder(QObject):
         kind, payload, callbacks = self._jobs.popleft()
         self._sequence += 1
         self._flight = (self._sequence, kind, callbacks)
+        self._step = None
         try:
             self._connection.send((kind, self._sequence) + tuple(payload))
         except (OSError, ValueError):
             self._lost()
+            return
+        self._watch.start(STUCK_AFTER)
+
+    def _stuck(self):
+        """看门狗到点了: 工作进程卡在一个特征上出不来。结束它, 直接换新进程回复 — 不等读消息的线程收到断开:
+        进程刚启动就被结束时 (管道的那一头还没交到它手里) 管道不会断, 那就永远等不到。旧进程的消息按代数不同会被扔掉。"""
+        if self._flight is None or self._closed:
+            return
+        seconds = STUCK_AFTER // 1000
+        what = f'特征“{self._step}”' if self._step else '这一步'
+        self._stuck_text = (f'{what}算了超过 {seconds} 秒还没算完，已经停下（几何内核在这里卡住了）。'
+                            '请撤销、删除它或换一组参数再试')
+        self._process.terminate()
+        try:
+            self._connection.close()
+        except OSError:
+            pass
+        self._lost()
 
     def _on_arrived(self, generation, message):
         if generation != self._generation or self._closed:
@@ -100,8 +144,22 @@ class ProcessBuilder(QObject):
         kind, sequence, payload = message
         if self._flight is None or sequence != self._flight[0]:
             return
+        if kind == 'progress':              # 还在算: 只是报一下做到哪了
+            self._step = payload[2]
+            self._watch.start(STUCK_AFTER)  # 开始算下一个特征了: 重新计时
+            if self.on_progress is not None and self._flight[1] == 'build':      # 进度条只给文档的重算
+                self.on_progress(*payload[:3])
+            elif self.on_query_progress is not None and len(payload) > 3:     # 和查询自己报的 (零件里的特征那些不算)
+                self.on_query_progress(*payload[:4])
+            return
         _, wanted, callbacks = self._flight
         self._flight = None
+        self._watch.stop()
+        if kind == 'built' and wanted == 'build':
+            if payload.pop('same_body', False) and self._body is not None:
+                payload.update(self._body)          # 实体没变: 网格那些还是上次的 (同一批数组, 界面那边记着的也就都还作数)
+            else:
+                self._body = {key: payload[key] for key in BODY_KEYS if key in payload}
         for callback in callbacks:
             if wanted == 'export':
                 callback(payload)                       # None 或错误文字
@@ -114,10 +172,12 @@ class ProcessBuilder(QObject):
     def _lost(self):
         """工作进程没了 (崩溃或被杀): 告诉等结果的人, 换一个新进程接着干。"""
         flight, self._flight = self._flight, None
+        self._watch.stop()
+        stuck, self._stuck_text = self._stuck_text, None
         if not self._closed:
             self._start()
         if flight is not None:
-            text = '几何内核进程意外退出（已自动重启）。刚才这一步可能触发了内核缺陷，请撤销或修改参数后再试'
+            text = stuck or '几何内核进程意外退出（已自动重启）。刚才这一步可能触发了内核缺陷，请撤销或修改参数后再试'
             for callback in flight[2]:
                 callback(text) if flight[1] == 'export' else callback(None, text)
         self._pump()

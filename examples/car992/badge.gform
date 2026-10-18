@@ -1,0 +1,81 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "铝合金 6061",
+  "color": "#9DA3A8"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "PORSCHE 字标草图",
+   "params": {
+    "plane": "YZ",
+    "offset": 4519.0,
+    "shapes": [
+     {
+      "type": "text",
+      "x": -205,
+      "y": 790,
+      "text": "P O R S C H E",
+      "height": 44,
+      "font": "Arial"
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "PORSCHE 字标",
+   "params": {
+    "sketch": "f1",
+    "distance": 6.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "kind": "letters",
+    "auto": true,
+    "batch": 1,
+    "cost": 183.54,
+    "tooling": 0.0,
+    "unit": 183.54,
+    "standard": false,
+    "spec": "",
+    "why": "凸起的字: 一个个切出来贴上去 → 激光切割：做 1 件, 每件约 ¥184；第二是 水刀切割 ¥243",
+    "alternatives": [
+     {
+      "id": "waterjet",
+      "name": "水刀切割",
+      "cost": 242.52
+     },
+     {
+      "id": "edm",
+      "name": "慢走丝线切割",
+      "cost": 1066.54
+     },
+     {
+      "id": "cnc3",
+      "name": "三轴 CNC 铣",
+      "cost": 1166.53
+     }
+    ]
+   }
+  }
+ ]
+}
