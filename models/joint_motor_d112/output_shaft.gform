@@ -1,0 +1,103 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 4,
+ "upto": null,
+ "props": {
+  "material": "不锈钢 304",
+  "feature_colors": {
+   "f4": "#C03030"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "穿心轴",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0.625,
+      "cy": 20.15,
+      "w": 1.25,
+      "h": 34.7
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "穿心轴 Ø2.5 不锈钢 (压入行星架)",
+   "params": {
+    "sketch": "f1",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false,
+   "process": {
+    "id": "turning",
+    "name": "数控车削",
+    "short": "车削",
+    "color": "#35A7A0",
+    "auto": false,
+    "kind": null,
+    "why": "手动指定",
+    "alternatives": [],
+    "standard": false
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "磁铁",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 1.5,
+      "cy": 2.3,
+      "w": 3,
+      "h": 1
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "revolve",
+   "name": "径向充磁磁铁 Ø6×1 (AS5047P 读输出)",
+   "params": {
+    "sketch": "f3",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": null,
+    "why": "径向充磁钕铁硼 Ø6×1 (AS5047P 配套)。手动指定",
+    "alternatives": [],
+    "standard": true,
+    "spec": "径向充磁钕铁硼 Ø6×1 (AS5047P 配套)"
+   }
+  }
+ ]
+}

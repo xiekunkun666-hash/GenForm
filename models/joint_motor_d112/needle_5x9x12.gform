@@ -1,0 +1,54 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {},
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "滚针截面",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 3.5,
+      "cy": 21,
+      "w": 2,
+      "h": 12
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "滚针轴承 5×9×12 (2× HK0506)",
+   "params": {
+    "sketch": "f1",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false,
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "auto": false,
+    "kind": null,
+    "why": "HK0506 ×2 (5×9×6)。手动指定",
+    "alternatives": [],
+    "standard": true,
+    "spec": "HK0506 ×2 (5×9×6)"
+   }
+  }
+ ]
+}

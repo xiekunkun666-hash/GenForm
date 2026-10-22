@@ -14,7 +14,7 @@ from OCP.BRepGProp import BRepGProp
 from OCP.GProp import GProp_GProps
 from OCP.GeomAbs import (GeomAbs_BSplineSurface, GeomAbs_BezierSurface, GeomAbs_Cone, GeomAbs_Cylinder, GeomAbs_Plane,
                          GeomAbs_Sphere, GeomAbs_Torus)
-from OCP.TopAbs import TopAbs_FACE, TopAbs_SHELL, TopAbs_SOLID
+from OCP.TopAbs import TopAbs_EDGE, TopAbs_FACE, TopAbs_SHELL, TopAbs_SOLID
 from OCP.TopoDS import TopoDS
 
 from . import build
@@ -97,7 +97,39 @@ def inspect(features, upto, data=None):
     rules = (data or {}).get('rules')
     if rules:
         report['pairs'], report['pairs_checked'] = pairs(ctx, rules)
+    if rules and rules.get('proofing'):
+        report['proof'] = proof(body)
     return report
+
+
+def proof(body):
+    """CNC 打样要看的整体形状 (genform/proofing.py): 包围盒、按最薄的方向当 Z 放平以后, 最高 / 最低那一层的截面占了外形多少。
+    → {'box', 'axis' (哪根轴最薄: 0 / 1 / 2), 'top', 'bottom': 截面在另外两根轴上的 [宽, 长] (切不出来是 None)}。"""
+    from OCP.BRepAlgoAPI import BRepAlgoAPI_Section
+    from OCP.gp import gp_Dir, gp_Pln, gp_Pnt
+    low, high = _box(body)
+    size = [h - l for l, h in zip(low, high)]
+    axis = min(range(3), key=lambda index: size[index])
+    others = [index for index in range(3) if index != axis]
+    out = {'box': [low, high], 'axis': axis}
+    for key, level in (('top', high[axis] - min(0.05, size[axis] / 4)), ('bottom', low[axis] + min(0.05, size[axis] / 4))):
+        point = [0.0, 0.0, 0.0]
+        point[axis] = level
+        normal = [0.0, 0.0, 0.0]
+        normal[axis] = 1.0
+        try:
+            section = BRepAlgoAPI_Section(body, gp_Pln(gp_Pnt(*point), gp_Dir(*normal)))
+            section.Build()
+            shape = section.Shape()
+            if shape is None or shape.IsNull() or not _parts(shape, TopAbs_EDGE):      # 截面是一圈边, 没有面
+                out[key] = None
+                continue
+            a, b = _box(shape)
+            out[key] = [b[index] - a[index] for index in others]
+        except Exception:
+            out[key] = None
+    out['extent'] = [size[index] for index in others]
+    return out
 
 
 _PART_COPIES = 64           # 一个阵列最多拿前这么多份来比 (轮毂螺栓 5 × 4 个轮子就 20 份)

@@ -1,0 +1,127 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 5,
+ "upto": null,
+ "props": {
+  "material": "合金钢"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "齿圈本体",
+   "params": {
+    "plane": "XY",
+    "offset": 15.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 35.4
+     },
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 33.15
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "齿圈 (40Cr 调质, 慢走丝线切割; 压入前壳 + 648 胶)",
+   "params": {
+    "sketch": "f1",
+    "distance": 13.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "edm",
+    "name": "慢走丝线切割",
+    "short": "线切",
+    "color": "#8E97A3",
+    "auto": false,
+    "kind": null,
+    "why": "手动指定",
+    "alternatives": [],
+    "standard": false
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "内齿",
+   "params": {
+    "plane": "XY",
+    "offset": 15.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        33.3,
+        -0.5
+       ],
+       [
+        31.8,
+        -0.22
+       ],
+       [
+        31.8,
+        0.22
+       ],
+       [
+        33.3,
+        0.5
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "内齿",
+   "params": {
+    "sketch": "f3",
+    "distance": 13.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "pattern_circular",
+   "name": "108T m0.6",
+   "params": {
+    "features": [
+     "f4"
+    ],
+    "axis": "Z",
+    "count": 108,
+    "angle": 360.0
+   },
+   "suppressed": false
+  }
+ ]
+}

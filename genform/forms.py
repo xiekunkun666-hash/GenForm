@@ -235,7 +235,11 @@ def spec_form(kind, session, feature=None, cut=False):
     for field in spec['fields']:
         key, label, sort = field['key'], field['label'], field['kind']
         value = values.get(key, field['default'])
-        if sort in ('number', 'int'):
+        if sort in ('number', 'int') and isinstance(value, str):        # 方程式: 照原样显示, 改也写方程式
+            fields.append({'key': key, 'label': label, 'type': 'text', 'value': value})
+        elif sort == 'vars':
+            fields.append({'key': key, 'label': label, 'type': 'text', 'value': table.variables_text(value)})
+        elif sort in ('number', 'int'):
             fields.append(number(key, label, value, field.get('unit', 'mm' if sort == 'number' else '个')))
         elif sort == 'bool':
             fields.append({'key': key, 'label': label, 'type': 'bool', 'value': bool(value)})

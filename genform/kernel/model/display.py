@@ -238,6 +238,12 @@ def query(features, upto, mode, data):
     if mode in ('interference', 'sequence', 'meshes', 'contacts', 'measure_parts', 'mass_props', 'sweep'):
         from .. import assembly
         return getattr(assembly, mode)(features, upto, data)
+    if mode == 'fasteners':
+        from .. import fasteners
+        return fasteners.fasteners(features, upto, data)
+    if mode == 'stack':
+        from .. import stack
+        return stack.stack(features, upto, data)
     if mode == 'assembly_step':
         from .. import assembly
         return assembly.export(features, upto, data)

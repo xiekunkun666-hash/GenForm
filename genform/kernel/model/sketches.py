@@ -43,6 +43,7 @@ class Context:
         self.sketches = {}              # 草图 id → Sketch
         self.curves = {}                # 曲线特征 id → 一条线 (Wire)
         self.tools = {}                 # 造型特征 id → (工具体, 方式): 阵列和镜像复制的就是它; 阵列 / 镜像 → [(工具体, 方式)...]
+        self.after_cut = None           # 造型特征加完料以后还要切掉的 (螺柱的螺纹牙), rebuild 切完清掉
         self.copied = None              # 正在算的阵列 / 镜像复制出来的 [(工具体, 方式)...] (见 ops/patterns.py)
         self.seen_faces = {}            # 本轮面几何缓存 (hash → [记录...]), 见 faces._face_record
         self.sources = {}               # 阵列 / 镜像 id → 和 tools 里一份份复制体对应的 "原件特征 id" 列表

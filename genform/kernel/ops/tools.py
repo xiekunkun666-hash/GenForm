@@ -21,6 +21,7 @@ from .helpers import _axis, _dir, _explore, _need_body, _number, _path, _pnt, _p
 from .sweep_geometry import check_closed_sweep_profile, checked_sweep_solid
 from .solid_validation import checked_tool_solid
 from .importing import import_step
+from . import threads
 
 
 # ---------------------------------------------------------------------------
@@ -158,10 +159,14 @@ def hole(body, params, ctx):
     if size in table.HOLE_SIZES:
         diameter, bore, bore_depth, sink = table.HOLE_SIZES[size]
         head, head_depth = (bore, bore_depth) if kind == 'counterbore' else (sink, 0.0)
+    tapped = kind == 'tapped' and bool(params.get('thread'))       # 带真实螺纹牙: 按内螺纹小径打底孔, 再切牙
     if kind == 'tapped':
         if size not in table.TAP_DRILLS:
             raise FeatureError('螺纹底孔要选一个 M 规格')
         diameter = table.TAP_DRILLS[size]
+        if tapped:
+            major, pitch = float(size[1:]), threads.PITCHES[size]
+            diameter = threads.minor_hole(major, pitch)
     depth = _reach(body) if params.get('through', True) else _number(params, 'depth', positive=True)
     steps = [(diameter, diameter, depth)]
     if kind in ('counterbore', 'countersink'):
@@ -171,7 +176,12 @@ def hole(body, params, ctx):
             head_depth = (head - diameter) / 2          # 90° 锥形沉头
         steps = [(head, head if kind == 'counterbore' else diameter, head_depth), (diameter, diameter, max(depth - head_depth, 1e-3))]
     direction = _along(sketch, params)
-    return build._compound([solid for spot in _spots(sketch) for solid in _stack(spot, direction, steps)])
+    solids = [solid for spot in _spots(sketch) for solid in _stack(spot, direction, steps)]
+    if tapped:                                  # 牙槽从孔口外半个螺距切到孔底前半个螺距 (通孔切到底)
+        end = depth + pitch if params.get('through', True) else depth - pitch * 0.5
+        phase = float(params.get('phase') or 0.0)
+        solids += [threads.groove(spot, direction, major, pitch, -pitch * 0.5, end, True, phase) for spot in _spots(sketch)]
+    return build._compound(solids)
 
 
 def hole_adv(body, params, ctx):
@@ -193,7 +203,17 @@ def stud(body, params, ctx):
         raise FeatureError('端部倒角太大')
     steps = [(diameter, diameter, span - bevel)] + ([(diameter, diameter - 2 * bevel, bevel)] if bevel > 0 else [])
     direction = -_along(sketch, params)
-    return build._compound([solid for spot in _spots(sketch) for solid in _stack(spot, direction, steps)])
+    spots = _spots(sketch)
+    if params.get('thread'):
+        # 真实牙: 先加一根加长的光柱, 加完再切牙、再截回原长并倒角 (rebuild 按顺序切 ctx.after_cut);
+        # 牙槽不碰端面 (碰了螺旋面的布尔常常算成什么都没切), 根部留一个螺距不切
+        pitch = float(params.get('pitch') or 0.0) or threads.coarse_pitch(diameter)
+        extra = 3 * pitch
+        ctx.after_cut = [build._compound([threads.groove(spot, direction, diameter, pitch, pitch, span + pitch, False,
+                                                         float(params.get('phase') or 0.0)) for spot in spots]),
+                         build._compound([threads.tip_trimmer(spot, direction, diameter, span, bevel) for spot in spots])]
+        return build._compound([solid for spot in spots for solid in _stack(spot, direction, [(diameter, diameter, span + extra)])])
+    return build._compound([solid for spot in spots for solid in _stack(spot, direction, steps)])
 
 
 def screw(body, params, ctx):
@@ -220,12 +240,22 @@ def screw(body, params, ctx):
         top, shank_from, shank = head_height, 0.0, span
     x_dir, y_dir = sketch.frame[1], sketch.frame[2]
     made = []
+    threaded = bool(params.get('thread'))
+    pitch = (threads.PITCHES.get(size) or threads.coarse_pitch(diameter)) if threaded else 0.0
     for spot in _spots(sketch):
-        parts = _stack(spot + into * shank_from, into, [(diameter, diameter, shank - tip), (diameter, diameter - 2 * tip, tip)])
+        if threaded:                            # 杆先加长 3 个螺距 (牙槽不碰端面, 布尔才稳), 切完牙再截回原长、倒角
+            parts = _stack(spot + into * shank_from, into, [(diameter, diameter, shank + 3 * pitch)])
+        else:
+            parts = _stack(spot + into * shank_from, into, [(diameter, diameter, shank - tip), (diameter, diameter - 2 * tip, tip)])
         parts += _stack(spot, into if head == 'flat' else -into, head_steps)
         solid = parts[0]
         for part in parts[1:]:
             solid = build._boolean(BRepAlgoAPI_Fuse, solid, part, '做螺丝')
+        if threaded:                            # 真实牙: 从头下 1/4 螺距 (沉头是锥面下面) 切到杆端外, 相位从头的平面量起
+            # 短螺丝基本是全牙: 头下面只有一点收尾 (原来留一整个螺距的光杆, 拧进孔口一圈就和内牙对顶)
+            tool = threads.groove(spot, into, diameter, pitch, shank_from + pitch * 0.25, span + pitch, False, float(params.get('phase') or 0.0))
+            solid = threads.cut(solid, tool, '切螺丝的牙')
+            solid = build._boolean(BRepAlgoAPI_Cut, solid, threads.tip_trimmer(spot, into, diameter, span, tip), '截螺丝')
         # 头顶上的内六角: 对边 socket 的六棱柱, 往头里挖 socket_depth
         centre, radius = spot - into * top, socket / math.sqrt(3)
         polygon = BRepBuilderAPI_MakePolygon()

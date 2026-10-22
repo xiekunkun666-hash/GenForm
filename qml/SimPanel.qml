@@ -257,7 +257,14 @@ Rectangle {
                 }
                 Row {
                     width: parent.width; spacing: 6
-                    Btn { width: panel.docked ? parent.width : parent.width - 80; icon: "plus"; text: qsTr("插入零件…"); onClicked: partDialog.open() }
+                    Btn { width: panel.docked ? (parent.width - 6) / 2 : (parent.width - 86) / 2; icon: "plus"; text: qsTr("插入零件…"); onClicked: partDialog.open() }
+                    Btn {
+                        id: stdButton
+                        width: panel.docked ? (parent.width - 6) / 2 : (parent.width - 86) / 2; icon: "screw"; text: qsTr("标准件…")
+                        tip: qsTr("插入标准件：轴承、滚针、销、螺丝、螺母、垫圈、铜柱、挡圈、钢球，按国标尺寸生成，放在装配体旁边的 standard/ 文件夹")
+                        onClicked: stdPicker.start(Qt.point(0, height + 4))
+                        StdPicker { id: stdPicker }
+                    }
                     Btn { visible: !panel.docked; width: 34; icon: "open"; tip: qsTr("打开装配体 (.gasm)"); onClicked: asmOpen.open() }
                     Btn { visible: !panel.docked; width: 34; icon: "save"; tip: qsTr("保存装配体 (.gasm)：记下零件文件、位置和装配顺序"); onClicked: asmSave.open() }
                 }
@@ -265,6 +272,12 @@ Rectangle {
                     width: parent.width; spacing: 6
                     Btn { width: (parent.width - 6) / 2; primary: true; icon: "clash"; busy: panel.state.running; text: qsTr("干涉检查"); onClicked: sim.runInterference() }
                     Btn { width: (parent.width - 6) / 2; primary: true; icon: "order"; busy: panel.state.running; text: qsTr("装配顺序检查"); onClicked: sim.runSequence() }
+                }
+                Row {
+                    width: parent.width; spacing: 6
+                    Btn { width: (parent.width - 12) / 3; icon: "thread"; busy: panel.state.running; text: qsTr("螺纹检查"); onClicked: sim.runFasteners() }
+                    Btn { width: (parent.width - 12) / 3; icon: "check"; text: qsTr("对齐螺纹"); onClicked: sim.alignThreads() }
+                    Btn { width: (parent.width - 12) / 3; icon: "dimension"; busy: panel.state.running; text: qsTr("尺寸链"); onClicked: sim.runStack("Z") }
                 }
                 Text { visible: panel.state.running; text: qsTr("正在算…"); color: Theme.cTextSec; font.family: Theme.font; font.pixelSize: Theme.smallSize }
             }

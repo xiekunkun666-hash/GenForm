@@ -25,8 +25,9 @@ void main(){
 
 _MESH_VS = """#version 330 core
 layout(location=0) in vec3 pos; layout(location=1) in vec3 nrm; layout(location=2) in float state; layout(location=3) in vec3 tint;
-uniform mat4 mvp; uniform vec4 clip; out vec3 vN; out vec3 vP; out vec3 vTint; flat out float vState;
-void main(){ vN = nrm; vP = pos; vState = state; vTint = tint; gl_Position = mvp * vec4(pos, 1.0); gl_ClipDistance[0] = dot(vec4(pos, 1.0), clip); }"""
+uniform mat4 mvp; uniform mat4 model; uniform vec4 clip; out vec3 vN; out vec3 vP; out vec3 vTint; flat out float vState;
+void main(){ vec4 world = model * vec4(pos, 1.0); vN = mat3(model) * nrm; vP = world.xyz; vState = state; vTint = tint;
+    gl_Position = mvp * world; gl_ClipDistance[0] = dot(world, clip); }"""
 _MESH_FS = """#version 330 core
 in vec3 vN; in vec3 vP; in vec3 vTint; flat in float vState;
 uniform vec3 eye; uniform vec3 base; uniform vec3 hover; uniform vec3 chosen;

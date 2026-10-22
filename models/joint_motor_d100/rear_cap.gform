@@ -1,0 +1,552 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 20,
+ "upto": null,
+ "props": {
+  "material": "铝合金 6061"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "后盖外形 (PCB 外形外扩 2.5)",
+   "params": {
+    "plane": "XY",
+    "offset": -10.1,
+    "shapes": [
+     {
+      "type": "line",
+      "x1": 36.5,
+      "y1": -21.77154105707724,
+      "x2": 36.5,
+      "y2": 21.77154105707724
+     },
+     {
+      "type": "arc",
+      "cx": 0,
+      "cy": 0,
+      "r": 42.5,
+      "a0": 30.81525563460468,
+      "a1": 64.94238458169698
+     },
+     {
+      "type": "line",
+      "x1": 18.0,
+      "y1": 38.5,
+      "x2": -18.0,
+      "y2": 38.5
+     },
+     {
+      "type": "arc",
+      "cx": 0,
+      "cy": 0,
+      "r": 42.5,
+      "a0": 115.05761541830302,
+      "a1": 149.18474436539532
+     },
+     {
+      "type": "line",
+      "x1": -36.5,
+      "y1": 21.77154105707724,
+      "x2": -36.5,
+      "y2": -21.77154105707724
+     },
+     {
+      "type": "arc",
+      "cx": 0,
+      "cy": 0,
+      "r": 42.5,
+      "a0": 210.81525563460468,
+      "a1": 244.94238458169698
+     },
+     {
+      "type": "line",
+      "x1": -18.0,
+      "y1": -38.5,
+      "x2": 18.0,
+      "y2": -38.5
+     },
+     {
+      "type": "arc",
+      "cx": 0,
+      "cy": 0,
+      "r": 42.5,
+      "a0": 295.05761541830304,
+      "a1": 329.1847443653953
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "后盖 (6061 CNC; 按 PCB 外形, 只罩元件面)",
+   "params": {
+    "sketch": "f1",
+    "distance": 8.5,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "铣",
+    "color": "#5B8DEF",
+    "auto": false,
+    "kind": null,
+    "why": "手动指定",
+    "alternatives": [],
+    "standard": false
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "内腔 (PCB 外形外扩 0.5)",
+   "params": {
+    "plane": "XY",
+    "offset": -7.6,
+    "shapes": [
+     {
+      "type": "line",
+      "x1": 34.5,
+      "y1": -21.213203435596427,
+      "x2": 34.5,
+      "y2": 21.213203435596427
+     },
+     {
+      "type": "arc",
+      "cx": 0,
+      "cy": 0,
+      "r": 40.5,
+      "a0": 31.586338096527925,
+      "a1": 64.3208231861917
+     },
+     {
+      "type": "line",
+      "x1": 17.549928774784245,
+      "y1": 36.5,
+      "x2": -17.549928774784245,
+      "y2": 36.5
+     },
+     {
+      "type": "arc",
+      "cx": 0,
+      "cy": 0,
+      "r": 40.5,
+      "a0": 115.6791768138083,
+      "a1": 148.41366190347208
+     },
+     {
+      "type": "line",
+      "x1": -34.5,
+      "y1": 21.213203435596427,
+      "x2": -34.5,
+      "y2": -21.213203435596427
+     },
+     {
+      "type": "arc",
+      "cx": 0,
+      "cy": 0,
+      "r": 40.5,
+      "a0": 211.58633809652792,
+      "a1": 244.32082318619172
+     },
+     {
+      "type": "line",
+      "x1": -17.549928774784245,
+      "y1": -36.5,
+      "x2": 17.549928774784245,
+      "y2": -36.5
+     },
+     {
+      "type": "arc",
+      "cx": 0,
+      "cy": 0,
+      "r": 40.5,
+      "a0": 295.6791768138083,
+      "a1": 328.4136619034721
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "内腔 (底厚 2.5)",
+   "params": {
+    "sketch": "f3",
+    "distance": 6.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f17",
+   "type": "sketch",
+   "name": "GH 口内侧挡边",
+   "params": {
+    "plane": "XY",
+    "offset": -7.6,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": -3.0,
+      "cy": 36.05,
+      "w": 15.66,
+      "h": 1.1
+     },
+     {
+      "type": "rect",
+      "cx": 10.5,
+      "cy": 36.085,
+      "w": 9.4,
+      "h": 1.03
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f18",
+   "type": "extrude",
+   "name": "GH 口内侧挡边 x2 (开口直通插座端面, 看不到里面)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f17",
+    "distance": 5.949999999999999,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   }
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "XT30 阶梯缺口",
+   "params": {
+    "plane": "XY",
+    "offset": -6.87,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 34.89,
+      "cy": -7.83,
+      "w": 1.18,
+      "h": 15.7
+     },
+     {
+      "type": "rect",
+      "cx": 36.24,
+      "cy": -7.83,
+      "w": 1.52,
+      "h": 14.1
+     },
+     {
+      "type": "rect",
+      "cx": -34.89,
+      "cy": -8.17,
+      "w": 1.18,
+      "h": 15.7
+     },
+     {
+      "type": "rect",
+      "cx": -36.24,
+      "cy": -8.17,
+      "w": 1.52,
+      "h": 14.1
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "XT30 缺口 x2 (法兰卡在台阶上, 端面齐外壁)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f5",
+    "distance": 5.27,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   }
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "GH 开口",
+   "params": {
+    "plane": "XY",
+    "offset": -6.1,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": -3.0,
+      "cy": 37.2,
+      "w": 13.46,
+      "h": 3.6
+     },
+     {
+      "type": "rect",
+      "cx": 10.5,
+      "cy": 37.235,
+      "w": 7.2,
+      "h": 3.53
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "GH 插口 J3/J5 (端面 +0.1)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f7",
+    "distance": 4.5,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   }
+  },
+  {
+   "id": "f9",
+   "type": "sketch",
+   "name": "拨码开关窗口",
+   "params": {
+    "plane": "XY",
+    "offset": -10.1,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": -25.5,
+      "cy": 6.0,
+      "w": 10.4,
+      "h": 7.6
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f10",
+   "type": "extrude",
+   "name": "SW1 拨码窗口 (平时塞硅胶塞)",
+   "params": {
+    "sketch": "f9",
+    "distance": 2.5,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f11",
+   "type": "sketch",
+   "name": "导光柱孔",
+   "params": {
+    "plane": "XY",
+    "offset": -10.1,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -12.2,
+      "cy": 34.2,
+      "r": 1.0
+     },
+     {
+      "type": "circle",
+      "cx": -15.6,
+      "cy": 34.2,
+      "r": 1.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f12",
+   "type": "extrude",
+   "name": "导光柱孔 x2 (LED1/LED2)",
+   "params": {
+    "sketch": "f11",
+    "distance": 2.5,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f13",
+   "type": "sketch",
+   "name": "MOS 导热凸台",
+   "params": {
+    "plane": "XY",
+    "offset": -7.6,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": -14.5,
+      "w": 31.0,
+      "h": 15.6
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f14",
+   "type": "extrude",
+   "name": "MOS 导热凸台 (隔 1.0 导热垫压在 Q1~Q6 上)",
+   "params": {
+    "sketch": "f13",
+    "distance": 4.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f15",
+   "type": "sketch",
+   "name": "后盖螺丝孔位",
+   "params": {
+    "plane": "XY",
+    "offset": -10.1,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 25.809,
+      "cy": 25.809,
+      "r": 1.7
+     },
+     {
+      "type": "circle",
+      "cx": -25.809,
+      "cy": 25.809,
+      "r": 1.7
+     },
+     {
+      "type": "circle",
+      "cx": -25.809,
+      "cy": -25.809,
+      "r": 1.7
+     },
+     {
+      "type": "circle",
+      "cx": 25.809,
+      "cy": -25.809,
+      "r": 1.7
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f16",
+   "type": "hole",
+   "name": "M3 锥形沉头过孔 x4 (拧进 M-F 铜柱)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f15",
+    "kind": "countersink",
+    "size": "M3",
+    "diameter": 3.4,
+    "through": true,
+    "depth": 10.0,
+    "head_diameter": 6.72,
+    "head_depth": 1.66,
+    "flip": true
+   }
+  },
+  {
+   "id": "f19",
+   "type": "sketch",
+   "name": "GH 口后挡墙",
+   "params": {
+    "plane": "XY",
+    "offset": -7.6,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": -3.0,
+      "cy": 29.0,
+      "w": 14.46,
+      "h": 0.8
+     },
+     {
+      "type": "rect",
+      "cx": 10.5,
+      "cy": 28.8,
+      "w": 8.2,
+      "h": 0.8
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f20",
+   "type": "extrude",
+   "name": "GH 口后挡墙 x2 (顶离板面 0.1; 挡住穿过插座空当和插座底下缝隙的视线)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f19",
+    "distance": 5.8999999999999995,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   }
+  }
+ ]
+}

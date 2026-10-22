@@ -104,7 +104,34 @@ ListView {
         id: partMenu
         property int target: -1
         itemWidth: 196
-        onPicked: (id) => sim.partAction(target, id)
+        onPicked: (id) => {
+            if (id === "rename") { renameBox.target = target; renameBox.y = partMenu.y - 30; renameBox.open() }
+            else sim.partAction(target, id)
+        }
+    }
+    Popup {                             // 重命名: 盖在那一行上的输入框
+        id: renameBox
+        property int target: -1
+        x: 30
+        width: Math.max(140, list.width - 40); height: 30
+        padding: 0
+        background: Rectangle { color: Theme.cBgInput; radius: 6; border.width: 1; border.color: Theme.cAccent }
+        onOpened: {
+            nameInput.text = target >= 0 && target < list.parts.length ? list.parts[target].name : ""
+            nameInput.selectAll(); nameInput.forceActiveFocus()
+        }
+        contentItem: TextInput {
+            id: nameInput
+            leftPadding: 8; rightPadding: 8
+            verticalAlignment: TextInput.AlignVCenter
+            color: Theme.cText
+            selectionColor: Theme.cAccentStrong
+            font.family: Theme.font; font.pixelSize: Theme.textSize
+            selectByMouse: true
+            clip: true
+            onAccepted: { sim.renamePart(renameBox.target, text); renameBox.close() }
+            Keys.onEscapePressed: renameBox.close()
+        }
     }
 
     delegate: Rectangle {
@@ -203,6 +230,7 @@ ListView {
                 else if (row.info.kind === "plane") list.planeTapped(row.info.plane, below)
                 else if (row.info.kind === "sketch") list.sketchTapped(row.info.id, below)
                 else if (row.info.kind === "joint") { partBar.close(); planeBar.close(); sim.selectJoint(row.info.index); list.editPart(-1) }
+                else if (row.info.kind === "root") { planeBar.close(); list.partTapped(-1, below) }
                 else { partBar.close(); planeBar.close(); sim.selectPart(-1) }
             }
             onDoubleTapped: {

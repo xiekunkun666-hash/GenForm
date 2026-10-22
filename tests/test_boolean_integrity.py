@@ -113,6 +113,14 @@ class BooleanIntegrityTests(unittest.TestCase):
             self.assertTrue(BRepCheck_Analyzer(body).IsValid())
             self.assertGreaterEqual(helpers._volume(body).Mass(), before - 0.01)
 
+    def test_cut_that_removes_nothing_is_an_error(self):
+        body = box(10, 10, 10, (0, 0, 0))
+        with self.assertRaisesRegex(build.FeatureError, '没碰到'):
+            solids.combine(body, box(2, 2, 2, (50, 50, 50)), 'cut')            # 离得远远的
+        with self.assertRaisesRegex(build.FeatureError, '什么都没切掉'):
+            solids.combine(body, box(2, 2, 2, (4, 4, 10)), 'cut')              # 只贴着顶面
+        self.assertGreater(helpers._volume(body).Mass(), helpers._volume(solids.combine(body, box(2, 2, 2, (4, 4, 9)), 'cut')).Mass())
+
     def test_open_and_surface_tools_never_reach_boolean(self):
         body = box()
         invalid = open_solid()

@@ -143,14 +143,16 @@ class ViewingMixin:
     def _glide_state(self, end):
         camera = self._camera
         start = (camera.yaw, camera.pitch, np.array(camera.target, dtype=float), camera.distance)
-        turn = (end[0] - start[0] + 180.0) % 360.0 - 180.0             # 方位角走近的那一边
-        end = (start[0] + turn,) + end[1:]
+        turn = (end[0] - start[0] + 180.0) % 360.0 - 180.0             # 方位角、俯仰角都走近的那一边
+        tilt = (end[1] - start[1] + 180.0) % 360.0 - 180.0
+        end = (start[0] + turn, start[1] + tilt) + end[2:]
         self._glide = (time.perf_counter(), start, end)
         self._glide_timer.start()
 
     def _apply_view(self, state):
         self._camera.yaw = (state[0] + 180.0) % 360.0 - 180.0
-        self._camera.pitch, self._camera.target, self._camera.distance = state[1], np.array(state[2]), state[3]
+        self._camera.pitch = (state[1] + 180.0) % 360.0 - 180.0
+        self._camera.target, self._camera.distance = np.array(state[2]), state[3]
         self._redraw()
 
     def _glide_step(self):

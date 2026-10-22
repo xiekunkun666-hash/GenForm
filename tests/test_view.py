@@ -66,6 +66,40 @@ class CameraTests(unittest.TestCase):
         moved, _ = camera.project(anchor, W, H)
         np.testing.assert_allclose(moved, fixed, atol=1e-6)
 
+    def test_orbit_goes_over_the_top_without_getting_stuck(self):
+        camera = Camera()
+        camera.yaw, camera.pitch = 20.0, 0.0
+        previous = camera.basis()
+        for _ in range(450):                            # 一直往下拖: 俯仰角转一整圈多, 中途不卡住
+            camera.orbit(0, 2)
+            front, right, up = camera.basis()
+            np.testing.assert_allclose([front @ right, front @ up, right @ up], 0.0, atol=1e-9)
+            np.testing.assert_allclose([np.linalg.norm(v) for v in (front, right, up)], 1.0, atol=1e-9)
+            self.assertGreater(float(up @ previous[2]), 0.99)       # 每一步只转一点点: 过头顶时画面不突然翻转
+            previous = front, right, up
+        self.assertAlmostEqual(camera.pitch, 0.0, places=6)         # 450 步 × 0.8° = 正好转回原来的样子
+
+    def test_up_matches_the_old_turntable_below_the_poles(self):
+        camera = Camera()
+        for yaw, pitch in ((-35.0, 28.0), (120.0, -60.0), (0.0, 89.0)):
+            camera.yaw, camera.pitch = yaw, pitch
+            front, right, up = camera.basis()
+            old_right = np.cross(front, (0.0, 0.0, 1.0))
+            old_right /= np.linalg.norm(old_right)
+            np.testing.assert_allclose(right, old_right, atol=1e-9)
+            np.testing.assert_allclose(up, np.cross(old_right, front), atol=1e-9)
+
+    def test_upside_down_horizontal_drag_still_follows_the_hand(self):
+        camera = Camera()
+        for pitch in (30.0, 150.0):                     # 正着看 / 转过头顶倒着看: 往右拖, 前面的点都往右走
+            camera.yaw, camera.pitch, camera.target = 0.0, pitch, np.zeros(3)
+            front = camera.basis()[0]
+            near = -front * 40.0                        # 靠近眼睛那一侧的点
+            before, _ = camera.project(near, W, H)
+            camera.orbit(10, 0)
+            after, _ = camera.project(near, W, H)
+            self.assertGreater(after[0, 0], before[0, 0])
+
 
 class PickingTests(unittest.TestCase):
     def setUp(self):

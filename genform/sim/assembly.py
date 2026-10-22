@@ -31,11 +31,47 @@ class AssemblyMixin:
                             'turn': [0.0, 0.0, 0.0], 'mirror': False})
         self._parts_changed()
 
+    @Property('QVariantList', constant=True)
+    def standardCatalog(self):
+        """标准件库的目录 (类别 → 系列 → 规格, 要长度的给常用长度), 见 standard_parts.py。"""
+        from .. import standard_parts
+        return standard_parts.catalog()
+
+    @Slot(str, str, str, str)
+    def addStandardPart(self, kind, series, size, length):
+        """插一个标准件: 按规格生成零件文件, 放在装配体旁边的 standard/ 文件夹里 (已经有了就直接用), 再加进装配体。"""
+        from .. import standard_parts
+        own = self.path or self.app.session.document.path
+        if not own:
+            self.app.notice.emit('先把装配体保存成文件：标准件的零件文件放在它旁边的 standard/ 里')
+            return
+        try:
+            name, doc = standard_parts.make(kind, size, float(length) if str(length).strip() else None, series)
+        except (KeyError, ValueError) as error:
+            self.app.notice.emit(f'生成不了这个标准件：{error}')
+            return
+        folder = os.path.join(os.path.dirname(os.path.abspath(own)), 'standard')
+        path = os.path.join(folder, name)
+        if not os.path.isfile(path):
+            try:
+                os.makedirs(folder, exist_ok=True)
+                with open(path, 'w', encoding='utf-8') as handle:
+                    json.dump(doc, handle, ensure_ascii=False, indent=1)
+            except OSError as error:
+                self.app.notice.emit(f'存不了：{error}')
+                return
+        self.addPart(path)
+        self._parts[-1]['name'] = doc['props']['standard']['spec']
+        self.changed.emit()
+        self.app.notice.emit(f"插入了 {doc['props']['standard']['spec']}（文件在 standard/{name}）")
+
     @Slot(int)
     def removePart(self, index):
         if 0 <= index < len(self._parts) and self._parts[index]['path']:
             del self._parts[index]
-            self._joints_renumber({old: old - (old > index) for old in range(len(self._parts) + 1) if old != index})
+            mapping = {old: old - (old > index) for old in range(len(self._parts) + 1) if old != index}
+            self._joints_renumber(mapping)
+            self._mates_renumber(mapping)
             self._parts_changed()
 
     @Slot(int, int)
@@ -47,6 +83,7 @@ class AssemblyMixin:
             mapping = {old: old for old in range(len(self._parts))}
             mapping.update({index: target, target: index})
             self._joints_renumber(mapping)
+            self._mates_renumber(mapping)
             self._parts_changed(meshes=False)
 
     @Slot(int, str, int, str)
@@ -54,14 +91,26 @@ class AssemblyMixin:
         """改一个零件的位置 (field: move 平移 mm / turn 转角 度)。"""
         if not (0 <= index < len(self._parts)) or field not in ('move', 'turn') or not (0 <= axis < 3):
             return
+        part = self._parts[index]
+        if field == 'move' and axis in self._mated_axes(index):
+            self.app.notice.emit('这个方向是配合定的：改配合，或者先删掉配合')
+            self.changed.emit()
+            return
+        text = str(text).strip()
+        formulas = part.setdefault('formula', {}).setdefault(field, [None, None, None])
+        if text.startswith('='):                # 用全局变量的表达式: 变量改了跟着变
+            formulas[axis] = text
+            self._parts_changed()
+            return
         try:
             value = float(text)
         except ValueError:
-            self.app.notice.emit('这里要填数字')
+            self.app.notice.emit('这里要填数字，或者 =表达式（用全局变量）')
             self.changed.emit()
             return
-        if self._parts[index][field][axis] != value:
-            self._parts[index][field][axis] = value
+        if part[field][axis] != value or formulas[axis]:
+            formulas[axis] = None
+            part[field][axis] = value
             self._parts_changed()
 
     @Slot(int)
@@ -90,12 +139,14 @@ class AssemblyMixin:
                 return os.path.relpath(target, folder).replace(os.sep, '/')
             except ValueError:              # 不在同一个盘上: 只能记完整路径
                 return os.path.abspath(target).replace(os.sep, '/')
-        rows = [dict({'name': part['name'], 'file': relative(part['path'] or own), 'move': part['move'], 'turn': part['turn']},
+        rows = [dict({'name': part['name'], 'file': relative(part['path'] or own), 'move': self._place_to_row(part, 'move'),
+                      'turn': self._place_to_row(part, 'turn')},
                      **({'mirror': True} if part.get('mirror') else {}))
                 for part in self._parts]
         data = {'format': 'genform-assembly', 'version': 1, 'parts': rows}
         if self._joints:                        # 运动副 (车门的铰链…): 存定义, 不存开到多少
             data['joints'] = self._joints_to_file()
+        self._params_to_file(data)              # 全局变量和配合
         layout = self.layout_mode() and self.app.session.document.features
         if layout:                              # 装配体里画的布局草图: 存在装配体文件里
             data['layout'] = self.app.session.document.to_data()
@@ -138,12 +189,19 @@ class AssemblyMixin:
                 raise ValueError('不是 GenForm 装配体文件')
             folder, parts = os.path.dirname(os.path.abspath(path)), []
             own = os.path.normcase(os.path.abspath(self.app.session.document.path)) if self.app.session.document.path else None
-            for row in data['parts']:
+            moving = {index for joint in data.get('joints') or [] for index in joint.get('parts') or []}
+            for number, row in enumerate(data['parts']):
                 target = os.path.normpath(os.path.join(folder, row['file']))
-                mine = own is not None and os.path.normcase(target) == own and not any(not part['path'] for part in parts)
+                (move, move_formula), (turn, turn_formula) = self._place_from_row(row, 'move'), self._place_from_row(row, 'turn')
+                # 开着的零件就是 "当前零件" (视图里直接画它的文档, 不挪): 只认摆在原点、没转、没镜像、不在运动副里的那一项。
+                # 摆在别处的 (从装配体里打开一个零件再返回: 行星轮在 (18, 0, 0)) 按文件读, 不然它会跑到原点去
+                mine = (own is not None and os.path.normcase(target) == own and not any(not part['path'] for part in parts)
+                        and not any(float(value) for value in move + turn) and not any(move_formula + turn_formula)
+                        and not row.get('mirror') and number not in moving)
                 parts.append({'name': '当前零件' if mine else str(row.get('name') or os.path.splitext(os.path.basename(target))[0]),
-                              'path': '' if mine else target, 'move': [float(value) for value in row.get('move', (0, 0, 0))][:3],
-                              'turn': [float(value) for value in row.get('turn', (0, 0, 0))][:3], 'mirror': bool(row.get('mirror'))})
+                              'path': '' if mine else target, 'move': move, 'turn': turn, 'mirror': bool(row.get('mirror'))})
+                if any(move_formula) or any(turn_formula):          # 位置写成 "=表达式" 的 (用全局变量)
+                    parts[-1]['formula'] = {'move': move_formula, 'turn': turn_formula}
         except (OSError, ValueError, KeyError, TypeError) as error:
             self.app.notice.emit(f'打不开这个装配体：{error}')
             return False
@@ -158,9 +216,13 @@ class AssemblyMixin:
             self.app._run('new_document')
         if self.pinned and all(part['path'] for part in parts) and isinstance(data.get('layout'), dict):
             self.app._run('load_layout', {'data': data['layout']})     # 布局草图
-        if all(part['path'] for part in parts) and not self.pinned:
+        inserted = all(part['path'] for part in parts) and not self.pinned
+        if inserted:
             parts.insert(0, self._own_part())       # 仿真页里的装配检查: 现在打开的零件总在里面
         self._joints_from_file(data.get('joints') if self.pinned else None, len(parts))
+        self._params_from_file(data, len(parts) - inserted)
+        if inserted:
+            self._mates_renumber({number: number + 1 for number in range(len(parts))})
         self._parts = parts
         self._parts_changed()
         self.path, self.dirty = path, False
@@ -169,9 +231,10 @@ class AssemblyMixin:
         return True
 
     def _parts_changed(self, meshes=True):
+        self._apply_layout()                    # 位置里的表达式、配合 (params.py)
         self.dirty = True
         self.app.changed.emit()             # 标题上的 * 号
-        self._assembly.update(clashes=None, steps=None, error='')
+        self._assembly.update(clashes=None, steps=None, fasteners=None, stack=None, error='')
         self._red = set()
         self._hidden_parts = {index for index in self._hidden_parts if index < len(self._parts)}
         if self._picked >= len(self._parts):
@@ -216,7 +279,7 @@ class AssemblyMixin:
         viewport = self.app.viewport
         if viewport is None:
             return
-        shown = []
+        shown, labels = [], self._labels()
         for number, mesh in self._shown:
             mesh = self._moved_mesh(number, mesh)       # 运动副动过的: 门开着
             if number in self._hidden_parts or (self._alone_part is not None and number != self._alone_part):
@@ -224,9 +287,22 @@ class AssemblyMixin:
             if number in self._red:
                 mesh = dict(mesh, color=RED, tints=None, alpha=1.0)
             elif number == self._picked or number in getattr(self, '_measured', ()):
-                mesh = dict(mesh, tints=(np.asarray(mesh['tints']) * 0.2 + PICKED * 0.8).astype(np.float32))
-            shown.append(dict(mesh, pick=number))
+                mesh = dict(mesh, tints=self._picked_tints(mesh['tints']))
+            part = self._parts[number] if number < len(self._parts) else {}
+            info = self._kind_of(part['path']) if part.get('path') else None
+            about = '　'.join(text for text in ((info or {}).get('spec') or '', (info or {}).get('material') or '') if text)
+            shown.append(dict(mesh, pick=number, label=labels[number] if number < len(labels) else '', about=about))
         viewport.set_extras(shown)
+
+    def _picked_tints(self, tints):
+        """选中的件往蓝里调的颜色: 同一份数组只算一次 (放动画时每帧都要, 新数组视图就得重新上传)。"""
+        cache = self.__dict__.setdefault('_tint_cache', {})
+        key = id(tints)
+        if key not in cache or cache[key][0] is not tints:
+            if len(cache) > 64:
+                cache.clear()
+            cache[key] = (tints, (np.asarray(tints) * 0.2 + PICKED * 0.8).astype(np.float32))
+        return cache[key][1]
 
     # ---- 设计树 (和 SOLIDWORKS 的 FeatureManager 一样: 装配体 → 基准面 / 原点 → 零部件<n>) ----
     def _labels(self):
@@ -267,6 +343,9 @@ class AssemblyMixin:
                          'spec': (info or {}).get('spec') or '', 'process': (info or {}).get('process') or '',
                          'material': (info or {}).get('material') or '', 'unit': (info or {}).get('unit') or 0.0,
                          'move': [float(value) for value in part['move']], 'turn': [float(value) for value in part['turn']],
+                         'formula': {field: [value or '' for value in ((part.get('formula') or {}).get(field) or [None] * 3)]
+                                     for field in ('move', 'turn')},
+                         'mated': sorted(self._mated_axes(index)),
                          'clash': [self._parts[other]['name'] for other in clashing.get(index, ())],
                          'joint': self._joint_of(index)})
         return rows
@@ -283,6 +362,9 @@ class AssemblyMixin:
     def selectPart(self, index):
         """选中一个零部件 (树上点的、视图里点的; -1 = 不选): 视图里它变蓝, 树滚到它。"""
         index = index if 0 <= index < len(self._parts) else -1
+        if index >= 0 and 0 <= self._joint_adding < len(self._joints):     # 正在点选运动副跟着动的件
+            self._toggle_joint_part(index)
+            return
         if index >= 0:
             self._joint_picked = -1             # 选了零部件: 不再是设计树上点的那个运动副 (它跟着动的那个照样显示)
         if index != self._picked:
@@ -295,15 +377,15 @@ class AssemblyMixin:
         """树上 / 视图里右键一个零部件出来的菜单 (-1 = 装配体本身)。"""
         tr = i18n.tr
         if not (0 <= index < len(self._parts)):
-            rows = [{'id': 'fit', 'icon': 'fit', 'title': tr('整屏显示全图')}]
-            if self._hidden_parts or self._alone_part is not None:
-                rows.append({'id': 'show_all', 'icon': 'eye', 'title': tr('显示所有零部件')})
-            return rows
+            return [{'id': 'fit', 'icon': 'fit', 'title': tr('整屏显示全图')},
+                    {'id': 'show_all', 'icon': 'eye', 'title': tr('显示所有零部件'), 'line': True},
+                    {'id': 'hide_all', 'icon': 'eye_off', 'title': tr('隐藏所有零部件')}]
         part = self._parts[index]
         rows = []
         if part['path']:
             rows.append({'id': 'open', 'icon': 'open', 'title': tr('打开零件')})
         rows.append({'id': 'edit', 'icon': 'move', 'title': tr('编辑位置'), 'line': bool(part['path'])})
+        rows.append({'id': 'rename', 'icon': 'edit', 'title': tr('重命名')})
         if part['path']:
             rows.append({'id': 'mirror', 'icon': 'mirror', 'title': tr('取消镜像') if part.get('mirror') else tr('镜像 (相反方位的件)')})
         rows.append({'id': 'hide', 'icon': 'eye', 'title': tr('显示') if index in self._hidden_parts else tr('隐藏'), 'line': True})
@@ -316,13 +398,20 @@ class AssemblyMixin:
 
     @Slot(int, result='QVariantList')
     def partContext(self, index):
-        """单击零部件 (视图里或设计树上) 弹出来的小工具条 (和 SOLIDWORKS 装配体的关联工具栏一样): 一排图标按钮。"""
-        if not (0 <= index < len(self._parts)):
-            return []
-        tr, part, rows = i18n.tr, self._parts[index], []
+        """单击零部件 (视图里或设计树上) 弹出来的小工具条 (和 SOLIDWORKS 装配体的关联工具栏一样): 一排图标按钮。
+        index = -1: 设计树上点了装配体本身 → 显示全部 / 隐藏全部 / 整屏显示。"""
+        tr, rows = i18n.tr, []
 
         def add(action, icon, title, tip):
             rows.append({'id': action, 'icon': icon, 'title': tr(title), 'tip': f'{tr(title)}：{tr(tip)}'})
+        if index == -1 and self._parts:
+            add('show_all', 'eye', '显示', '显示所有零部件（也退出孤立）')
+            add('hide_all', 'eye_off', '隐藏', '隐藏所有零部件')
+            add('fit', 'fit', '整屏显示全图', '把整个装配体放满画面')
+            return rows
+        if not (0 <= index < len(self._parts)):
+            return []
+        part = self._parts[index]
 
         if part['path']:
             add('open', 'open', '打开零件', '离开装配体去改这个零件（改完点“返回装配体”回来）')
@@ -347,6 +436,9 @@ class AssemblyMixin:
             return
         if action == 'show_all':
             self._hidden_parts.clear()
+            self._alone_part = None
+        elif action == 'hide_all':
+            self._hidden_parts = set(range(len(self._parts)))
             self._alone_part = None
         elif not (0 <= index < len(self._parts)):
             return
@@ -373,6 +465,16 @@ class AssemblyMixin:
             return
         self._push_parts()
         self.changed.emit()
+
+    @Slot(int, str)
+    def renamePart(self, index, name):
+        """设计树上重命名一个零部件 (只改它在装配体里的名字, 零件文件不动)。"""
+        name = str(name).strip()
+        if 0 <= index < len(self._parts) and name and name != self._parts[index]['name']:
+            self._parts[index]['name'] = name
+            self.dirty = True
+            self.app.changed.emit()
+            self.changed.emit()
 
     @Slot(int)
     def openPart(self, index):
@@ -476,16 +578,20 @@ class AssemblyMixin:
             if not self._joints:
                 finish(extra)
                 return
-            joints = [dict(joint, values=[self._closed(joint) + (float(joint['max']) - self._closed(joint)) * share
-                                          for share in (0.25, 0.5, 0.75, 1.0)]) for joint in self._joints]
+            joints = [dict(joint, values=[] if joint.get('speed') else      # 一直转的 (齿轮咬着一起转): 单独转一个查不了, 下面一起查
+                           [self._closed(joint) + (float(joint['max']) - self._closed(joint)) * share
+                            for share in (0.25, 0.5, 0.75, 1.0)]) for joint in self._joints]
+            if self._spinning():
+                joints.append({'name': '一直转的运动副', 'parts': [], 'origin': [0, 0, 0], 'axis': [0, 0, 1], 'poses': self._spin_poses()})
             closed = [dict(part) for part in self._parts]
 
             def swept(clashes, error):
                 if error:
                     extra.append(checks._issue('warning', 'motion_failed', '运动干涉没查完', error))
                 else:
-                    extra.extend(asm_rules.motion(clashes, [joint['name'] for joint in self._joints],
-                                                  lambda number: 'mm' if self._joints[number]['kind'] == 'slide' else '°'))
+                    extra.extend(asm_rules.motion(clashes, [joint['name'] for joint in self._joints] + ['一直转的运动副转'],
+                                                  lambda number: 's' if number >= len(self._joints) else
+                                                  'mm' if self._joints[number]['kind'] == 'slide' else '°'))
                 finish(extra)
             self.app.session.query('sweep', {'parts': closed, 'joints': joints, 'rules': rules}, swept)
         self.app.session.query('mass_props', {'parts': posed}, weighed)                   # 和实时检查用同一份结果 (刚查过就不用再算)
@@ -535,3 +641,63 @@ class AssemblyMixin:
         def done(result, error):
             state.update(steps=result['steps'] if result else None, error=error)
         self._ask('sequence', {'parts': self._posed_parts()}, done)
+
+    @Slot()
+    def runFasteners(self):
+        """螺纹检查: 螺丝和螺纹孔自动配对, 查拧入长度、顶不顶孔底、螺纹相位 (见 kernel/fasteners.py)。"""
+        if not self._check_parts():
+            return
+        state = self._assembly
+        state.update(fasteners=None, error='')
+
+        def done(result, error):
+            state.update(fasteners=result, error=error)
+        self._ask('fasteners', {'parts': self._posed_parts()}, done)
+
+    @Slot(str)
+    def runStack(self, axis='Z'):
+        """尺寸链 / 高度分配: 用视图里已经有的网格包围盒直接算 (不走内核, 一下就好), 见 kernel/stack.py。"""
+        from ..kernel import stack
+        rows = []
+        for number, mesh in self._shown:
+            mesh = self._moved_mesh(number, mesh)
+            if number in self._hidden_parts:
+                continue
+            rows.append({'index': number, 'name': self._parts[number]['name'] if number < len(self._parts) else f'零件{number + 1}',
+                         'low': mesh['low'], 'high': mesh['high']})
+        if not rows:
+            self.app.notice.emit('零件还在加载，等视图里画出来再点')
+            return
+        self._assembly.update(stack=stack.layers(rows, axis or 'Z'), error='')
+        self.changed.emit()
+
+    @Slot()
+    def alignThreads(self):
+        """把螺纹检查算出来的相位写进螺纹孔特征 (零件文件), 再重新画: 螺丝和孔的牙对上。"""
+        result = self._assembly.get('fasteners')
+        if not result:
+            self.app.notice.emit('先点“螺纹检查”')
+            return
+        changed = 0
+        for item in result.get('fix') or []:
+            if item.get('phase') is None or not 0 <= item['part'] < len(self._parts):
+                continue
+            path = self._parts[item['part']].get('path')
+            if not path or not str(path).lower().endswith('.gform'):
+                continue
+            try:
+                with open(path, encoding='utf-8') as handle:
+                    doc = json.load(handle)
+                for feature in doc.get('features') or []:
+                    params = feature.get('params') or {}
+                    if feature.get('id') == item['feature'] and abs(float(params.get('phase') or 0.0) - item['phase']) > 1e-3:
+                        params['phase'] = round(float(item['phase']), 3)
+                        changed += 1
+                with open(path, 'w', encoding='utf-8') as handle:
+                    json.dump(doc, handle, ensure_ascii=False, indent=1)
+            except (OSError, ValueError) as error:
+                self.app.notice.emit(f'改不了 {path}：{error}')
+        self.app.notice.emit(f'对齐了 {changed} 个螺纹孔的相位' if changed else '螺纹相位本来就是对的')
+        if changed:
+            self._show_parts()
+            self.runFasteners()

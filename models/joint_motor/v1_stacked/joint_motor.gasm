@@ -1,0 +1,202 @@
+{
+ "format": "genform-assembly",
+ "version": 1,
+ "parts": [
+  {
+   "name": "PCB",
+   "file": "pcb.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "后盖",
+   "file": "rear_cover.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "底座",
+   "file": "base.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "下轴承 6800",
+   "file": "bearing_6800.gform",
+   "move": [
+    0,
+    0,
+    5
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "上轴承 6800",
+   "file": "bearing_6800.gform",
+   "move": [
+    0,
+    0,
+    23.5
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "定子",
+   "file": "stator.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "转子",
+   "file": "rotor.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "穿心轴",
+   "file": "output_shaft.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "行星轮 1",
+   "file": "planet.gform",
+   "move": [
+    21,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    3.75
+   ]
+  },
+  {
+   "name": "行星轮 2",
+   "file": "planet.gform",
+   "move": [
+    -10.5,
+    18.187,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    3.75
+   ]
+  },
+  {
+   "name": "行星轮 3",
+   "file": "planet.gform",
+   "move": [
+    -10.5,
+    -18.187,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    3.75
+   ]
+  },
+  {
+   "name": "行星架 (输出)",
+   "file": "carrier.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "输出轴承 61812",
+   "file": "bearing_61812.gform",
+   "move": [
+    0,
+    0,
+    47.5
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "前壳 (齿圈)",
+   "file": "front_housing.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  }
+ ]
+}

@@ -82,6 +82,8 @@ def _rebuild(features, upto=None):
     的末尾接着算。所以在末尾加一个特征只算这一个 (不是从头把几十个布尔运算再做一遍), 改中间的一个只重算它和它后面的。
     实体本身不会被后面的运算改掉 (每次运算出来的都是新的), 所以记着的可以放心接着用。"""
     from .. import features as more
+    from .variables import resolve
+    features, problems = resolve(features)          # "=表达式" 的参数先换成数 (变量特征, 见 variables.py)
     body, ctx, status = None, Context(features), {}
     ctx.owners = {}                     # 当前实体的面序号 → 做出这张面的特征 (可直接序列化)
     failed = False
@@ -120,7 +122,11 @@ def _rebuild(features, upto=None):
         kind, params = feature.get('type'), feature.get('params') or {}
         ctx.current = identifier
         try:
-            if kind == 'sketch':
+            if identifier in problems:
+                raise FeatureError(problems[identifier])
+            if kind == 'variables':
+                pass                            # 只定义变量, 不出几何
+            elif kind == 'sketch':
                 ctx.sketches[identifier] = build_sketch(params, features)
             elif kind == 'extrude' or kind in more.MAKERS:
                 solid = ctx.make(kind, params, body)
@@ -129,6 +135,9 @@ def _rebuild(features, upto=None):
                     operation = f'pocket:{float(params["wall"]):g}'     # 壁厚跟着方式走: 镜像、阵列复制的凹槽也一样厚
                 body = combine(body, solid, operation)
                 ctx.tools[identifier] = (solid, operation)
+                after, ctx.after_cut = getattr(ctx, 'after_cut', None) or [], None
+                for number, extra in enumerate(after):  # 加料以后还要按顺序切的 (螺柱: 先切牙, 再截回原长): 带牙的工具体积分不准, 先加光柱再切
+                    body = _threads().cut(body, extra, '切螺纹') if number == 0 else combine(body, extra, 'cut')
             elif kind == 'fillet':
                 body = apply_blend(body, params, True)
             elif kind == 'chamfer':
@@ -231,3 +240,8 @@ def _restore(features, keys, limit):
         _MESHED[:] = [body]
         return count
     return 0
+
+
+def _threads():
+    from ..ops import threads
+    return threads

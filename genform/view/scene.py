@@ -130,6 +130,8 @@ def _axis_solids(dark):
                      (*corners[0], *tint), (*corners[2], *tint), (*corners[3], *tint)]
     return np.array(rows, dtype=np.float32)
 
+_EYE4 = np.eye(4, dtype=np.float32)    # 没有摆放矩阵的网格: 原样画
+
 
 class _Buffer:
     """一个顶点数组对象 + 它的几个缓冲。"""
@@ -196,6 +198,8 @@ class Scene:
         self._plane_fill, self._plane_edge = _Buffer(), _Buffer()
         self._draw_lines, self._draw_points = _Buffer(), _Buffer()
         self._extras = []               # 另外画的网格 (装配体里别的零件、应力云图): [(缓冲, 颜色, 有没有逐顶点的颜色, 不透明度)...]
+        self._extra_edges = []          # 装配体里零件的边线: [(线段缓冲, 摆放矩阵)...]
+        self._extra_hover = None        # 光标指着的零件的那条边
         self._covered = False           # 有一个盖在实体上的网格 (云图): 实体自己的面不画
         self._tinted = False            # 实体有单独上了色的特征 (逐顶点颜色, 见 set_geometry)
         self._glass = []                # 实体里半透明的三角面段, 不透明的画完再画
@@ -225,7 +229,10 @@ class Scene:
         # 同一批数组 (装配体里没动的零件) 的缓冲照用, 只上传新的 (车门开着动画时每一帧只有门的网格是新的)。
         # 缓存里连数组一起留着: 数组活着, 它的 id 就不会被别的新数组占去, 不会认错
         cached, kept = getattr(self, '_extra_buffers', {}), {}
-        self._extras = []
+        self._extras, self._extra_edges = [], []
+        if getattr(self, '_extra_hover', None) is None:
+            self._extra_hover = _Buffer()
+        self._extra_hover.count = 0
         for part in parts:
             tints = part.get('tints')
             key = (id(part['verts']), id(part['normals']), id(part['tris']), id(tints) if tints is not None else None)
@@ -240,8 +247,26 @@ class Scene:
                 buffer.elements(part['tris'])
                 entry = (buffer, (part['verts'], part['normals'], part['tris'], tints))
             kept[key] = entry
+            model = part.get('matrix')          # 运动副动着的件: 网格不变, 只给一个摆放矩阵 (缓冲照用, 动画不卡)
+            model = _EYE4 if model is None else np.ascontiguousarray(model, dtype=np.float32)
             self._extras.append((entry[0], tuple(part.get('color') or (0.7, 0.7, 0.7)), tints is not None,
-                                 float(part.get('alpha', 1.0))))       # 装配体里的玻璃: 半透明, 最后画
+                                 float(part.get('alpha', 1.0)), model))       # 装配体里的玻璃: 半透明, 最后画
+            segments = part.get('segments')
+            if segments is not None and len(segments):     # 零件的边线: 按显示样式画 (带边线上色 / 消除隐藏线 / 线架图…)
+                key = ('edges', id(segments))
+                line = cached.pop(key, None) or kept.get(key)
+                if line is None:
+                    buffer = _Buffer()
+                    buffer.attribute(0, np.asarray(segments, dtype=np.float32).reshape(-1, 3), 3)
+                    buffer.count = len(segments) * 2
+                    line = (buffer, (segments,))
+                kept[key] = line
+                self._extra_edges.append((line[0], model))
+            if part.get('hover_points') is not None:        # 光标指着的那条边: 亮出来 (每次重新上传, 只有几十个点)
+                self._extra_hover.attribute(0, part['hover_points'], 3)
+                self._extra_hover.attribute(1, np.ones(len(part['hover_points']), dtype=np.float32), 1)
+                self._extra_hover.count = len(part['hover_points'])
+                self._extra_hover_model = model
         for buffer, _ in cached.values():       # 这次没用上的: 删掉
             glDeleteBuffers(len(buffer.buffers), list(buffer.buffers.values()))
             glDeleteVertexArrays(1, [buffer.vao])
@@ -317,6 +342,7 @@ class Scene:
                 base = tuple((a + b) / 2 for a, b in zip(top, bottom))
             with self._mesh:
                 glUniformMatrix4fv(self._mesh.loc('mvp'), 1, GL_TRUE, matrix)
+                glUniformMatrix4fv(self._mesh.loc('model'), 1, GL_TRUE, _EYE4)
                 glUniform4f(self._mesh.loc('clip'), *clip)
                 glUniform3f(self._mesh.loc('eye'), *eye)
                 glUniform3f(self._mesh.loc('base'), *base)
@@ -329,25 +355,28 @@ class Scene:
                 glBindVertexArray(self._faces.vao)
                 solid = self._glass[0][0] * 3 if self._glass else self._faces.count
                 glDrawElements(GL_TRIANGLES, solid, GL_UNSIGNED_INT, None)
-        if self._extras:
+        if self._extras and style != 'wire':          # 线架图: 零件的面不画, 只画边线
+            paper = tuple((a + b) / 2 for a, b in zip(top, bottom))
             with self._mesh:
                 glUniformMatrix4fv(self._mesh.loc('mvp'), 1, GL_TRUE, matrix)
                 glUniform4f(self._mesh.loc('clip'), *clip)
                 glUniform3f(self._mesh.loc('eye'), *eye)
-                glUniform1f(self._mesh.loc('flatShade'), 0.0)
+                glUniform1f(self._mesh.loc('flatShade'), 1.0 if flat else 0.0)
                 glUniform1f(self._mesh.loc('toon'), 0.0)
                 glUniform1f(self._mesh.loc('alpha'), 1.0)
-                for buffer, color, tinted, alpha in sorted(self._extras, key=lambda extra: extra[3] < 1.0):
+                for buffer, color, tinted, alpha, model in sorted(self._extras, key=lambda extra: extra[3] < 1.0):
                     if alpha < 1.0:         # 半透明的 (玻璃) 排在后面: 不透明的都画完了才混合着画, 不写深度
                         glEnable(GL_BLEND)
                         glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
                         glDepthMask(GL_FALSE)
                     glUniform1f(self._mesh.loc('alpha'), alpha)
-                    glUniform1f(self._mesh.loc('useTint'), 1.0 if tinted else 0.0)
-                    glUniform3f(self._mesh.loc('base'), *color)
+                    glUniform1f(self._mesh.loc('useTint'), 1.0 if tinted and not flat else 0.0)
+                    glUniform3f(self._mesh.loc('base'), *(paper if flat else color))     # 消除隐藏线 / 隐藏线可见: 面和背景一个颜色
+                    glUniformMatrix4fv(self._mesh.loc('model'), 1, GL_TRUE, model)
                     glBindVertexArray(buffer.vao)
                     glDrawElements(GL_TRIANGLES, buffer.count, GL_UNSIGNED_INT, None)
                 glUniform1f(self._mesh.loc('alpha'), 1.0)
+                glUniformMatrix4fv(self._mesh.loc('model'), 1, GL_TRUE, _EYE4)
                 glDepthMask(GL_TRUE)
                 glDisable(GL_BLEND)
         if self._glass and self._faces.count and style != 'wire' and not self._covered:
@@ -442,6 +471,25 @@ class Scene:
                 strokes(self._edges, tint, 'edge_hover', 'edge_chosen', 1.4, 0.0 if style == 'shaded' else 0.90)
                 glDisable(GL_CLIP_DISTANCE0)
                 glUniform4f(self._line.loc('clip'), 0.0, 0.0, 0.0, 1.0)
+            if self._extra_edges and style != 'shaded' and not (options.get('moving') and style == 'shaded_edges'):
+                # 转视角、缩放的时候 (moving) 带边线上色先不画零件边线, 停下来再补; 消除隐藏线 / 隐藏线可见 / 线架图靠线看形状, 照画
+                # 装配体里零件的边线: 和实体的边一样按显示样式 (上色 = 不画)
+                tint = 'edge' if style == 'shaded_edges' else 'edge_wire'
+                for buffer, model in self._extra_edges:
+                    glUniformMatrix4fv(self._line.loc('mvp'), 1, GL_TRUE, np.ascontiguousarray(mvp @ model, dtype=np.float32))
+                    if style == 'hlv':
+                        glDepthFunc(GL_GREATER)
+                        glDepthMask(GL_FALSE)
+                        strokes(buffer, tint, 'edge_hover', 'edge_chosen', 1.0, 0.28)
+                        glDepthMask(GL_TRUE)
+                        glDepthFunc(GL_LEQUAL)
+                    strokes(buffer, tint, 'edge_hover', 'edge_chosen', 1.2, 0.85)
+                glUniformMatrix4fv(self._line.loc('mvp'), 1, GL_TRUE, matrix)
+            if self._extra_hover is not None and self._extra_hover.count:
+                model = getattr(self, '_extra_hover_model', _EYE4)
+                glUniformMatrix4fv(self._line.loc('mvp'), 1, GL_TRUE, np.ascontiguousarray(mvp @ model, dtype=np.float32))
+                strokes(self._extra_hover, 'edge', 'edge_hover', 'edge_chosen', 2.6, 1.0)
+                glUniformMatrix4fv(self._line.loc('mvp'), 1, GL_TRUE, matrix)
             # 正在编辑的草图画在最上面 (不做深度测试): 画在实体里面或背面的轮廓也要看得见
             if self._draw_lines.count:
                 glDisable(GL_DEPTH_TEST)

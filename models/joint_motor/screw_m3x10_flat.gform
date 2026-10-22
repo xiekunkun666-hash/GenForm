@@ -1,0 +1,52 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {},
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "位置",
+   "params": {
+    "plane": "XY",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 0,
+      "y": 0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "screw",
+   "name": "M3×10 内六角沉头 (真实牙)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f1",
+    "size": "M3",
+    "head": "flat",
+    "length": 10,
+    "flip": false,
+    "thread": true
+   },
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "auto": false,
+    "kind": null,
+    "why": "GB/T 70.3 M3×10 内六角沉头。手动指定",
+    "alternatives": [],
+    "standard": true,
+    "spec": "GB/T 70.3 M3×10 内六角沉头"
+   }
+  }
+ ]
+}

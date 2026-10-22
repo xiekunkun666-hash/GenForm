@@ -20,7 +20,7 @@ SKIN_GUESS = 2.0            # 车皮按多厚的板算料 (外形放样是实心
 
 # 材质 → (大类, 每公斤价钱): 大类决定哪些工艺能用 (压铸只做铝锌镁、注塑只做塑料…)
 _STOCK = {'普通碳钢': ('steel', 7.0), '合金钢': ('steel', 12.0), '不锈钢 304': ('steel', 22.0), '铸铁': ('iron', 6.0),
-          '铝合金 6061': ('light', 28.0), '黄铜': ('copper', 55.0), '紫铜': ('copper', 75.0), '钛合金 Ti-6Al-4V': ('titanium', 380.0),
+          '铝合金 6061': ('light', 28.0), '铝合金 7075': ('light', 45.0), '45# 钢': ('steel', 8.0), '黄铜': ('copper', 55.0), '紫铜': ('copper', 75.0), '钛合金 Ti-6Al-4V': ('titanium', 380.0),
           'ABS': ('plastic', 22.0), '尼龙 PA12': ('plastic', 60.0), '聚碳酸酯 PC': ('plastic', 30.0), 'PLA': ('plastic', 25.0),
           '聚丙烯 PP': ('plastic', 14.0), 'PMMA 亚克力': ('plastic', 35.0), '铸造铝合金 A356': ('light', 24.0),
           '钢化玻璃': ('glass', 12.0), '橡胶': ('rubber', 30.0), '皮革 + 海绵': ('soft', 160.0)}
@@ -480,6 +480,8 @@ def solid_kinds():
 def bind(features, report, batch=DEFAULT_BATCH, material='', only=None):
     """给特征表里的造型特征绑工艺 → {特征 id: 工艺字典}。阵列、镜像跟原件走; 圆角、倒角跟着它前面最近的那个造型特征。
     手动指定过的 (auto=False) 不动。only: 只绑这些 id。"""
+    from .kernel.model.variables import resolve
+    features = resolve(features)[0]                 # "=表达式" 的参数换成数 (全局变量)
     by_id = {feature['id']: feature for feature in features}
     by_id['__solid_kinds__'] = solid_kinds()
     tools = (report or {}).get('tools') or {}

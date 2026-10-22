@@ -1,0 +1,77 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "合金钢"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "行星销",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        0,
+        13.8
+       ],
+       [
+        4,
+        13.8
+       ],
+       [
+        4,
+        14.5
+       ],
+       [
+        2.5,
+        14.5
+       ],
+       [
+        2.5,
+        33
+       ],
+       [
+        0,
+        33
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "行星销 Ø5 带头 (压入行星架)",
+   "params": {
+    "sketch": "f1",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false,
+   "process": {
+    "id": "turning",
+    "name": "数控车削",
+    "short": "车削",
+    "color": "#35A7A0",
+    "auto": false,
+    "kind": null,
+    "why": "手动指定",
+    "alternatives": [],
+    "standard": false
+   }
+  }
+ ]
+}

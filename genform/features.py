@@ -26,14 +26,16 @@ from . import planes
 OPS = [{'value': 'add', 'label': '加料'}, {'value': 'cut', 'label': '切除'}, {'value': 'common', 'label': '相交'},
        {'value': 'void', 'label': '挖空腔'}, {'value': 'fill', 'label': '填空腔'}, {'value': 'pocket', 'label': '钣金凹槽'}]
 HOLE_SIZES = {      # 螺纹规格 → (通孔直径, 沉头孔直径, 沉头孔深, 90° 锥形沉头的大端直径)。常用的中等配合值, 要紧的地方以所用标准为准
-    'M3': (3.4, 6.5, 3.4, 6.72), 'M4': (4.5, 8.0, 4.6, 8.96), 'M5': (5.5, 10.0, 5.7, 11.2), 'M6': (6.6, 11.0, 6.8, 13.44),
+    'M2': (2.4, 4.3, 2.2, 4.0), 'M2.5': (2.9, 5.5, 2.8, 5.0), 'M3': (3.4, 6.5, 3.4, 6.72), 'M4': (4.5, 8.0, 4.6, 8.96), 'M5': (5.5, 10.0, 5.7, 11.2), 'M6': (6.6, 11.0, 6.8, 13.44),
     'M8': (9.0, 15.0, 9.0, 17.92), 'M10': (11.0, 18.0, 11.0, 22.4), 'M12': (13.5, 20.0, 13.0, 26.88),
 }
 
 
-TAP_DRILLS = {'M3': 2.5, 'M4': 3.3, 'M5': 4.2, 'M6': 5.0, 'M8': 6.8, 'M10': 8.5, 'M12': 10.2}     # 粗牙螺纹攻丝前的底孔直径
+TAP_DRILLS = {'M2': 1.6, 'M2.5': 2.05, 'M3': 2.5, 'M4': 3.3, 'M5': 4.2, 'M6': 5.0, 'M8': 6.8, 'M10': 8.5, 'M12': 10.2}     # 粗牙螺纹攻丝前的底孔直径
 SCREW_SIZES = {     # 螺丝规格 → 头型 → (头直径, 头高, 内六角对边, 内六角深); 杆的直径就是规格的数。
     # cap 内六角圆柱头 (ISO 4762)、button 内六角盘头 (ISO 7380)、flat 内六角沉头 (ISO 10642, 头直径是理论值), 都取标称尺寸
+    'M2': {'cap': (3.8, 2.0, 1.5, 1.0), 'button': (3.5, 1.1, 1.3, 0.7), 'flat': (4.0, 1.0, 1.3, 0.6)},
+    'M2.5': {'cap': (4.5, 2.5, 2.0, 1.1), 'button': (4.7, 1.35, 1.5, 0.9), 'flat': (5.0, 1.25, 1.5, 0.8)},
     'M3': {'cap': (5.5, 3.0, 2.5, 1.3), 'button': (5.7, 1.65, 2.0, 1.04), 'flat': (6.72, 1.86, 2.0, 1.1)},
     'M4': {'cap': (7.0, 4.0, 3.0, 2.0), 'button': (7.6, 2.2, 2.5, 1.3), 'flat': (8.96, 2.48, 2.5, 1.5)},
     'M5': {'cap': (8.5, 5.0, 4.0, 2.5), 'button': (9.5, 2.75, 3.0, 1.56), 'flat': (11.2, 3.1, 3.0, 1.9)},
@@ -95,7 +97,9 @@ SPECS = {
                            help='选了 M 规格就用它的通孔 (螺纹底孔类型时是底孔) 和沉头尺寸，下面的直径不起作用'),
                          F('diameter', 'number', '孔直径', 5.0), F('through', 'bool', '完全贯穿', True), F('depth', 'number', '孔深', 10.0),
                          F('head_diameter', 'number', '沉头直径', 10.0), F('head_depth', 'number', '沉头深度', 5.0),
-                         F('flip', 'bool', '反向', False)]),
+                         F('flip', 'bool', '反向', False),
+                         F('thread', 'bool', '切出螺纹牙', False, help='螺纹底孔类型才有效：按内螺纹小径打底孔并切出真实的 60° 牙 (粗牙螺距)，同规格带牙螺丝拧进去不干涉'),
+                         F('phase', 'number', '螺纹相位', 0.0, unit='°', help='牙的起始角度。两件拧在一起: 起点平面相距螺距的整数倍时都填 0 就对上; 不是整数倍时内螺纹填 360 × (外螺纹起点 − 内螺纹起点) / 螺距')]),
     'hole_adv': dict(title='高级孔', short='高级孔', mark='孔', tint='#E07A5F', tool=True,
                      about='自己定义一串孔段：从草图平面往里，一段接一段。',
                      fields=[F('sketch', 'sketch', '位置草图'),
@@ -105,18 +109,21 @@ SPECS = {
     'thread': dict(title='螺纹线', short='螺纹', mark='纹', tint='#E07A5F',
                    about='沿一条圆形边切出真实的螺纹牙 (60° 三角牙)。轴上是外螺纹，孔里是内螺纹，自动判断。牙多了会比较慢。',
                    fields=[F('edges', 'edges', '圆形边', [], pick='edge', count=1, help='螺纹起始处的一条圆形边'),
-                           F('pitch', 'number', '螺距', 1.5), F('length', 'number', '螺纹长度', 10.0)]),
+                           F('pitch', 'number', '螺距', 1.5), F('length', 'number', '螺纹长度', 10.0), F('phase', 'number', '螺纹相位', 0.0, unit='°', help='牙的起始角度。两件拧在一起: 起点平面相距螺距的整数倍时都填 0 就对上; 不是整数倍时内螺纹填 360 × (外螺纹起点 − 内螺纹起点) / 螺距')]),
     'stud': dict(title='螺柱向导', short='螺柱', mark='柱', tint='#E07A5F', tool=True,
-                 about='在草图的每个点处立一根圆柱螺柱 (朝草图法向)，端部带倒角。要真实的螺纹牙再对它的端边用“螺纹线”。',
+                 about='在草图的每个点处立一根圆柱螺柱 (朝草图法向)，端部带倒角。勾上“切出螺纹牙”切真实的外螺纹。',
                  fields=[F('sketch', 'sketch', '位置草图'), F('diameter', 'number', '直径', 6.0), F('length', 'number', '长度', 15.0),
-                         F('chamfer', 'number', '端部倒角', 0.5), F('flip', 'bool', '反向', False)]),
+                         F('chamfer', 'number', '端部倒角', 0.5), F('flip', 'bool', '反向', False),
+                         F('thread', 'bool', '切出螺纹牙', False, help='在螺柱上切真实的 60° 外螺纹 (根部留一个螺距)'),
+                         F('pitch', 'number', '螺距', 0.0, help='0 = 按直径取粗牙螺距'), F('phase', 'number', '螺纹相位', 0.0, unit='°', help='牙的起始角度。两件拧在一起: 起点平面相距螺距的整数倍时都填 0 就对上; 不是整数倍时内螺纹填 360 × (外螺纹起点 − 内螺纹起点) / 螺距')]),
     'screw': dict(title='螺丝', short='螺丝', mark='钉', tint='#E07A5F', tool=True,
-                  about='在草图的每个点处放一颗内六角螺丝：头在草图平面上 (沉头的头埋在平面里)，杆朝草图法向的反方向伸进去。杆是光杆，不画螺纹牙。',
+                  about='在草图的每个点处放一颗内六角螺丝：头在草图平面上 (沉头的头埋在平面里)，杆朝草图法向的反方向伸进去。勾上“切出螺纹牙”杆上切真实的牙，不勾是光杆。',
                   fields=[F('sketch', 'sketch', '位置草图', help='螺丝放在这个草图的点和圆心上'),
                           F('size', 'choice', '规格', 'M3', options=_options(*((name, name) for name in SCREW_SIZES))),
                           F('head', 'choice', '头型', 'cap', options=_options(('cap', '圆柱头'), ('button', '盘头'), ('flat', '沉头'))),
                           F('length', 'number', '长度', 10.0, help='圆柱头和盘头：头下面的杆长；沉头：连头一起的总长'),
-                          F('flip', 'bool', '反向', False)]),
+                          F('flip', 'bool', '反向', False),
+                          F('thread', 'bool', '切出螺纹牙', False, help='杆上切真实的 60° 粗牙外螺纹，相位从头的平面量起'), F('phase', 'number', '螺纹相位', 0.0, unit='°', help='牙的起始角度。两件拧在一起: 起点平面相距螺距的整数倍时都填 0 就对上; 不是整数倍时内螺纹填 360 × (外螺纹起点 − 内螺纹起点) / 螺距')]),
     # ---- 修改实体 ----
     'rib': dict(title='筋', short='筋', mark='筋', tint='#D9A441',
                 about='用一条开口的草图线做加强筋：在草图平面内朝实体延伸到碰上实体为止，厚度沿草图法向两侧各一半。',
@@ -193,6 +200,10 @@ SPECS = {
                 about='在实体的质心处放一个标记 (跟着实体变)。', fields=[]),
     'bbox': dict(title='边界框', short='边界框', mark='框', tint='#4C9BE8', reference=True,
                  about='画出刚好包住实体的长方体框 (跟着实体变)。', fields=[]),
+    'variables': dict(title='全局变量', short='变量', mark='变', tint='#4C9BE8', reference=True,
+                      about='定义几个变量 (方程式)：后面任何特征的数值参数都可以写成 =表达式，比如 =D/2-3。'
+                            '变量的值也能写表达式，只能用前面定义过的变量。装配体的全局变量会改掉同名的值。',
+                      fields=[F('values', 'vars', '变量', {'D': 100.0}, help='写成 名字 = 值，用分号隔开：D = 112; H = D/2')]),
     # ---- 曲线 ----
     'curve_helix': dict(title='螺旋线/涡状线', short='螺旋线', mark='旋', tint='#B388EB', curve=True,
                         about='以草图里的一个圆为底画螺旋线 (沿草图法向上升) 或涡状线 (在草图平面内一圈圈往外)。',
@@ -232,7 +243,7 @@ MENUS = [       # 工具栏上的下拉菜单
     ('hole', '异形孔向导', ['hole', 'hole_adv', 'thread', 'stud', 'screw']),
     ('pattern', '线性阵列', ['pattern_linear', 'pattern_circular', 'mirror', 'pattern_curve', 'pattern_sketch', 'pattern_table',
                          'pattern_fill', 'pattern_variable']),
-    ('reference', '参考几何体', ['plane', 'axis', 'csys', 'point', 'com', 'bbox']),
+    ('reference', '参考几何体', ['plane', 'axis', 'csys', 'point', 'com', 'bbox', 'variables']),
     ('curve', '曲线', ['split', 'curve_project', 'curve_composite', 'curve_xyz', 'curve_points', 'curve_helix']),
     ('sketch3d', '3D 草图', ['sketch3d', 'curve_surface']),
 ]
@@ -259,8 +270,41 @@ def points_text(points):
     return '; '.join(','.join(f'{value:g}' for value in row) for row in points or ())
 
 
+def parse_variables(value):
+    """变量表: {'D': 112, 'H': '=D/2'} 或面板里写的 "D = 112; H = D/2" → {名字: 数 或 "=表达式"} (按写的先后)。"""
+    if isinstance(value, dict):
+        rows = list(value.items())
+    else:
+        rows = []
+        for row in str(value or '').replace('；', ';').replace('\n', ';').split(';'):
+            if row.strip():
+                if '=' not in row:
+                    raise ValueError(f'变量要写成 名字 = 值：{row.strip()!r}')
+                name, text = row.split('=', 1)
+                rows.append((name, text))
+    out = {}
+    for name, text in rows:
+        name = str(name).strip()
+        if not name.isidentifier():
+            raise ValueError(f'变量名 {name!r} 不行：只能用字母、数字、下划线，不能数字开头')
+        text = text.strip() if isinstance(text, str) else text
+        try:
+            out[name] = float(text[1:] if isinstance(text, str) and text.startswith('=') else text)
+        except (TypeError, ValueError):
+            out[name] = text if isinstance(text, str) and text.startswith('=') else f'={text}'
+    return out
+
+
+def variables_text(values):
+    return '; '.join(f'{name} = {str(text).lstrip("=") if isinstance(text, str) else f"{text:g}"}' for name, text in (values or {}).items())
+
+
 def clean(field, value):
     kind = field['kind']
+    if kind in ('number', 'int') and isinstance(value, str) and value.strip().startswith('='):
+        return value.strip()                        # 方程式 (用变量特征里的变量): 重算时才换成数
+    if kind == 'vars':
+        return parse_variables(value)
     if kind == 'number':
         value = float(value)
         if not math.isfinite(value):

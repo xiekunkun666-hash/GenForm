@@ -1,0 +1,68 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {},
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "61807",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 18.5,
+      "cy": 3.5,
+      "w": 2.0,
+      "h": 7
+     },
+     {
+      "type": "rect",
+      "cx": 22.5,
+      "cy": 3.5,
+      "w": 2.0,
+      "h": 7
+     },
+     {
+      "type": "rect",
+      "cx": 20.5,
+      "cy": 3.5,
+      "w": 2.0,
+      "h": 5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "61807 35×47×7",
+   "suppressed": false,
+   "params": {
+    "sketch": "f1",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "auto": false,
+    "kind": null,
+    "why": "61807-2RS 35×47×7。手动指定",
+    "alternatives": [],
+    "standard": true,
+    "spec": "61807-2RS 35×47×7"
+   }
+  }
+ ]
+}

@@ -9,7 +9,7 @@ from ..document import DocumentError
 from .common import _local
 from .signals import startChanged
 
-RECENT_KINDS = {'.gform': 'part', '.gasm': 'assembly', '.gdrw': 'drawing'}
+RECENT_KINDS = {'.gform': 'part', '.gasm': 'assembly', '.gdrw': 'drawing', '.step': 'step', '.stp': 'step'}   # STEP: 点了导入成新零件
 
 
 class DocumentMixin:

@@ -1,0 +1,212 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 6,
+ "upto": null,
+ "props": {},
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "底座截面",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        9.5,
+        4.5
+       ],
+       [
+        49,
+        4.5
+       ],
+       [
+        49,
+        33
+       ],
+       [
+        47,
+        33
+       ],
+       [
+        47,
+        7.5
+       ],
+       [
+        25,
+        7.5
+       ],
+       [
+        25,
+        25
+       ],
+       [
+        23,
+        25
+       ],
+       [
+        23,
+        10
+       ],
+       [
+        13,
+        10
+       ],
+       [
+        13,
+        29
+       ],
+       [
+        9.5,
+        29
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "底座 (安装板 + 定子轴座 + 外壳中段)",
+   "params": {
+    "sketch": "f1",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "PCB 螺柱",
+   "params": {
+    "plane": "XY",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 25.809,
+      "cy": 25.809,
+      "r": 3
+     },
+     {
+      "type": "circle",
+      "cx": -25.809,
+      "cy": 25.809,
+      "r": 3
+     },
+     {
+      "type": "circle",
+      "cx": -25.809,
+      "cy": -25.809,
+      "r": 3
+     },
+     {
+      "type": "circle",
+      "cx": 25.809,
+      "cy": -25.809,
+      "r": 3
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "PCB 螺柱 x4 (板子贴在螺柱底面)",
+   "params": {
+    "sketch": "f3",
+    "distance": 4.5,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "M3 螺纹底孔 + 相线过线孔",
+   "params": {
+    "plane": "XY",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 25.809,
+      "cy": 25.809,
+      "r": 1.25
+     },
+     {
+      "type": "circle",
+      "cx": -25.809,
+      "cy": 25.809,
+      "r": 1.25
+     },
+     {
+      "type": "circle",
+      "cx": -25.809,
+      "cy": -25.809,
+      "r": 1.25
+     },
+     {
+      "type": "circle",
+      "cx": 25.809,
+      "cy": -25.809,
+      "r": 1.25
+     },
+     {
+      "type": "circle",
+      "cx": -12.5,
+      "cy": -32.5,
+      "r": 2.5
+     },
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": -32.5,
+      "r": 2.5
+     },
+     {
+      "type": "circle",
+      "cx": 12.5,
+      "cy": -32.5,
+      "r": 2.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "M3 底孔 x4 + 相线孔 x3",
+   "params": {
+    "sketch": "f5",
+    "distance": 7.5,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  }
+ ]
+}

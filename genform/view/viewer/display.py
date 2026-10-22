@@ -43,7 +43,8 @@ class DisplayMixin:
             sign = 1.0 if display['section'].get('flip') else -1.0
             clip = (*(normal * sign), float(-sign * (normal @ origin)))
         return {'style': display['style'], 'scene': display['scene'], 'cartoon': display['cartoon'],
-                'origin': self._origin_reach() if display['origin'] else 0.0, 'face': display['color'], 'clip': clip}
+                'origin': self._origin_reach() if display['origin'] else 0.0, 'face': display['color'], 'clip': clip,
+                'moving': bool(getattr(self, '_moving', False))}
 
     def _origin_reach(self):
         """原点坐标系的一根轴该画多长 (mm), 才能在屏幕上是 ORIGIN_PIXELS 那么长。原点在眼睛后面时不画 (0)。"""

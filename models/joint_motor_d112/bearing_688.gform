@@ -1,0 +1,68 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {},
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "688",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 4.6,
+      "cy": 2.5,
+      "w": 1.2,
+      "h": 5
+     },
+     {
+      "type": "rect",
+      "cx": 7.4,
+      "cy": 2.5,
+      "w": 1.2,
+      "h": 5
+     },
+     {
+      "type": "rect",
+      "cx": 6,
+      "cy": 2.5,
+      "w": 1.6,
+      "h": 3.4
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "688 8×16×5",
+   "params": {
+    "sketch": "f1",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false,
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "auto": false,
+    "kind": null,
+    "why": "688-2RS 8×16×5。手动指定",
+    "alternatives": [],
+    "standard": true,
+    "spec": "688-2RS 8×16×5"
+   }
+  }
+ ]
+}

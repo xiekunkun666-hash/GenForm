@@ -1,0 +1,127 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 5,
+ "upto": null,
+ "props": {
+  "material": "合金钢"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "行星轮本体",
+   "params": {
+    "plane": "XY",
+    "offset": 15.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 13.47
+     },
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 4.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "行星轮本体 (孔 Ø9 装滚针)",
+   "params": {
+    "sketch": "f1",
+    "distance": 12.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "turning",
+    "name": "数控车削",
+    "short": "车削",
+    "color": "#35A7A0",
+    "auto": false,
+    "kind": null,
+    "why": "手动指定",
+    "alternatives": [],
+    "standard": false
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "齿",
+   "params": {
+    "plane": "XY",
+    "offset": 15.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        13.37,
+        -0.5
+       ],
+       [
+        14.82,
+        -0.2
+       ],
+       [
+        14.82,
+        0.2
+       ],
+       [
+        13.37,
+        0.5
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "齿",
+   "params": {
+    "sketch": "f3",
+    "distance": 12.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "pattern_circular",
+   "name": "48T m0.6 x=-0.3 (滚齿, 20CrMnTi 渗碳淬火)",
+   "params": {
+    "features": [
+     "f4"
+    ],
+    "axis": "Z",
+    "count": 48,
+    "angle": 360.0
+   },
+   "suppressed": false
+  }
+ ]
+}

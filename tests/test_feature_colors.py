@@ -277,6 +277,8 @@ class FaceOwnerCache(unittest.TestCase):
         with patch.object(face_owners, '_face_signature') as signature, \
                 patch.object(face_owners, 'BRepExtrema_DistShapeShape') as distance:
             unchanged = build.build_model(features)
+            # 离得远的切除什么都没切掉: 现在报错 (见 solids._check_changed), 实体保留运算前的样子, 面的归属照旧
+            self.assertTrue(unchanged['status'].pop('f6').startswith('error'))
             self.assertEqual(self.owner_snapshot(unchanged), self.owner_snapshot(original))
             signature.assert_not_called()
             distance.assert_not_called()

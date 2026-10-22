@@ -17,6 +17,7 @@ from OCP.gp import gp_Pln
 
 from ..build import FeatureError
 from .. import build
+from . import threads
 from ... import sketchgeom
 from .helpers import (
     _centroid, _dir, _explore, _faces, _frame, _moved, _need_body, _number, _pnt, _profile, _reach, _run, _shape_list,
@@ -36,8 +37,7 @@ def thread(body, params, ctx):
     centre, axis, radius = _xyz(circle.Location()), _xyz(circle.Axis().Direction()), circle.Radius()
     side = _xyz(circle.XAxis().Direction())
     pitch, span = _number(params, 'pitch', positive=True), _number(params, 'length', positive=True)
-    height = 0.6134 * pitch
-    if height >= radius:
+    if 0.6134 * pitch >= radius:
         raise FeatureError('螺距相对这个直径太大')
 
     def inside(point):
@@ -52,22 +52,10 @@ def thread(body, params, ctx):
         along, outward = axis * internal[0], -1.0
     else:
         raise FeatureError('判断不出螺纹往哪边走：这条边要在轴的端面或孔口上')
-    turns = span / pitch + 0.5
-    start = centre - along * pitch * 0.5            # 从端面外半圈开始切, 牙从端面上自然露出来
-    count = max(int(turns * 24), 2)
-    points = [start + along * pitch * turns * k / count
-              + (side * math.cos(math.tau * turns * k / count) + np.cross(along, side) * math.sin(math.tau * turns * k / count)) * radius
-              for k in range(count + 1)]
-    spine = _spline(points)
-    base, tip = start + side * (radius + outward * pitch * 0.05), start + side * (radius - outward * height)
-    polygon = BRepBuilderAPI_MakePolygon(_pnt(base - along * pitch * 0.45), _pnt(base + along * pitch * 0.45), _pnt(tip), True)
-    shell = BRepOffsetAPI_MakePipeShell(spine)
-    shell.SetMode(_dir(along))
-    shell.Add(polygon.Wire())
-    _run(shell, '螺纹扫不出来')
-    if not shell.MakeSolid():
-        raise FeatureError('螺纹牙合不成实体')
-    return build.combine(body, shell.Shape(), 'cut', '切螺纹')
+    # 60° 普通螺纹牙型, 相位按 threads 里的约定 (从这条边所在的平面量起): 同规格的螺丝和孔牙嵌得上
+    major = 2 * radius if outward > 0 else 2 * radius + 1.082532 * pitch      # 孔按小径 (底孔) 打的, 大径往外推
+    tool = threads.groove(centre, along, major, pitch, -pitch * 0.5, span, outward < 0, float(params.get('phase') or 0.0))
+    return build.combine(body, tool, 'cut', '切螺纹')
 
 
 def rib(body, params, ctx):

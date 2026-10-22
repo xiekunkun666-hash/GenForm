@@ -1,0 +1,186 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 7,
+ "upto": null,
+ "props": {
+  "feature_colors": {
+   "f7": "#B87333"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "定子轭",
+   "params": {
+    "plane": "XY",
+    "offset": 17.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 32.2
+     },
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 29.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "定子轭 Ø79.8/Ø58 叠压 14",
+   "params": {
+    "sketch": "f1",
+    "distance": 14.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": null,
+    "why": "定子铁芯 Ø79.8/Ø58×14 36 槽 (0.2 硅钢片激光切 + 铆压), 绕线外协; 压在齿圈钢套外圆上 + 胶",
+    "alternatives": [],
+    "standard": true,
+    "spec": "定子铁芯 Ø79.8/Ø58×14 36 槽 (0.2 硅钢片激光切 + 铆压), 绕线外协; 压在齿圈钢套外圆上 + 胶"
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "齿",
+   "params": {
+    "plane": "XY",
+    "offset": 17.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        31.8,
+        -1.6
+       ],
+       [
+        38.6,
+        -1.6
+       ],
+       [
+        38.6,
+        -2.72
+       ],
+       [
+        39.9,
+        -2.72
+       ],
+       [
+        39.9,
+        2.72
+       ],
+       [
+        38.6,
+        2.72
+       ],
+       [
+        38.6,
+        1.6
+       ],
+       [
+        31.8,
+        1.6
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "齿",
+   "params": {
+    "sketch": "f3",
+    "distance": 14.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "pattern_circular",
+   "name": "36 槽",
+   "params": {
+    "features": [
+     "f4"
+    ],
+    "axis": "Z",
+    "count": 36,
+    "angle": 360.0
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "sketch",
+   "name": "绕组端部",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 35.4,
+      "cy": 15.25,
+      "w": 6.4,
+      "h": 3.5
+     },
+     {
+      "type": "rect",
+      "cx": 35.4,
+      "cy": 32.75,
+      "w": 6.4,
+      "h": 3.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f7",
+   "type": "revolve",
+   "name": "绕组端部 (包络)",
+   "params": {
+    "sketch": "f6",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false
+  }
+ ]
+}

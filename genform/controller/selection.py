@@ -8,7 +8,11 @@ class SelectionMixin:
 
     # ---- 三维视图里的选择 ----
     def _on_picked(self, kind, identifier, additive):
-        if self._kind == 'assembly' and self._measure is not None:          # 评估 → 测量: 点零部件
+        if self._kind == 'assembly' and self._measure is not None:          # 评估 → 测量: 点零部件, 或点零部件的一条边
+            hover = getattr(self.viewport, '_hover', None) if self.viewport is not None else None
+            if kind == 'component' and hover and hover[0] == 'part_edge' and hover[1][0] == identifier:
+                self._measure_edge(*hover[1])
+                return
             self._measure_part(identifier if kind == 'component' else -1)
             return
         if self._kind == 'assembly' and kind == 'sketch' and self._sketch is None:

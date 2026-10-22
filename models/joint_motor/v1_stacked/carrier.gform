@@ -1,0 +1,213 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 6,
+ "upto": null,
+ "props": {},
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "行星架截面",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 19,
+      "cy": 35.5,
+      "w": 24,
+      "h": 2
+     },
+     {
+      "type": "polygon",
+      "points": [
+       [
+        1.25,
+        45.5
+       ],
+       [
+        31,
+        45.5
+       ],
+       [
+        31,
+        47.3
+       ],
+       [
+        30,
+        47.3
+       ],
+       [
+        30,
+        60.5
+       ],
+       [
+        1.25,
+        60.5
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "后板 + 输出法兰 (Ø60 配 61812)",
+   "params": {
+    "sketch": "f1",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "行星销 + 连接柱",
+   "params": {
+    "plane": "XY",
+    "offset": 36.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 21,
+      "cy": 0,
+      "r": 2.5
+     },
+     {
+      "type": "circle",
+      "cx": -10.5,
+      "cy": 18.187,
+      "r": 2.5
+     },
+     {
+      "type": "circle",
+      "cx": -10.5,
+      "cy": -18.187,
+      "r": 2.5
+     },
+     {
+      "type": "circle",
+      "cx": 13,
+      "cy": 22.517,
+      "r": 4
+     },
+     {
+      "type": "circle",
+      "cx": -26,
+      "cy": 0,
+      "r": 4
+     },
+     {
+      "type": "circle",
+      "cx": 13,
+      "cy": -22.517,
+      "r": 4
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "行星销 Ø5 x3 + 连接柱 Ø8 x3",
+   "params": {
+    "sketch": "f3",
+    "distance": 9.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "输出螺孔",
+   "params": {
+    "plane": "XY",
+    "offset": 60.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 22,
+      "cy": 0,
+      "r": 1.25
+     },
+     {
+      "type": "circle",
+      "cx": 15.556,
+      "cy": 15.556,
+      "r": 1.25
+     },
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 22,
+      "r": 1.25
+     },
+     {
+      "type": "circle",
+      "cx": -15.556,
+      "cy": 15.556,
+      "r": 1.25
+     },
+     {
+      "type": "circle",
+      "cx": -22,
+      "cy": 0,
+      "r": 1.25
+     },
+     {
+      "type": "circle",
+      "cx": -15.556,
+      "cy": -15.556,
+      "r": 1.25
+     },
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": -22,
+      "r": 1.25
+     },
+     {
+      "type": "circle",
+      "cx": 15.556,
+      "cy": -15.556,
+      "r": 1.25
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "M3 输出螺孔 x8 (PCD44)",
+   "params": {
+    "sketch": "f5",
+    "distance": -6.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  }
+ ]
+}

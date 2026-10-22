@@ -63,9 +63,55 @@ class MeasureMixin:
         self._push_selection()
         self.measureChanged.emit()
 
+    def _edge_info(self, number, edge):
+        """装配体里零部件 number 的第 edge 条边 → edge_measure.describe 的结果 (世界坐标; 运动副动着的按现在的位置)。"""
+        import numpy as np
+        from .. import edge_measure
+        extras = (self.viewport._data.get('extras') or ()) if self.viewport is not None else ()
+        part = next((part for part in extras if part.get('pick') == number), None)
+        if part is None or part.get('segments') is None:
+            return None
+        chosen = np.asarray(part['segment_edge']) == edge
+        segments = np.asarray(part['segments'], float)[chosen]
+        if not len(segments):
+            return None
+        points = np.vstack([segments[:, 0], segments[-1:, 1]])
+        if part.get('matrix') is not None:
+            matrix = np.asarray(part['matrix'], float)
+            points = points @ matrix[:3, :3].T + matrix[:3, 3]
+        radius = float(part['edge_radius'][edge])
+        info = edge_measure.describe(points, edge_measure.KINDS[int(part['edge_kind'][edge])], float(part['edge_length'][edge]),
+                                     radius if radius == radius else None)
+        info['name'] = self.sim.components[number]['label'] if number < len(self.sim.components) else ''
+        return info
+
+    def _measure_edge(self, number, edge):
+        """装配体里测量点了零部件的一条边: 一条 → 长度 / 直径 / 半径 / 周长; 两条 → 距离、夹角、中心距、同轴度。"""
+        from .. import edge_measure
+        state = self._measure
+        if any(not isinstance(item, dict) for item in state['items']):
+            state['items'] = []                 # 刚才量的是零部件: 换成量边, 重新开始
+        key = {'edge': [int(number), int(edge)]}
+        if key in state['items']:
+            return
+        if len(state['items']) >= 2:
+            state['items'] = []
+        state['items'].append(key)
+        infos = [self._edge_info(*item['edge']) for item in state['items']]
+        if any(info is None for info in infos):
+            state.update(items=[], result=None, error='这条边没法量（零件还没加载完？）')
+        else:
+            result = {'kind': 'edges', 'items': infos}
+            if len(infos) == 2:
+                result.update(edge_measure.compare(*infos))
+            state.update(result=result, error='')
+        self._show_measure()
+
     def _measure_part(self, index):
         """装配体里测量点了一个零部件 (-1 = 点了空白处, 重新选)。"""
         state = self._measure
+        if any(isinstance(item, dict) for item in state['items']):
+            state.update(items=[], result=None, error='')       # 刚才量的是边: 换成量零部件, 重新开始
         if index < 0:
             state.update(items=[], result=None, error='')
         elif index not in state['items']:
@@ -83,6 +129,30 @@ class MeasureMixin:
             posed = self.sim._posed_parts()             # 门开着就量开着的样子
             self.session.query('measure_parts', {'parts': [posed[number] for number in wanted]}, done)
         self._show_measure()
+
+    def _edges_measure(self, state, result, infos, rows, add):
+        """装配体里量边的面板: 一条 → 长度、直径 / 半径 / 周长; 两条 → 最短距离、夹角、圆心距、轴线偏离。"""
+        names = {'line': '直边', 'circle': '圆弧', 'curve': '曲线边'}
+        if len(infos) == 2:
+            add('最短距离', result['distance'], strong=True)
+            if 'center_distance' in result:
+                add('圆心距', result['center_distance'], strong=True)
+                add('轴线偏离（0 = 同轴）', result['axis_offset'])
+            if 'angle' in result:
+                add('夹角', result['angle'], '°', strong=True)
+            for axis, value in zip('XYZ', result['delta']):
+                add(f'Δ{axis}', value)
+        for number, info in enumerate(infos):
+            kind = '圆' if info.get('whole') else names.get(info['type'], '边')
+            rows.append({'label': f'边 {number + 1}' if len(infos) == 2 else '边', 'value': f"{info.get('name', '')}　{kind}", 'strong': False})
+            if 'diameter' in info:
+                add('直径', info['diameter'], strong=len(infos) == 1)
+                add('半径', info['radius'])
+                add('周长' if info.get('whole') else '弧长', info['length'])
+            else:
+                add('长度', info['length'], strong=len(infos) == 1)
+        hints = ['', '再点一条边：看两条边的距离、夹角；两个圆还看圆心距、同不同轴（点零部件中间 = 量零部件）', '再点别的 = 重新开始测量']
+        return {'hint': state['error'] or hints[len(infos)], 'rows': rows}
 
     def _parts_measure(self, state, result, infos, rows, add):
         """装配体里测量的面板: 一个零部件 → 长宽高、体积、表面积; 两个 → 最短距离、ΔX ΔY ΔZ, 再各自的长宽高。"""
@@ -104,7 +174,8 @@ class MeasureMixin:
         elif count and not result:
             hint = '计算中…'
         else:
-            hint = ['点一个零部件：看它的长宽高、体积', '再点一个：看两个零件之间最短的距离（点空白处重新选）',
+            hint = ['点一个零部件：看它的长宽高、体积；光标靠到一条边上再点 = 量这条边（长度、直径、周长）',
+                    '再点一个：看两个零件之间最短的距离（点空白处重新选）',
                     '再点别的 = 重新开始测量'][count]
         return {'hint': hint, 'rows': rows}
 
@@ -136,9 +207,13 @@ class MeasureMixin:
         if state is None:
             return
         if state.get('parts'):                  # 装配体: 点着的零部件变蓝 (第二个也是), 最近两点连一条线
-            self.sim.markMeasured(state['items'])
-            lines, points, labels = [], [], []
             result = state['result'] or {}
+            edges = result.get('kind') == 'edges'
+            self.sim.markMeasured([] if edges else [item for item in state['items'] if not isinstance(item, dict)])
+            lines, points, labels = [], [], []
+            for info in (result.get('items') or []) if edges else []:      # 量的边描出来
+                track = [tuple(float(value) for value in point) for point in info['points']]
+                lines += list(zip(track[:-1], track[1:]))
             if 'points' in result:
                 first, second = (tuple(point) for point in result['points'])
                 if result['distance'] > 1e-9:
@@ -182,6 +257,8 @@ class MeasureMixin:
 
         result = state['result'] or {}
         infos = result.get('items', [])
+        if state.get('parts') and result.get('kind') == 'edges':
+            return self._edges_measure(state, result, infos, rows, add)
         if state.get('parts'):
             return self._parts_measure(state, result, infos, rows, add)
         if len(infos) == 2:

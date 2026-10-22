@@ -16,6 +16,9 @@ from .renderer import _Renderer
 from .common import _geometry
 
 
+MOTION_SETTLE = 0.18          # 视角停下来多久算停 (秒), 停了才画装配体零件的边线
+
+
 class Viewport(DisplayMixin, OverlayMixin, ViewingMixin, MouseMixin, Signals, QQuickFramebufferObject):
 
     def __init__(self, parent=None):
@@ -74,12 +77,36 @@ class Viewport(DisplayMixin, OverlayMixin, ViewingMixin, MouseMixin, Signals, QQ
         self._renderer = _Renderer()
         return self._renderer
 
+    def _note_motion(self):
+        """视角在变 (滚轮缩放、拖着转 / 平移、视图定向的动画): 这几帧装配体零件的边线先不画 (边线比面还费显卡),
+        停下来 MOTION_SETTLE 秒以后补画一帧带边线的。"""
+        camera = self._camera
+        seen = (camera.yaw, camera.pitch, camera.distance, tuple(camera.target), camera.perspective, self.width(), self.height())
+        if seen == getattr(self, '_motion_seen', None):
+            return
+        first = getattr(self, '_motion_seen', None) is None
+        self._motion_seen = seen
+        if first:
+            return
+        self._moving = True
+        timer = getattr(self, '_settle_timer', None)
+        if timer is None:
+            timer = self._settle_timer = QTimer(self)
+            timer.setSingleShot(True)
+            timer.timeout.connect(self._settled)
+        timer.start(int(MOTION_SETTLE * 1000))
+
+    def _settled(self):
+        self._moving = False
+        self.update()
+
     def _set(self, name, value):
         self._data[name] = value
         self._versions[name] += 1
 
     def _redraw(self):
         """内容或视角变了: 重算屏幕上的文字标注位置, 并请求重画一帧。"""
+        self._note_motion()
         self._update_labels()
         facing = (round(self._camera.yaw, 3), round(self._camera.pitch, 3))
         if self._handle is not None and self._sketch is None:

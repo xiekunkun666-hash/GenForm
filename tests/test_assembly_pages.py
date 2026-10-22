@@ -76,6 +76,41 @@ class Pages(unittest.TestCase):
         self.assertFalse(self.controller.measuring)
         self.assertEqual(self.sim._measured, set())
 
+    def test_measure_part_edges(self):
+        import numpy as np
+        from genform.kernel import assembly
+        meshes = assembly.meshes([], None, {'parts': [dict(part) for part in self.sim._posed_parts()]})
+        extras = [dict(mesh, pick=number) for number, mesh in enumerate(meshes)]
+
+        class View:
+            _data, _hover, pick_vertices, click_at = {'extras': extras}, None, False, (0.0, 0.0)
+
+            def set_overlay(self, *args, **kwargs):
+                self.overlay = args
+
+            def set_extras(self, parts):
+                pass
+
+            def fit(self):
+                pass
+        view = View()
+        self.controller.viewport = view
+        self.controller.setTab('evaluate')
+        self.controller.toggleMeasure()
+        lines = [int(edge) for edge in np.flatnonzero(extras[0]['edge_kind'] == 0)]
+        longest = max(lines, key=lambda edge: extras[0]['edge_length'][edge])
+        view._hover = ('part_edge', (0, longest))
+        self.controller._on_picked('component', 0, False)
+        rows = {row['label']: row['value'] for row in self.controller.measure['rows']}
+        self.assertEqual(rows['长度'], '40 mm')                       # 底板 40 宽
+        top = next(edge for edge in np.flatnonzero(extras[1]['edge_kind'] == 0) if extras[1]['edge_length'][edge] > 9.9)
+        view._hover = ('part_edge', (1, int(top)))
+        self.controller._on_picked('component', 1, False)
+        rows = {row['label']: row['value'] for row in self.controller.measure['rows']}
+        self.assertIn('最短距离', rows)
+        self.assertIn('夹角', rows)
+        self.assertTrue(view.overlay[0])                               # 两条边描出来了
+
     def test_log_button_runs_then_toggles(self):
         self.assertFalse(self.controller.checkOpen)
         self.controller.toggleCheckLog()                                # 还没查过: 查一遍, 日志拉出来

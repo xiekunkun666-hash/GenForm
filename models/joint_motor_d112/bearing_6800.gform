@@ -1,0 +1,111 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 4,
+ "upto": null,
+ "props": {
+  "material": "合金钢",
+  "standard": {
+   "spec": "6800-2RS 10×19×5",
+   "name": "6800"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "截面",
+   "suppressed": false,
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 7.25,
+      "cy": 2.5,
+      "w": 4.5,
+      "h": 5
+     }
+    ]
+   }
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "6800-2RS 10×19×5",
+   "suppressed": false,
+   "params": {
+    "sketch": "f1",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "standard": true,
+    "spec": "6800-2RS 10×19×5",
+    "why": "6800-2RS 10×19×5。标准件库生成"
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "分界缝",
+   "suppressed": false,
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 6.35,
+      "cy": 0.15,
+      "w": 0.15,
+      "h": 0.3
+     },
+     {
+      "type": "rect",
+      "cx": 6.35,
+      "cy": 4.85,
+      "w": 0.15,
+      "h": 0.3
+     },
+     {
+      "type": "rect",
+      "cx": 8.15,
+      "cy": 0.15,
+      "w": 0.15,
+      "h": 0.3
+     },
+     {
+      "type": "rect",
+      "cx": 8.15,
+      "cy": 4.85,
+      "w": 0.15,
+      "h": 0.3
+     }
+    ]
+   }
+  },
+  {
+   "id": "f4",
+   "type": "revolve",
+   "name": "内外圈和密封圈的分界缝",
+   "suppressed": false,
+   "params": {
+    "sketch": "f3",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "cut"
+   }
+  }
+ ]
+}

@@ -140,6 +140,78 @@ class Screen(unittest.TestCase):
         self.sim.playMotion()
         self.assertFalse(self.sim.motion['playing'])
 
+    def test_spinning_joint_rides_on_another(self):
+        self.sim._joints = [dict(self.sim._joints[0], parts=[1], speed=90.0),
+                            {'name': '把手', 'kind': 'hinge', 'origin': [10, 0, 0], 'axis': [0, 0, 1], 'parts': [2], 'base': 1,
+                             'min': -360, 'max': 360, 'value': 0.0, 'speed': -180.0, 'on': 0}]
+        self.assertAlmostEqual(self.sim.motion['length'], 4.0)          # 转得最慢的转一圈
+        self.sim.scrubMotion(1.0)                                       # 盖子转 90°, 把手在盖子上再转 -180°
+        self.assertEqual([joint['value'] for joint in self.sim.joints], [90.0, -180.0])
+        knob = self.mesh((10, 0, 14), (11, 1, 15))
+        turn, shift = self.sim._joint_move(self.sim._joints[1])
+        moved = self.sim._moved_mesh(2, knob)
+        self.assertIs(moved['verts'], knob['verts'])                    # 网格不换, 带摆放矩阵 (视图的缓冲照用)
+        np.testing.assert_allclose(moved['matrix'][:3, :3], turn, atol=1e-6)
+        np.testing.assert_allclose(moved['matrix'][:3, 3], shift, atol=1e-5)
+        swing = self.sim._posed_parts()[2]['swing']
+        self.assertEqual((swing['angle'], swing['then']['angle']), (-180.0, 90.0))
+        from genform.kernel.assembly import _swing
+        motion = _swing(swing)
+        np.testing.assert_allclose([[motion.Value(row, column) for column in (1, 2, 3)] for row in (1, 2, 3)], turn, atol=1e-9)
+        np.testing.assert_allclose([motion.Value(row, 4) for row in (1, 2, 3)], shift, atol=1e-9)
+        again = os.path.join(self.files.folder.name, 'spin.gasm')
+        self.sim.saveAssembly(again)
+        with open(again, encoding='utf-8') as handle:
+            saved = json.load(handle)['joints']
+        self.assertEqual((saved[0]['speed'], saved[1]['on']), (90.0, 0))
+        self.sim.playMotion()
+        self.sim._play['clock'].invalidate()
+        with patch.object(self.sim._play['clock'], 'elapsed', return_value=60000):
+            self.sim._play_frame()
+        self.assertTrue(self.sim.motion['playing'])                     # 一直转: 放不完
+        self.sim.playMotion()
+
+    def test_add_and_edit_joint_from_the_panel(self):
+        self.sim.addJoint(2)                                            # 把手自己加一个运动副: 从 "盖子" 里拿出来
+        self.assertEqual([joint['parts'] for joint in self.sim.joints], [['盖'], ['把手']])
+        number = self.sim.pickedJoint
+        self.assertEqual(number, 1)
+        self.sim.setJointField(number, 'kind', 'spin')
+        self.sim.setJointField(number, 'speed', '-90')
+        self.sim.setJointField(number, 'axis', 'X')
+        self.sim.setJointField(number, 'on', '0')
+        self.sim.setJointField(number, 'name', '旋钮')
+        row = self.sim.joints[number]
+        self.assertEqual((row['spin'], row['speed'], row['axis'], row['on'], row['name']), (True, -90.0, [1.0, 0, 0], 0, '旋钮'))
+        self.sim.setJointField(0, 'on', '1')                            # 绕成圈: 不让装
+        self.assertEqual(self.sim.joints[0]['on'], -1)
+        self.sim.pickJointParts(0)                                      # 点选: 点到的件加进来 / 再点去掉
+        self.sim.selectPart(2)
+        self.assertEqual(self.sim.joints[0]['parts'], ['盖', '把手'])
+        self.sim.selectPart(2)
+        self.assertEqual(self.sim.joints[0]['parts'], ['盖'])
+        self.sim.pickJointParts(0)
+        self.sim.selectPart(2)
+        self.assertEqual(self.sim.picked, 2)                            # 结束点选: 点了就是选中
+        self.sim.deleteJoint(0)
+        self.assertEqual([(joint['name'], joint['on']) for joint in self.sim.joints], [('旋钮', -1)])
+
+    def test_spinning_joints_are_checked_while_turning(self):
+        self.sim._joints[0]['speed'] = 90.0                             # 盖子一直转: 转半圈就压进底板
+        poses = self.sim._spin_poses()
+        self.assertEqual(len(poses), self.sim.SPIN_SAMPLES)
+        self.assertEqual(sorted(poses[0]['swings']), ['1', '2'])
+        self.assertEqual(self.sim.joints[0]['value'], 0.0)              # 抽完时刻, 运动副照原样
+        self.controller.runCheck()
+        clashes = [item for item in self.controller.checkIssues if item['code'] == 'motion_clash']
+        self.assertTrue(clashes)
+        self.assertIn('一直转', clashes[0]['title'])
+
+    def test_rename_part(self):
+        self.sim.renamePart(1, '上盖')
+        self.assertEqual(self.sim.components[1]['name'], '上盖')
+        self.assertIn('rename', [row['id'] for row in self.sim.partMenu(1)])
+
     def test_live_check_uses_the_open_pose(self):
         self.sim.setJoint(0, 90)
         self.sim.settleJoint()

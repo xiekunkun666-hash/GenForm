@@ -145,6 +145,34 @@ class DrawingTest(unittest.TestCase):
 
 
 class AssemblyDocumentTest(unittest.TestCase):
+    def test_open_part_moved_elsewhere_keeps_its_place(self):
+        """从装配体里打开一个零件再返回: 这个零件摆在别处的那一项按文件读, 不认成 "当前零件" 画到原点去。"""
+        import json
+        with tempfile.TemporaryDirectory() as folder:
+            part = plate(self)
+            first = os.path.join(folder, 'plate.gform')
+            part.session.document.save(first)
+            target = os.path.join(folder, 'pair.gasm')
+            with open(target, 'w', encoding='utf-8') as handle:
+                json.dump({'format': 'genform-assembly', 'version': 1, 'parts': [
+                    {'name': '原点那块', 'file': 'plate.gform', 'move': [0, 0, 0], 'turn': [0, 0, 0]},
+                    {'name': '挪开的', 'file': 'plate.gform', 'move': [40, 0, 0], 'turn': [0, 0, 0]}]}, handle)
+            sim = Simulation(FakeApp(part.session))             # 开着的零件就是 plate.gform
+            sim.pin()
+            self.assertTrue(sim.openAssembly(target))
+            self.assertEqual([bool(row['path']) for row in sim._parts], [False, True])
+            self.assertEqual(sim._parts[1]['move'][0], 40)
+            with open(target, 'w', encoding='utf-8') as handle:       # 只有摆在别处的那一项: 全按文件读
+                json.dump({'format': 'genform-assembly', 'version': 1, 'parts': [
+                    {'name': '挪开的', 'file': 'plate.gform', 'move': [18, 0, 0], 'turn': [0, 0, 3.75]}]}, handle)
+            part.session.document.dirty = False                # 返回装配体前零件已经存过 (backToAssembly 先存)
+            again = Simulation(FakeApp(part.session))
+            again.app._run = lambda *args, **kwargs: None    # 收掉开着的零件 (new_document): 这里不用真做
+            again.pin()
+            self.assertTrue(again.openAssembly(target))
+            self.assertTrue(again._parts[0]['path'])
+            self.assertEqual(again._parts[0]['move'][0], 18)
+
     def test_pin_save_open_export(self):
         with tempfile.TemporaryDirectory() as folder:
             part = plate(self)

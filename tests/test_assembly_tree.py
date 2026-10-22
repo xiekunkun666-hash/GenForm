@@ -92,6 +92,72 @@ class Tree(unittest.TestCase):
         self.sim.partAction(-1, 'fit')
         self.assertEqual(self.view.fits, fits + 1)
 
+    def test_root_shows_and_hides_everything(self):
+        self.add_three()
+        bar = [row['id'] for row in self.sim.partContext(-1)]
+        self.assertEqual(bar[:2], ['show_all', 'hide_all'])
+        self.assertIn('hide_all', [row['id'] for row in self.sim.partMenu(-1)])
+        self.sim.partAction(-1, 'hide_all')
+        self.assertEqual(self.view.extras, [])
+        self.assertTrue(all(part['hidden'] for part in self.sim.components))
+        self.sim.partAction(-1, 'show_all')
+        self.assertEqual(len(self.view.extras), 3)
+
+    def test_hover_describes_component(self):
+        self.add_three()
+        self.sim._push_parts()
+        self.assertEqual([part['label'] for part in self.view.extras], ['底板<1>', '块<1>', '底板<2>'])
+        from genform.view.viewer.mouse import MouseMixin
+        fake = type('V', (), {'_data': {'extras': self.view.extras}})()
+        text = MouseMixin._describe(fake, ('component', 1))
+        self.assertTrue(text.startswith('块<1>'))
+
+    def test_hover_describes_part_edge_sizes(self):
+        from genform.kernel import assembly
+        self.add_three()
+        real = assembly.meshes([], None, {'parts': [{'path': self.sim._parts[1]['path'], 'move': [0, 0, 5]}]})[0]
+        self.sim._shown[1] = (1, real)
+        self.sim._push_parts()
+        part = self.view.extras[1]
+        self.assertGreater(len(part['segments']), 0)            # 零件的边线跟着网格一起来, 装配体里能按显示样式画
+        self.assertEqual(len(part['segment_edge']), len(part['segments']))
+        from genform.view.viewer.mouse import MouseMixin, _edge_text
+        fake = type('V', (), {'_data': {'extras': self.view.extras}})()
+        line = int(np.flatnonzero(part['edge_kind'] == 0)[0])
+        text = MouseMixin._describe(fake, ('part_edge', (1, line)))
+        self.assertTrue(text.startswith('块<1>') and '直边，长' in text)
+        circle = _edge_text({'type': 'circle', 'length': 2 * np.pi * 5, 'radius': 5.0})
+        self.assertIn('直径 10 mm', circle)
+        self.assertIn('周长 31.42 mm', circle)
+        self.assertIn('弧长', _edge_text({'type': 'circle', 'length': np.pi * 5, 'radius': 5.0}))
+
+    def test_orbit_turns_about_the_assembly_not_the_screen_centre(self):
+        from genform.view.camera import Camera
+        from genform.view.viewer.mouse import MouseMixin
+        self.add_three()
+        self.sim._push_parts()
+        camera = Camera()
+        camera.target = np.array([300.0, 0.0, 0.0])             # 画面中心离装配体很远
+        fake = type('V', (), {'_camera': camera, '_data': {'extras': self.view.extras}, '_model': {}, '_display': {'body': True},
+                              'width': lambda self: 800, 'height': lambda self: 600})()
+        centre = MouseMixin._orbit_pivot(fake, 0, 0)            # 指着空白: 绕整个装配体的中心
+        low = np.min([part['low'] for part in self.view.extras], axis=0)
+        high = np.max([part['high'] for part in self.view.extras], axis=0)
+        np.testing.assert_allclose(centre, (low + high) / 2)
+        camera.target = np.array([5.0, 5.0, 25.0])
+        screen, _ = camera.project(np.array([[5.0, 5.0, 25.0]]), 800, 600)
+        hit = MouseMixin._orbit_pivot(fake, float(screen[0, 0]), float(screen[0, 1]))     # 指着零部件也一样: 场景在原地转
+        np.testing.assert_allclose(hit, (low + high) / 2)
+
+    def test_drag_direction_is_fixed_for_one_drag(self):
+        from genform.view.camera import Camera
+        camera = Camera()
+        camera.yaw, camera.pitch = 0.0, 80.0
+        camera.orbit(0, 30, None, flip=False)                   # 拖过头顶 (pitch 110°): 这次拖动左右还是原来的方向
+        before = camera.yaw
+        camera.orbit(10, 0, None, flip=False)
+        self.assertAlmostEqual(camera.yaw - before, 4.0)
+
     def test_menu_and_edit_request(self):
         self.add_three()
         ids = [row['id'] for row in self.sim.partMenu(1)]
@@ -204,6 +270,15 @@ class Picking(unittest.TestCase):
         self.assertEqual(number, 1)                              # 最上面那个没 'pick', 点不着
         self.assertAlmostEqual(distance, 60.0, places=4)
         self.assertEqual(picking.pick_extras(np.array([50.0, 50.0, 100.0]), down, extras)[0], None)
+
+    def test_ray_hits_part_moved_by_matrix(self):
+        part = dict(box((0, 0, 0), (10, 10, 10)), pick=0)
+        part['matrix'] = np.eye(4, dtype=np.float32)
+        part['matrix'][:3, 3] = (50, 0, 0)                      # 动着的件: 网格没变, 摆放矩阵挪到 x 50
+        part['low'], part['high'] = (50, 0, 0), (60, 10, 10)
+        down = np.array([0.0, 0.0, -1.0])
+        self.assertEqual(picking.pick_extras(np.array([55.0, 5.0, 100.0]), down, [part])[0], 0)
+        self.assertIsNone(picking.pick_extras(np.array([5.0, 5.0, 100.0]), down, [part])[0])
 
     def test_ray_box(self):
         self.assertAlmostEqual(picking.ray_box(np.zeros(3), np.array([1.0, 0, 0]), (5, -1, -1), (6, 1, 1)), 5.0)

@@ -1,0 +1,144 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 5,
+ "upto": null,
+ "props": {},
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "前壳截面",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        47,
+        33
+       ],
+       [
+        49,
+        33
+       ],
+       [
+        49,
+        59
+       ],
+       [
+        34,
+        59
+       ],
+       [
+        34,
+        57.5
+       ],
+       [
+        39,
+        57.5
+       ],
+       [
+        39,
+        46
+       ],
+       [
+        38.675,
+        46
+       ],
+       [
+        38.675,
+        37
+       ],
+       [
+        47,
+        37
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "前壳 (内齿圈 + 61812 轴承座)",
+   "params": {
+    "sketch": "f1",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "内齿",
+   "params": {
+    "plane": "XY",
+    "offset": 37.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        38.8,
+        -0.6
+       ],
+       [
+        37.1,
+        -0.25
+       ],
+       [
+        37.1,
+        0.25
+       ],
+       [
+        38.8,
+        0.6
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "内齿",
+   "params": {
+    "sketch": "f3",
+    "distance": 8.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "pattern_circular",
+   "name": "内齿圈 108T m0.7",
+   "params": {
+    "features": [
+     "f4"
+    ],
+    "axis": "Z",
+    "count": 108,
+    "angle": 360.0
+   },
+   "suppressed": false
+  }
+ ]
+}

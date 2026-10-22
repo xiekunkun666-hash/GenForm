@@ -1,0 +1,220 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 7,
+ "upto": null,
+ "props": {
+  "material": "合金钢"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "齿圈套截面",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        25.95,
+        15
+       ],
+       [
+        29.0,
+        15
+       ],
+       [
+        29.0,
+        31.0
+       ],
+       [
+        30.2,
+        31.0
+       ],
+       [
+        30.2,
+        31.6
+       ],
+       [
+        29.0,
+        31.6
+       ],
+       [
+        29.0,
+        40.5
+       ],
+       [
+        22.5,
+        40.5
+       ],
+       [
+        22.5,
+        39.5
+       ],
+       [
+        23.5,
+        39.5
+       ],
+       [
+        23.5,
+        32.5
+       ],
+       [
+        24.599999999999998,
+        32.5
+       ],
+       [
+        24.599999999999998,
+        27
+       ],
+       [
+        25.95,
+        27
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "齿圈钢套 (40Cr 调质; 外圆压定子, 前端装 61807, 压进前壳内止口 + 648)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f1",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "process": {
+    "id": "edm",
+    "name": "慢走丝线切割",
+    "short": "线切",
+    "color": "#8E97A3",
+    "auto": false,
+    "kind": null,
+    "why": "外圆和轴承座车出来, 内齿慢走丝",
+    "alternatives": [],
+    "standard": false
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "内齿",
+   "params": {
+    "plane": "XY",
+    "offset": 15.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        26.099999999999998,
+        -0.5
+       ],
+       [
+        24.599999999999998,
+        -0.22
+       ],
+       [
+        24.599999999999998,
+        0.22
+       ],
+       [
+        26.099999999999998,
+        0.5
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "内齿",
+   "suppressed": false,
+   "params": {
+    "sketch": "f3",
+    "distance": 12.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   }
+  },
+  {
+   "id": "f5",
+   "type": "pattern_circular",
+   "name": "84T m0.6 (慢走丝)",
+   "suppressed": false,
+   "params": {
+    "features": [
+     "f4"
+    ],
+    "axis": "Z",
+    "count": 84,
+    "angle": 360.0
+   }
+  },
+  {
+   "id": "f6",
+   "type": "sketch",
+   "name": "防转销孔",
+   "params": {
+    "plane": "XY",
+    "offset": 40.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 25.1147,
+      "cy": 14.5,
+      "r": 1.0
+     },
+     {
+      "type": "circle",
+      "cx": -25.1147,
+      "cy": 14.5,
+      "r": 1.0
+     },
+     {
+      "type": "circle",
+      "cx": -0.0,
+      "cy": -29.0,
+      "r": 1.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f7",
+   "type": "extrude",
+   "name": "防转销半孔 x3 (和前壳一起配钻, Ø2 深 3.5)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f6",
+    "distance": -3.5,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   }
+  }
+ ]
+}

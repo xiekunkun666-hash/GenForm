@@ -1,0 +1,239 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 9,
+ "upto": null,
+ "props": {
+  "feature_colors": {
+   "f4": "#3A3A40",
+   "f6": "#C03030"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "转子截面 (杯 + 空心轴 + 太阳轮齿根)",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        1.6,
+        3.7
+       ],
+       [
+        11,
+        3.7
+       ],
+       [
+        11,
+        4.1
+       ],
+       [
+        5,
+        4.1
+       ],
+       [
+        5,
+        29.5
+       ],
+       [
+        9,
+        29.5
+       ],
+       [
+        9,
+        31
+       ],
+       [
+        42.9,
+        31
+       ],
+       [
+        42.9,
+        8.5
+       ],
+       [
+        46,
+        8.5
+       ],
+       [
+        46,
+        33.5
+       ],
+       [
+        5,
+        33.5
+       ],
+       [
+        5,
+        36.6
+       ],
+       [
+        3.325,
+        36.6
+       ],
+       [
+        3.325,
+        45
+       ],
+       [
+        1.6,
+        45
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "转子杯 + 空心轴 (内孔 Ø3.2 穿输出轴)",
+   "params": {
+    "sketch": "f1",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "磁钢",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 41.65,
+      "cy": 19,
+      "w": 2.5,
+      "h": 13
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "revolve",
+   "name": "磁钢 42P (厚 2.5, 长 13)",
+   "params": {
+    "sketch": "f3",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "多极磁环",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 8.5,
+      "cy": 2.95,
+      "w": 5,
+      "h": 1.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "revolve",
+   "name": "转子多极磁环 Ø22/Ø12 (偏轴编码器读)",
+   "params": {
+    "sketch": "f5",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "太阳轮齿",
+   "params": {
+    "plane": "XY",
+    "offset": 37.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        3.2,
+        -0.7
+       ],
+       [
+        4.9,
+        -0.28
+       ],
+       [
+        4.9,
+        0.28
+       ],
+       [
+        3.2,
+        0.7
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "太阳轮齿",
+   "params": {
+    "sketch": "f7",
+    "distance": 8.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f9",
+   "type": "pattern_circular",
+   "name": "太阳轮 12T m0.7",
+   "params": {
+    "features": [
+     "f8"
+    ],
+    "axis": "Z",
+    "count": 12,
+    "angle": 360.0
+   },
+   "suppressed": false
+  }
+ ]
+}

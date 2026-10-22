@@ -1,0 +1,59 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "color": "#8AA0B8"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "导热垫外形",
+   "params": {
+    "plane": "XY",
+    "offset": -3.6,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": -14.5,
+      "w": 31.0,
+      "h": 15.6
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "导热垫 1.0 (MOS → 后盖)",
+   "params": {
+    "sketch": "f1",
+    "distance": 1.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": null,
+    "why": "导热硅胶垫 31×15.6×1.0 6 W/m·K。手动指定",
+    "alternatives": [],
+    "standard": true,
+    "spec": "导热硅胶垫 31×15.6×1.0 6 W/m·K"
+   }
+  }
+ ]
+}

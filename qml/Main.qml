@@ -194,6 +194,12 @@ ApplicationWindow {
                 visible: app.tab === "assembly"
                 spacing: 1
                 RibbonBtn { icon: "plus"; text: qsTr("插入零件"); tip: qsTr("插入零件：选一个 .gform 或 .step 文件，排在装配顺序的最后"); onClicked: partDialog.open() }
+                RibbonBtn {
+                    icon: "screw"; text: qsTr("标准件")
+                    tip: qsTr("插入标准件：深沟球轴承、HK 滚针、圆柱销、内六角螺丝、螺母、垫圈、六角铜柱、挡圈、钢球 — 选规格就按国标尺寸生成零件（绑好“标准件”工艺），文件放在装配体旁边的 standard/ 文件夹")
+                    onClicked: ribbonStd.start(Qt.point(0, height + 4))
+                    StdPicker { id: ribbonStd }
+                }
                 RibbonSeparator {}
                 RibbonBtn { icon: "motion"; text: sim.motion.playing ? qsTr("暂停动画") : qsTr("播放动画"); tip: qsTr("播放动画（运动算例）：所有运动副（车门、车盖…）一起打开、停一下、再关上；视图下面出一条时间轴，可以拖着看。也可以在视图里按住车门直接拖"); active: motionBar.shown; enabled: sim.motion.count > 0; onClicked: { motionBar.shown = true; sim.playMotion() } }
                 RibbonSeparator {}
@@ -209,7 +215,10 @@ ApplicationWindow {
                 RibbonBtn { icon: "measure"; text: qsTr("测量"); tip: qsTr("测量：点一个零部件看它的长宽高、体积、表面积；点两个看它们之间最短的距离和 ΔX ΔY ΔZ（视图里连一条线）"); action: "eval.measure"; active: app.measuring; onClicked: app.toggleMeasure() }
                 RibbonSeparator {}
                 RibbonBtn { icon: "clash"; text: qsTr("干涉检查"); tip: qsTr("干涉检查：零件两两求重叠，有重叠的标出来"); onClicked: sim.runInterference() }
-                RibbonBtn { icon: "order"; text: qsTr("装配顺序"); tip: qsTr("装配顺序检查：按列表的顺序，每个零件能不能沿 ±X ±Y ±Z 直线装进去"); onClicked: sim.runSequence() }
+                RibbonBtn { icon: "order"; text: qsTr("装配顺序"); tip: qsTr("装配顺序检查：自己找一个能装的顺序（按拆卸倒推），装不进去的零件标出挡路的件"); onClicked: sim.runSequence() }
+                RibbonBtn { icon: "thread"; text: qsTr("螺纹检查"); tip: qsTr("螺纹检查：螺丝和螺纹孔自动配对，查拧进去够不够长（铝 1.5d、钢 1d）、螺丝尖会不会顶到孔底、两边的螺纹相位对不对得上"); onClicked: sim.runFasteners() }
+                RibbonBtn { icon: "check"; text: qsTr("对齐螺纹"); tip: qsTr("对齐螺纹相位：按螺纹检查算出来的相位改螺纹孔特征，螺丝和孔的牙正好咬上（不用手算 360×Δz/螺距）"); onClicked: sim.alignThreads() }
+                RibbonBtn { icon: "dimension"; text: qsTr("尺寸链"); tip: qsTr("尺寸链 / 高度分配：沿一根轴把装配体切成一段段，列出每一段多高、里面是哪几个零件 — 看高度都花在哪了"); onClicked: sim.runStack("Z") }
                 RibbonSeparator {}
                 RibbonBtn { icon: "drc"; text: app.checkBusy ? qsTr("检查中…") : qsTr("设计检查"); tip: qsTr("装配体的设计检查：零件之间有没有压进去（干涉）、间隙是不是太小、有没有悬空没装在任何东西上的零件、零件绑没绑工艺，再按标准件 / 外购件 / 非标件汇总物料清单和成本；有问题的零件标红，结果在底部的日志窗口"); active: app.checkOpen; enabled: !app.checkBusy; onClicked: app.runCheck() }
                 RibbonBtn { icon: "check"; text: qsTr("实时检查"); tip: qsTr("实时检查（像画 PCB 的在线 DRC）：插入、挪动、转、镜像一个零件以后马上在后台查件与件——压进去了就在视图里画一个红叉，设计树上也打红叉；算过的、没变的几对不重算。再点一下关掉"); active: sim.live.on; onClicked: sim.toggleLive() }

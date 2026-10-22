@@ -1,0 +1,179 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 8,
+ "upto": null,
+ "props": {},
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "后盖截面",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        0,
+        -12
+       ],
+       [
+        49,
+        -12
+       ],
+       [
+        49,
+        4.5
+       ],
+       [
+        47,
+        4.5
+       ],
+       [
+        47,
+        -10.5
+       ],
+       [
+        0,
+        -10.5
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "后盖 (后壳圈 + 盖板)",
+   "params": {
+    "sketch": "f1",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "XT30 开口",
+   "params": {
+    "plane": "XY",
+    "offset": -8.2,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 46,
+      "cy": -8,
+      "w": 8,
+      "h": 12
+     },
+     {
+      "type": "rect",
+      "cx": -46,
+      "cy": -8,
+      "w": 8,
+      "h": 12
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "XT30 插口 x2 (尺寸待实物确认)",
+   "params": {
+    "sketch": "f3",
+    "distance": 7.4,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "GH 线槽",
+   "params": {
+    "plane": "XY",
+    "offset": -6.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": -4,
+      "cy": 46,
+      "w": 24,
+      "h": 8
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "J3/J5 出线槽 (上)",
+   "params": {
+    "sketch": "f5",
+    "distance": 4.5,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "J4 线槽",
+   "params": {
+    "plane": "XY",
+    "offset": 0.5,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 6.25,
+      "cy": -46,
+      "w": 8,
+      "h": 8
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "J4 出线槽 (下)",
+   "params": {
+    "sketch": "f7",
+    "distance": 4.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  }
+ ]
+}

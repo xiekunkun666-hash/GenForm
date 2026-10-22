@@ -1,0 +1,590 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 23,
+ "upto": null,
+ "props": {
+  "material": "铝合金 6061"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "前壳截面",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        45.0,
+        7.5
+       ],
+       [
+        50.0,
+        7.5
+       ],
+       [
+        50.0,
+        41.0
+       ],
+       [
+        27.0,
+        41.0
+       ],
+       [
+        27.0,
+        40.5
+       ],
+       [
+        29.0,
+        40.5
+       ],
+       [
+        29.0,
+        37.0
+       ],
+       [
+        45.0,
+        37.0
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "前壳 Ø100 (6061 车铣; 外壁 + 前板 + Ø58 内止口压齿圈套)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f1",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "process": {
+    "id": "millturn",
+    "name": "车铣复合",
+    "short": "车铣",
+    "color": "#6FA8DC",
+    "auto": false,
+    "kind": null,
+    "why": "手动指定",
+    "alternatives": [],
+    "standard": false
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "壳体螺孔 (壁内)",
+   "params": {
+    "plane": "XY",
+    "offset": 7.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 47.5,
+      "cy": 0.0,
+      "r": 0.8
+     },
+     {
+      "type": "circle",
+      "cx": 23.75,
+      "cy": 41.1362,
+      "r": 0.8
+     },
+     {
+      "type": "circle",
+      "cx": -23.75,
+      "cy": 41.1362,
+      "r": 0.8
+     },
+     {
+      "type": "circle",
+      "cx": -47.5,
+      "cy": 0.0,
+      "r": 0.8
+     },
+     {
+      "type": "circle",
+      "cx": -23.75,
+      "cy": -41.1362,
+      "r": 0.8
+     },
+     {
+      "type": "circle",
+      "cx": 23.75,
+      "cy": -41.1362,
+      "r": 0.8
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "hole",
+   "name": "M2 螺纹孔 x6 (壁内 PCD95, 深 6, 真实牙)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f3",
+    "kind": "tapped",
+    "size": "M2",
+    "diameter": 2.5,
+    "through": false,
+    "depth": 6.0,
+    "head_diameter": 6.0,
+    "head_depth": 1.0,
+    "flip": true,
+    "thread": true,
+    "phase": 270.0
+   }
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "壳体定位销孔",
+   "params": {
+    "plane": "XY",
+    "offset": 7.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0.0,
+      "cy": 47.5,
+      "r": 1.0
+     },
+     {
+      "type": "circle",
+      "cx": -41.1362,
+      "cy": -23.75,
+      "r": 1.0
+     },
+     {
+      "type": "circle",
+      "cx": 41.1362,
+      "cy": -23.75,
+      "r": 1.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "定位销孔 Ø2 H7 x3 (120°, 深 5)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f5",
+    "distance": 5.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   }
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "轴向走线孔",
+   "params": {
+    "plane": "XY",
+    "offset": 7.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -17.0534,
+      "cy": -44.3332,
+      "r": 1.0
+     },
+     {
+      "type": "circle",
+      "cx": -0.0,
+      "cy": -47.5,
+      "r": 1.0
+     },
+     {
+      "type": "circle",
+      "cx": 17.0534,
+      "cy": -44.3332,
+      "r": 1.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "相线走线孔 x3 (壁内轴向 Ø2 钻孔, 深 30)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f7",
+    "distance": 30.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   }
+  },
+  {
+   "id": "f9",
+   "type": "plane",
+   "name": "径向孔基准面 #1",
+   "suppressed": false,
+   "params": {
+    "base": "XY",
+    "offset": 0.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      -17.95098121256229,
+      -46.666500549175915,
+      36.0
+     ]
+    ],
+    "normal": [
+     [
+      -0.3590196242512458,
+      -0.9333300109835183,
+      0.0
+     ]
+    ]
+   }
+  },
+  {
+   "id": "f10",
+   "type": "sketch",
+   "name": "径向孔 #1",
+   "params": {
+    "plane": "f9",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 1.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f11",
+   "type": "extrude",
+   "name": "相线径向孔 #1 (Ø2 从外面钻进去接轴向孔, 外口堵上)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f10",
+    "distance": -6.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   }
+  },
+  {
+   "id": "f12",
+   "type": "plane",
+   "name": "径向孔基准面 #2",
+   "suppressed": false,
+   "params": {
+    "base": "XY",
+    "offset": 0.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      -9.184850993605149e-15,
+      -50.0,
+      36.0
+     ]
+    ],
+    "normal": [
+     [
+      -1.8369701987210297e-16,
+      -1.0,
+      0.0
+     ]
+    ]
+   }
+  },
+  {
+   "id": "f13",
+   "type": "sketch",
+   "name": "径向孔 #2",
+   "params": {
+    "plane": "f12",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 1.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f14",
+   "type": "extrude",
+   "name": "相线径向孔 #2 (Ø2 从外面钻进去接轴向孔, 外口堵上)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f13",
+    "distance": -6.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   }
+  },
+  {
+   "id": "f15",
+   "type": "plane",
+   "name": "径向孔基准面 #3",
+   "suppressed": false,
+   "params": {
+    "base": "XY",
+    "offset": 0.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      17.95098121256231,
+      -46.66650054917591,
+      36.0
+     ]
+    ],
+    "normal": [
+     [
+      0.3590196242512462,
+      -0.9333300109835181,
+      0.0
+     ]
+    ]
+   }
+  },
+  {
+   "id": "f16",
+   "type": "sketch",
+   "name": "径向孔 #3",
+   "params": {
+    "plane": "f15",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 1.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f17",
+   "type": "extrude",
+   "name": "相线径向孔 #3 (Ø2 从外面钻进去接轴向孔, 外口堵上)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f16",
+    "distance": -6.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   }
+  },
+  {
+   "id": "f18",
+   "type": "sketch",
+   "name": "安装螺孔",
+   "params": {
+    "plane": "XY",
+    "offset": 41.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 38.0,
+      "cy": 0.0,
+      "r": 1.25
+     },
+     {
+      "type": "circle",
+      "cx": 19.0,
+      "cy": 32.909,
+      "r": 1.25
+     },
+     {
+      "type": "circle",
+      "cx": -19.0,
+      "cy": 32.909,
+      "r": 1.25
+     },
+     {
+      "type": "circle",
+      "cx": -38.0,
+      "cy": 0.0,
+      "r": 1.25
+     },
+     {
+      "type": "circle",
+      "cx": -19.0,
+      "cy": -32.909,
+      "r": 1.25
+     },
+     {
+      "type": "circle",
+      "cx": 19.0,
+      "cy": -32.909,
+      "r": 1.25
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f19",
+   "type": "hole",
+   "name": "M3 安装螺孔 x6 (PCD76 接机器人, 盲孔深 3.5, 真实牙)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f18",
+    "kind": "tapped",
+    "size": "M3",
+    "diameter": 2.5,
+    "through": false,
+    "depth": 3.5,
+    "head_diameter": 6.0,
+    "head_depth": 1.0,
+    "flip": false,
+    "thread": true,
+    "phase": 0.0
+   }
+  },
+  {
+   "id": "f20",
+   "type": "sketch",
+   "name": "安装定位销孔",
+   "params": {
+    "plane": "XY",
+    "offset": 41.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0.0,
+      "cy": 38.0,
+      "r": 1.5
+     },
+     {
+      "type": "circle",
+      "cx": -32.909,
+      "cy": -19.0,
+      "r": 1.5
+     },
+     {
+      "type": "circle",
+      "cx": 32.909,
+      "cy": -19.0,
+      "r": 1.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f21",
+   "type": "extrude",
+   "name": "安装定位销孔 Ø3 H7 x3 (120°, 深 3.5)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f20",
+    "distance": -3.5,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   }
+  },
+  {
+   "id": "f22",
+   "type": "sketch",
+   "name": "齿圈防转销孔",
+   "params": {
+    "plane": "XY",
+    "offset": 41.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 25.1147,
+      "cy": 14.5,
+      "r": 1.0
+     },
+     {
+      "type": "circle",
+      "cx": -25.1147,
+      "cy": 14.5,
+      "r": 1.0
+     },
+     {
+      "type": "circle",
+      "cx": -0.0,
+      "cy": -29.0,
+      "r": 1.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f23",
+   "type": "extrude",
+   "name": "齿圈防转销半孔 x3 (和齿圈一起配钻 Ø2 深 4)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f22",
+    "distance": -4.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   }
+  }
+ ]
+}

@@ -1,0 +1,56 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {},
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "61812 截面",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 31.5,
+      "cy": 5,
+      "w": 3,
+      "h": 10
+     },
+     {
+      "type": "rect",
+      "cx": 37.5,
+      "cy": 5,
+      "w": 3,
+      "h": 10
+     },
+     {
+      "type": "rect",
+      "cx": 34.5,
+      "cy": 5,
+      "w": 3,
+      "h": 7
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "61812 输出轴承 60×78×10",
+   "params": {
+    "sketch": "f1",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false
+  }
+ ]
+}

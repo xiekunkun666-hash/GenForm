@@ -223,17 +223,38 @@ def combine(body, solid, operation, what='特征'):
     if _is_empty(body):
         return solid
     try:
-        return _combine_checked(body, solid, operation, what)
+        result = _combine_checked(body, solid, operation, what)
     except FeatureError:
+        result = None
         if operation == 'add':
-            separated = _separated_add(body, solid, what)
-            if separated is not None:
-                return separated
+            result = _separated_add(body, solid, what)
         else:
-            each = _each_solid(body, solid, operation, what)
-            if each is not None:
-                return each
-        raise
+            result = _each_solid(body, solid, operation, what)
+        if result is None:
+            raise
+    _check_changed(body, solid, result, operation, what)
+    return result
+
+
+def _check_changed(body, solid, result, operation, what):
+    """切除做完体积一点没变: 不是工具没碰到实体, 就是布尔运算静默失败了 (螺旋槽、扫描体穿过实体的端面时
+    OCC 会什么都不切、也不报错)。悄悄留着一个没用的特征比报错更糟: 当成失败报出来, 保留运算前的实体。"""
+    if operation != 'cut':              # 加料加在实体里面没坏处 (改了别的尺寸以后常有), 只管切除
+        return
+    from ..ops.solid_validation import volume_error
+    before, after = signed_volume(body), signed_volume(result)
+    tolerance = max(1e-6, abs(before) * 1e-9) + 2 * (volume_error(body) + volume_error(result))
+    if abs(after - before) > tolerance:
+        return
+    low, high = _rough_bounds(body)
+    tool_low, tool_high = _rough_bounds(solid)
+    apart = any(tool_high[axis] < low[axis] or high[axis] < tool_low[axis] for axis in range(3))
+    if apart:
+        reason = '工具体和实体隔开了, 没碰到'
+    else:
+        reason = ('碰到了却什么都没切掉 — 常见原因: 工具只贴着面、没切进去; 或者是螺旋 / 扫描工具体穿过了实体的端面, '
+                  '布尔运算静默失败 (把工具做长一点穿出去, 或先做长再修短)')
+    raise FeatureError(f'{what}没有改变实体：{reason}')
 
 
 def _raw_boolean(body, solid, operation):

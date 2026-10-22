@@ -85,6 +85,17 @@ class Screen(unittest.TestCase):
         self.controller.forgetRecent(part)
         self.assertEqual(self.controller.recentFiles, [])
 
+    def test_opened_step_is_listed_too(self):
+        from OCP.BRepPrimAPI import BRepPrimAPI_MakeBox
+        from OCP.STEPControl import STEPControl_AsIs, STEPControl_Writer
+        step = os.path.join(self.files.folder.name, '电机.STEP')
+        writer = STEPControl_Writer()
+        writer.Transfer(BRepPrimAPI_MakeBox(10, 10, 10).Shape(), STEPControl_AsIs)
+        writer.Write(step)
+        self.controller.viewport = None                                # 换文档要整套视图, 这里只看列表
+        self.controller.openDocument(step)
+        self.assertEqual([(row['name'], row['kind']) for row in self.controller.recentFiles], [('电机', 'step')])
+
     def test_api_commands_that_change_the_model_close_it(self):
         from genform.api.server import ApiServer
         server = ApiServer(Session(), port=0)

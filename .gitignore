@@ -16,3 +16,7 @@ venv/
 .env
 .env.*
 !.env.example
+
+.claude/
+/0819f05c4eef4c71ace90d822a990e87
+/models/porsche_911_992/porsche_911_992_method_b.run/

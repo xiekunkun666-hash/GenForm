@@ -1,0 +1,174 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 7,
+ "upto": null,
+ "props": {
+  "feature_colors": {
+   "f7": "#B87333"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "定子轭铁",
+   "params": {
+    "plane": "XY",
+    "offset": 13.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 30
+     },
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 25
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "定子轭铁 Ø80/Ø50 叠压 12",
+   "params": {
+    "sketch": "f1",
+    "distance": 12.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "齿",
+   "params": {
+    "plane": "XY",
+    "offset": 13.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        29.5,
+        -1.8
+       ],
+       [
+        38.5,
+        -1.8
+       ],
+       [
+        38.5,
+        -3
+       ],
+       [
+        39.9,
+        -3
+       ],
+       [
+        39.9,
+        3
+       ],
+       [
+        38.5,
+        3
+       ],
+       [
+        38.5,
+        1.8
+       ],
+       [
+        29.5,
+        1.8
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "齿",
+   "params": {
+    "sketch": "f3",
+    "distance": 12.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "pattern_circular",
+   "name": "36 槽",
+   "params": {
+    "features": [
+     "f4"
+    ],
+    "axis": "Z",
+    "count": 36,
+    "angle": 360.0
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "sketch",
+   "name": "绕组端部",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 34,
+      "cy": 11,
+      "w": 9,
+      "h": 3.6
+     },
+     {
+      "type": "rect",
+      "cx": 34,
+      "cy": 27,
+      "w": 9,
+      "h": 3.6
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f7",
+   "type": "revolve",
+   "name": "绕组端部 (估算包络)",
+   "params": {
+    "sketch": "f6",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false
+  }
+ ]
+}

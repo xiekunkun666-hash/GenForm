@@ -1,0 +1,58 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "合金钢"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "截面",
+   "params": {
+    "plane": "XY",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 1.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "防转销 Ø2×4 (GB/T 119.2 淬硬, 齿圈和前壳配钻, 从前面敲进去齐前端面)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f1",
+    "distance": 4.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "auto": false,
+    "kind": null,
+    "why": "GB/T 119.2 圆柱销 Ø2×4 m6 淬硬。手动指定",
+    "alternatives": [],
+    "standard": true,
+    "spec": "GB/T 119.2 圆柱销 Ø2×4 m6 淬硬"
+   }
+  }
+ ]
+}

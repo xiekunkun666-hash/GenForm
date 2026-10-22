@@ -113,6 +113,40 @@ class AssemblyTest(unittest.TestCase):
         self.assertEqual(sorted(step['directions']), ['+Z', '-Z'])
         self.assertEqual(set(step['blocked'].values()), {'底座'})
 
+    def save(self, part, name):
+        path = os.path.join(self.folder.name, name)
+        part.session.document.save(path)
+        return path
+
+    def test_sequence_finds_its_own_order(self):
+        # 带头的销只能从上面插 (头卡在底座上面); 列表里盖板排在销前面, 照列表装不进去, 要自己找出 底座 → 销 → 盖板
+        pin = Part(self)
+        pin.do('extrude', sketch=pin.sketch({'type': 'circle', 'cx': 0, 'cy': 0, 'r': 5}), distance=10)
+        pin.do('extrude', sketch=pin.sketch({'type': 'circle', 'cx': 0, 'cy': 0, 'r': 8}, offset=10), distance=2)
+        cover = Part(self)
+        cover.box(40, 40, 5)
+        data = {'parts': [{'name': '底座'}, {'name': '盖板', 'path': self.save(cover, 'cover.gform'), 'move': [0, 0, 12]},
+                          {'name': '带头销', 'path': self.save(pin, 'headed.gform')}]}
+        result, error = ask(self.base.session, 'sequence', data)
+        self.assertIsNone(error)
+        self.assertTrue(result['ok'])
+        self.assertEqual([step['name'] for step in result['steps']], ['底座', '带头销', '盖板'])
+        pin_step = next(step for step in result['steps'] if step['name'] == '带头销')
+        self.assertEqual(pin_step['directions'], ['+Z'])
+
+    def test_rivet_with_two_heads_cannot_go_in(self):
+        rivet = Part(self)
+        rivet.do('extrude', sketch=rivet.sketch({'type': 'circle', 'cx': 0, 'cy': 0, 'r': 5}, offset=-2), distance=14)
+        rivet.do('extrude', sketch=rivet.sketch({'type': 'circle', 'cx': 0, 'cy': 0, 'r': 8}, offset=10), distance=2)
+        rivet.do('extrude', sketch=rivet.sketch({'type': 'circle', 'cx': 0, 'cy': 0, 'r': 8}, offset=-2), distance=2)
+        data = {'parts': [{'name': '底座'}, {'name': '铆钉', 'path': self.save(rivet, 'rivet.gform')}]}
+        result, _ = ask(self.base.session, 'sequence', data)
+        self.assertFalse(result['ok'])
+        self.assertEqual(result['stuck'], [1])
+        step = next(step for step in result['steps'] if step['index'] == 1)
+        self.assertFalse(step['ok'])
+        self.assertEqual(set(step['blocked'].values()), {'底座'})
+
 
 class PreviewTest(unittest.TestCase):
     def test_preview_shows_result_without_touching_document(self):

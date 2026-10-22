@@ -1,0 +1,272 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 8,
+ "upto": null,
+ "props": {
+  "material": "合金钢"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "行星架截面",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        1.25,
+        33.6
+       ],
+       [
+        4.0,
+        33.6
+       ],
+       [
+        4.0,
+        33
+       ],
+       [
+        5.5,
+        33
+       ],
+       [
+        5.5,
+        27.5
+       ],
+       [
+        24,
+        27.5
+       ],
+       [
+        24,
+        29
+       ],
+       [
+        22.5,
+        29
+       ],
+       [
+        22.5,
+        37.5
+       ],
+       [
+        1.25,
+        37.5
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "行星架 / 输出法兰 (42CrMo 调质, 车铣; Ø45 配 6709, 内装 685)",
+   "params": {
+    "sketch": "f1",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false,
+   "process": {
+    "id": "millturn",
+    "name": "车铣复合",
+    "short": "车铣",
+    "color": "#6FA8DC",
+    "auto": false,
+    "kind": null,
+    "why": "手动指定",
+    "alternatives": [],
+    "standard": false
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "行星销孔",
+   "params": {
+    "plane": "XY",
+    "offset": 27.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 18,
+      "cy": 0,
+      "r": 2.5
+     },
+     {
+      "type": "circle",
+      "cx": -9,
+      "cy": 15.5885,
+      "r": 2.5
+     },
+     {
+      "type": "circle",
+      "cx": -9,
+      "cy": -15.5885,
+      "r": 2.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "行星销压配孔 Ø5 x3 (深 6, 压 GB/T 119.2 Ø5×20 淬硬圆柱销, 销面直接当滚针滚道)",
+   "params": {
+    "sketch": "f3",
+    "distance": 6.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "输出螺孔",
+   "params": {
+    "plane": "XY",
+    "offset": 37.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 13.04,
+      "cy": 3.4941,
+      "r": 2.5
+     },
+     {
+      "type": "circle",
+      "cx": 9.5459,
+      "cy": 9.5459,
+      "r": 2.5
+     },
+     {
+      "type": "circle",
+      "cx": -3.4941,
+      "cy": 13.04,
+      "r": 2.5
+     },
+     {
+      "type": "circle",
+      "cx": -9.5459,
+      "cy": 9.5459,
+      "r": 2.5
+     },
+     {
+      "type": "circle",
+      "cx": -13.04,
+      "cy": 3.4941,
+      "r": 2.5
+     },
+     {
+      "type": "circle",
+      "cx": -9.5459,
+      "cy": -9.5459,
+      "r": 2.5
+     },
+     {
+      "type": "circle",
+      "cx": -3.4941,
+      "cy": -13.04,
+      "r": 2.5
+     },
+     {
+      "type": "circle",
+      "cx": 3.4941,
+      "cy": -13.04,
+      "r": 2.5
+     },
+     {
+      "type": "circle",
+      "cx": 13.04,
+      "cy": -3.4941,
+      "r": 2.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "hole",
+   "name": "M5 输出螺孔 x9 (PCD27, 每 30° 一个, 3 螺纹 + 1 销循环, 深 7, 真实牙; 抄 DM)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f5",
+    "kind": "tapped",
+    "size": "M5",
+    "diameter": 4.2,
+    "through": false,
+    "depth": 7.0,
+    "head_diameter": 9.0,
+    "head_depth": 1.0,
+    "flip": false,
+    "thread": true,
+    "phase": 0.0
+   }
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "输出定位销孔",
+   "params": {
+    "plane": "XY",
+    "offset": 37.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 3.4941,
+      "cy": 13.04,
+      "r": 2.5
+     },
+     {
+      "type": "circle",
+      "cx": -13.04,
+      "cy": -3.4941,
+      "r": 2.5
+     },
+     {
+      "type": "circle",
+      "cx": 9.5459,
+      "cy": -9.5459,
+      "r": 2.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "输出定位销孔 Ø5 H7 x3 (75/195/315°, 深 6, 装 Ø5×10 销露 4)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f7",
+    "distance": -6.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   }
+  }
+ ]
+}

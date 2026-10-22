@@ -149,3 +149,34 @@ class Catalog(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class Proofing(unittest.TestCase):
+    """设计规则里打开 proofing: 按铨洲智造 CNC 打样的限制再查一遍 (genform/proofing.py)。"""
+
+    def codes(self, part, material='铝合金 6061'):
+        if material:
+            named(part, 'set_material', material)
+        self.assertTrue(part.run('set_design_rules', values={'proofing': 1})['ok'])
+        bound(part)
+        reply = part.run('check_design')
+        self.assertTrue(reply['ok'], reply)
+        return reply['issues']
+
+    def test_plain_plate_passes(self):
+        part = Part(self)
+        plate(part, w=80, h=50, t=12)
+        part.do('extrude', sketch=part.sketch({'type': 'circle', 'cx': 10, 'cy': 5, 'r': 2}, offset=12), distance=-12, op='cut')
+        issues = self.codes(part)
+        self.assertEqual([item['code'] for item in issues if item['code'].startswith('proof_') and item['level'] != 'info'], [])
+        self.assertIn('都过了', next(item['title'] for item in issues if item['code'] == 'proof_summary'))
+
+    def test_material_groove_and_two_sided_boss_are_caught(self):
+        part = Part(self)
+        plate(part, w=60, h=60, t=10)
+        part.do('extrude', sketch=part.sketch({'type': 'rect', 'cx': 0, 'cy': 0, 'w': 20, 'h': 20}, offset=10), distance=5)
+        part.do('extrude', sketch=part.sketch({'type': 'rect', 'cx': 0, 'cy': 0, 'w': 20, 'h': 20}, offset=0), distance=-5)
+        groove = part.sketch({'type': 'polygon', 'points': [[22, 3], [25, 3], [25, 6], [22, 6]]}, plane='XZ')
+        part.do('revolve', sketch=groove, axis='Z', angle=360, op='cut')
+        codes = {item['code'] for item in self.codes(part, material='')}
+        self.assertTrue({'proof_material', 'proof_two_sided', 'proof_groove'} <= codes, codes)

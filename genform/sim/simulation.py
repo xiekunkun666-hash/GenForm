@@ -8,11 +8,12 @@ from .analysis import AnalysisMixin
 from .assembly import AssemblyMixin
 from .livecheck import LiveCheckMixin
 from .motion import MotionMixin
+from .params import ParamsMixin
 from .common import MODES, number, ramp
 from .signals import changed, Signals
 
 
-class Simulation(AnalysisMixin, AssemblyMixin, LiveCheckMixin, MotionMixin, Signals, QObject):
+class Simulation(AnalysisMixin, AssemblyMixin, LiveCheckMixin, MotionMixin, ParamsMixin, Signals, QObject):
 
     def __init__(self, app):
         super().__init__(app)
@@ -24,7 +25,7 @@ class Simulation(AnalysisMixin, AssemblyMixin, LiveCheckMixin, MotionMixin, Sign
                         'material': ''}
         self._drag = {'axis': 'Y', 'speed': 10.0, 'cd': 1.0, 'density': 1.225, 'result': None, 'error': ''}
         self._parts = [self._own_part()]
-        self._assembly = {'clashes': None, 'pairs': 0, 'steps': None, 'error': ''}
+        self._assembly = {'clashes': None, 'pairs': 0, 'steps': None, 'fasteners': None, 'stack': None, 'error': ''}
         self._mesh_ticket = 0
         self._shown = []                # 视图里画着的别的零件: [(装配体里的序号, 网格)...]
         self._red = set()               # 装配检查标红的零件 (序号)
@@ -37,6 +38,7 @@ class Simulation(AnalysisMixin, AssemblyMixin, LiveCheckMixin, MotionMixin, Sign
         self.dirty = False
         self._live_init()               # 装配体的实时检查 (livecheck.py)
         self._motion_init()             # 运动副和动画 (motion.py)
+        self._params_init()             # 全局变量和配合 (params.py)
         app.languageChanged.connect(self.changed)       # 换了界面语言: 面板上的字重新取一遍
 
     @staticmethod
@@ -87,9 +89,10 @@ class Simulation(AnalysisMixin, AssemblyMixin, LiveCheckMixin, MotionMixin, Sign
         self._picked, self._alone_part = -1, None
         self._hidden_parts = set()
         self._joints_from_file([], 0)
+        self._params_init()
         self._mode, self.pinned, self.path, self.dirty = 'assembly', True, '', False
         self._parts = [self._own_part()] if self.app.session.model.get('has_body') else []
-        self._assembly.update(clashes=None, steps=None, error='')
+        self._assembly.update(clashes=None, steps=None, fasteners=None, stack=None, error='')
         self._show_parts()
         self.changed.emit()
 
@@ -113,7 +116,7 @@ class Simulation(AnalysisMixin, AssemblyMixin, LiveCheckMixin, MotionMixin, Sign
         """模型变了: 面的编号、算出来的结果都不作数了。"""
         self._static.update(fixed=[], loaded=[], result=None, error='')
         self._drag.update(result=None, error='')
-        self._assembly.update(clashes=None, steps=None, error='')
+        self._assembly.update(clashes=None, steps=None, fasteners=None, stack=None, error='')
         if self._mode:
             self._ticket += 1
             self._running = ''

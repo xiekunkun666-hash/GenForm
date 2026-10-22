@@ -1,0 +1,68 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {},
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "6800",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 5.75,
+      "cy": 2.5,
+      "w": 1.5,
+      "h": 5
+     },
+     {
+      "type": "rect",
+      "cx": 8.75,
+      "cy": 2.5,
+      "w": 1.5,
+      "h": 5
+     },
+     {
+      "type": "rect",
+      "cx": 7.25,
+      "cy": 2.5,
+      "w": 1.5,
+      "h": 3.4
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "6800 10×19×5",
+   "params": {
+    "sketch": "f1",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false,
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "auto": false,
+    "kind": null,
+    "why": "6800-2RS 10×19×5。手动指定",
+    "alternatives": [],
+    "standard": true,
+    "spec": "6800-2RS 10×19×5"
+   }
+  }
+ ]
+}

@@ -1,0 +1,186 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 6,
+ "upto": null,
+ "props": {
+  "material": "黄铜"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "六角",
+   "params": {
+    "plane": "XY",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        2.5,
+        1.4434
+       ],
+       [
+        0.0,
+        2.8868
+       ],
+       [
+        -2.5,
+        1.4434
+       ],
+       [
+        -2.5,
+        -1.4434
+       ],
+       [
+        -0.0,
+        -2.8868
+       ],
+       [
+        2.5,
+        -1.4434
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "F-F 六角铜柱 对边 5 × 6",
+   "suppressed": false,
+   "params": {
+    "sketch": "f1",
+    "distance": 6.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "auto": false,
+    "kind": null,
+    "why": "M3×6 双通六角铜柱 (F-F) 对边 5。手动指定",
+    "alternatives": [],
+    "standard": true,
+    "spec": "M3×6 双通六角铜柱 (F-F) 对边 5"
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "螺孔",
+   "params": {
+    "plane": "XY",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 1.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "hole",
+   "name": "M3 通孔螺纹 (真实牙)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f3",
+    "kind": "tapped",
+    "size": "M3",
+    "diameter": 2.5,
+    "through": true,
+    "depth": 6.0,
+    "head_diameter": 6.0,
+    "head_depth": 1.0,
+    "flip": true,
+    "thread": true,
+    "phase": 0.0
+   }
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "螺纹孔口倒角截面",
+   "suppressed": false,
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        0,
+        -0.01
+       ],
+       [
+        1.71,
+        -0.01
+       ],
+       [
+        1.2,
+        0.5
+       ],
+       [
+        0,
+        0.5
+       ]
+      ]
+     },
+     {
+      "type": "polygon",
+      "points": [
+       [
+        0,
+        6.01
+       ],
+       [
+        1.71,
+        6.01
+       ],
+       [
+        1.2,
+        5.5
+       ],
+       [
+        0,
+        5.5
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "f6",
+   "type": "revolve",
+   "name": "螺纹孔口 90° 倒角到 Ø3.4 (两头)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f5",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "cut"
+   }
+  }
+ ]
+}

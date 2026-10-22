@@ -1,0 +1,130 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 4,
+ "upto": null,
+ "props": {
+  "color": "#B87333"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "走线 (r-z 平面)",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "line",
+      "x1": 45.7,
+      "y1": 29.0,
+      "x2": 51.300000000000004,
+      "y2": 29.0
+     },
+     {
+      "type": "arc",
+      "cx": 51.300000000000004,
+      "cy": 28.1,
+      "r": 0.9,
+      "a0": 0.0,
+      "a1": 90.0
+     },
+     {
+      "type": "line",
+      "x1": 52.2,
+      "y1": 28.1,
+      "x2": 52.2,
+      "y2": 7.65
+     },
+     {
+      "type": "arc",
+      "cx": 51.300000000000004,
+      "cy": 7.65,
+      "r": 0.9,
+      "a0": -90.0,
+      "a1": 0.0
+     },
+     {
+      "type": "line",
+      "x1": 51.300000000000004,
+      "y1": 6.75,
+      "x2": 33.4,
+      "y2": 6.75
+     },
+     {
+      "type": "arc",
+      "cx": 33.4,
+      "cy": 5.85,
+      "r": 0.9,
+      "a0": 90.0,
+      "a1": 180.0
+     },
+     {
+      "type": "line",
+      "x1": 32.5,
+      "y1": 5.85,
+      "x2": 32.5,
+      "y2": -2.6
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "plane",
+   "name": "引线截面基准面",
+   "suppressed": false,
+   "params": {
+    "base": "XY",
+    "offset": 0.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      45.7,
+      0.0,
+      29.0
+     ]
+    ],
+    "normal": [
+     [
+      1.0,
+      0.0,
+      0.0
+     ]
+    ]
+   }
+  },
+  {
+   "id": "f2",
+   "type": "sketch",
+   "name": "截面",
+   "params": {
+    "plane": "f4",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 0.65
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sweep",
+   "name": "B 相 (PH2) 绕组引出线 Ø1.3 (硅胶线): 绕组 → 前壳竖槽 → 底板线槽 → 焊盘",
+   "params": {
+    "sketch": "f2",
+    "path": "f1",
+    "op": "add"
+   },
+   "suppressed": false
+  }
+ ]
+}

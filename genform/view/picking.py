@@ -133,7 +133,11 @@ def pick_extras(origin, direction, extras):
         if enter >= reach:
             break
         part = extras[number]
-        triangle, distance = ray_triangles(origin, direction, np.asarray(part['verts']), np.asarray(part['tris']))
+        start, way = origin, direction
+        if part.get('matrix') is not None:     # 动着的件 (网格没变, 带摆放矩阵): 射线换到它自己的坐标里去算
+            back = np.linalg.inv(np.asarray(part['matrix'], float))
+            start, way = back[:3, :3] @ origin + back[:3, 3], back[:3, :3] @ direction
+        triangle, distance = ray_triangles(start, way, np.asarray(part['verts']), np.asarray(part['tris']))
         if triangle >= 0 and distance < reach:
             best, reach = part['pick'], distance
     return best, reach
@@ -189,8 +193,9 @@ def nearest_segment(camera, x, y, width, height, segments, name='edges'):
     nearest = int(gap.argmin())
     if not np.isfinite(gap[nearest]):
         return -1, np.inf, np.inf
-    # 屏幕上按比例插值的深度不是精确的三维距离, 但只用来和面的命中距离比远近, 够用
-    reach = float(depth0[nearest] + (depth1[nearest] - depth0[nearest]) * along[nearest])
+    # 透视时屏幕上按比例走的是 1/深度, 不是深度: 按深度插值, 长直边的中点会差出一毫米多, 比面的命中还远, 边就点不中了
+    near, far, part = float(depth0[nearest]), float(depth1[nearest]), float(along[nearest])
+    reach = 1.0 / (1.0 / near + (1.0 / far - 1.0 / near) * part) if camera.perspective else near + (far - near) * part
     index = nearest if chosen is None else int(chosen[nearest])
     return (index if picked is None else int(picked[index])), float(gap[nearest]), reach
 

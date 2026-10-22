@@ -1,0 +1,151 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 6,
+ "upto": null,
+ "props": {
+  "material": "黄铜"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "六角",
+   "params": {
+    "plane": "XY",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        2.5,
+        1.4434
+       ],
+       [
+        0.0,
+        2.8868
+       ],
+       [
+        -2.5,
+        1.4434
+       ],
+       [
+        -2.5,
+        -1.4434
+       ],
+       [
+        -0.0,
+        -2.8868
+       ],
+       [
+        2.5,
+        -1.4434
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "六角柱 对边 5 × 6",
+   "params": {
+    "sketch": "f1",
+    "distance": 6.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "auto": false,
+    "kind": null,
+    "why": "M3×6+6 单头六角铜柱 (M-F) 对边 5。手动指定",
+    "alternatives": [],
+    "standard": true,
+    "spec": "M3×6+6 单头六角铜柱 (M-F) 对边 5"
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "公头位置",
+   "params": {
+    "plane": "XY",
+    "offset": 6.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 0,
+      "y": 0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "stud",
+   "name": "公头 M3×6 (真实牙)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f3",
+    "diameter": 3.0,
+    "length": 6.0,
+    "chamfer": 0.3,
+    "flip": false,
+    "thread": true,
+    "pitch": 0.5,
+    "phase": 0.0
+   }
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "母头",
+   "params": {
+    "plane": "XY",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 1.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "hole",
+   "name": "母头 M3 螺孔 深 5 (真实牙)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f5",
+    "kind": "tapped",
+    "size": "M3",
+    "diameter": 2.5,
+    "through": false,
+    "depth": 5.0,
+    "head_diameter": 6.0,
+    "head_depth": 1.0,
+    "flip": true,
+    "thread": true,
+    "phase": 0.0
+   }
+  }
+ ]
+}

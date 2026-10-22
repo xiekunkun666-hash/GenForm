@@ -1,0 +1,84 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 3,
+ "upto": null,
+ "props": {
+  "material": "铝合金 6061"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "plane",
+   "name": "堵头基准面",
+   "suppressed": false,
+   "params": {
+    "base": "XY",
+    "offset": 0.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      61.0,
+      0.0,
+      32.0
+     ]
+    ],
+    "normal": [
+     [
+      1.0,
+      0.0,
+      0.0
+     ]
+    ]
+   }
+  },
+  {
+   "id": "f2",
+   "type": "sketch",
+   "name": "截面",
+   "params": {
+    "plane": "f1",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 1.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "extrude",
+   "name": "走线孔堵头 Ø3×2 (压入 + 厌氧胶)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f2",
+    "distance": 2.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": null,
+    "why": "走线孔铝堵头 Ø3×2 压入 + 厌氧胶 (或硅胶塞)。手动指定",
+    "alternatives": [],
+    "standard": true,
+    "spec": "走线孔铝堵头 Ø3×2 压入 + 厌氧胶 (或硅胶塞)"
+   }
+  }
+ ]
+}

@@ -35,9 +35,10 @@ class Camera:
         """→ (front 看的方向, right 屏幕右, up 屏幕上), 单位向量。"""
         yaw, pitch = math.radians(self.yaw), math.radians(self.pitch)
         front = np.array([math.sin(yaw) * math.cos(pitch), math.cos(yaw) * math.cos(pitch), -math.sin(pitch)])
-        right = np.cross(front, (0.0, 0.0, 1.0))
-        right /= np.linalg.norm(right)
-        return front, right, np.cross(right, front)
+        # 屏幕上方向按俯仰角直接算 (front 对俯仰角求导取反): 正对顶面 / 底面时也不退化, 转过头顶就是倒过来看,
+        # 所以俯仰角不用夹在 ±90° 里 (原来用 front × Z 求右方向, 只能夹住, 拖到顶就转不动了)
+        up = np.array([math.sin(yaw) * math.sin(pitch), math.cos(yaw) * math.sin(pitch), math.cos(pitch)])
+        return front, np.cross(front, up), up
 
     def eye(self):
         return self.target - self.basis()[0] * self.distance
@@ -73,15 +74,17 @@ class Camera:
         return self.projection(max(float(width), 1.0) / max(float(height), 1.0)) @ self.view()
 
     # ---- 操作 ----
-    def orbit(self, dx, dy, pivot=None):
+    def orbit(self, dx, dy, pivot=None, flip=None):
         """转视角。pivot: 绕着转的那个三维点 — 它在屏幕上的位置不动, 看起来是零件自己在原地转;
-        不给就绕目标点 (画面中心) 转。"""
+        不给就绕目标点 (画面中心) 转。flip: 左右拖是否反过来 (倒着看时); 不给就按现在是不是倒着的算 —
+        鼠标拖动时在按下那一刻定好传进来, 一次拖动中途转过头顶也不会突然反向。"""
         if pivot is not None:
             front, right, up = self.basis()
             offset = np.asarray(pivot, dtype=float) - self.eye()
             local = (float(offset @ right), float(offset @ up), float(offset @ front))
-        self.yaw = (self.yaw + dx * 0.4 + 180.0) % 360.0 - 180.0
-        self.pitch = max(-89.9, min(89.9, self.pitch + dy * 0.4))
+        upside_down = math.cos(math.radians(self.pitch)) < 0 if flip is None else flip     # 倒着看: 左右拖要反过来, 零件才跟着手走
+        self.yaw = (self.yaw + (-dx if upside_down else dx) * 0.4 + 180.0) % 360.0 - 180.0
+        self.pitch = (self.pitch + dy * 0.4 + 180.0) % 360.0 - 180.0
         if pivot is not None:
             front, right, up = self.basis()
             eye = np.asarray(pivot, dtype=float) - (local[0] * right + local[1] * up + local[2] * front)

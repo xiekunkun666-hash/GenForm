@@ -1,0 +1,72 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "合金钢"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "截面",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "arc",
+      "cx": 55.0,
+      "cy": 29.0,
+      "r": 1.0,
+      "a0": 0.0,
+      "a1": 180.0
+     },
+     {
+      "type": "line",
+      "x1": 54.0,
+      "y1": 29.0,
+      "x2": 56.0,
+      "y2": 29.0
+     },
+     {
+      "type": "line",
+      "x1": 54.0,
+      "y1": 29.0,
+      "x2": 56.0,
+      "y2": 29.0,
+      "construction": true
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "钢球 Ø2 (GB/T 308 G10; 压进径向走线孔外口 + 厌氧胶)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f1",
+    "axis": "CL",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "auto": false,
+    "kind": null,
+    "why": "GB/T 308 钢球 Ø2 G10。手动指定",
+    "alternatives": [],
+    "standard": true,
+    "spec": "GB/T 308 钢球 Ø2 G10"
+   }
+  }
+ ]
+}

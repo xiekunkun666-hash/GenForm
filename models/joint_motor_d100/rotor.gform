@@ -1,0 +1,216 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 9,
+ "upto": null,
+ "props": {
+  "material": "普通碳钢",
+  "feature_colors": {
+   "f4": "#3A3A40"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "转子杯截面",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        5,
+        10.5
+       ],
+       [
+        44.4,
+        10.5
+       ],
+       [
+        44.4,
+        35.0
+       ],
+       [
+        42.4,
+        35.0
+       ],
+       [
+        42.4,
+        13
+       ],
+       [
+        9,
+        13
+       ],
+       [
+        9,
+        14
+       ],
+       [
+        5,
+        14
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "转子杯 (10# 钢, 轭铁; 中心 Ø10 孔压在转子轴上 + 648 胶)",
+   "params": {
+    "sketch": "f1",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false,
+   "process": {
+    "id": "millturn",
+    "name": "车铣复合",
+    "short": "车铣",
+    "color": "#6FA8DC",
+    "auto": false,
+    "kind": null,
+    "why": "手动指定",
+    "alternatives": [],
+    "standard": false
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "磁钢",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 41.4,
+      "cy": 24.0,
+      "w": 2.0,
+      "h": 15.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "revolve",
+   "name": "磁钢 42P (厚 2 长 15)",
+   "params": {
+    "sketch": "f3",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": null,
+    "why": "N42SH 钕铁硼磁钢 42 片 (厚 2 长 15), 粘在转子杯内壁",
+    "alternatives": [],
+    "standard": true,
+    "spec": "N42SH 钕铁硼磁钢 42 片 (厚 2 长 15), 粘在转子杯内壁"
+   }
+  },
+  {
+   "id": "f8",
+   "type": "sketch",
+   "name": "减重孔",
+   "params": {
+    "plane": "XY",
+    "offset": 10.5,
+    "shapes": [
+     {
+      "type": "arcslot",
+      "cx": 0,
+      "cy": 0,
+      "r": 25,
+      "a0": 5,
+      "a1": 55,
+      "w": 16
+     },
+     {
+      "type": "arcslot",
+      "cx": 0,
+      "cy": 0,
+      "r": 25,
+      "a0": 65,
+      "a1": 115,
+      "w": 16
+     },
+     {
+      "type": "arcslot",
+      "cx": 0,
+      "cy": 0,
+      "r": 25,
+      "a0": 125,
+      "a1": 175,
+      "w": 16
+     },
+     {
+      "type": "arcslot",
+      "cx": 0,
+      "cy": 0,
+      "r": 25,
+      "a0": 185,
+      "a1": 235,
+      "w": 16
+     },
+     {
+      "type": "arcslot",
+      "cx": 0,
+      "cy": 0,
+      "r": 25,
+      "a0": 245,
+      "a1": 295,
+      "w": 16
+     },
+     {
+      "type": "arcslot",
+      "cx": 0,
+      "cy": 0,
+      "r": 25,
+      "a0": 305,
+      "a1": 355,
+      "w": 16
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f9",
+   "type": "extrude",
+   "name": "转子端盖减重孔 x6",
+   "params": {
+    "sketch": "f8",
+    "distance": 2.5,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  }
+ ]
+}

@@ -62,4 +62,4 @@ def reference(kind, body, params, ctx, identifier):
     return _segments(pairs)
 
 
-REFERENCES = ('plane', 'axis', 'csys', 'point', 'com', 'bbox')
+REFERENCES = ('plane', 'axis', 'csys', 'point', 'com', 'bbox', 'variables')     # variables: 全局变量, 重算时单独处理, 不出几何

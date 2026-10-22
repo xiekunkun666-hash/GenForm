@@ -1,0 +1,157 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 5,
+ "upto": null,
+ "props": {
+  "material": "合金钢"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "转子轴截面",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        1.4,
+        3
+       ],
+       [
+        5,
+        3
+       ],
+       [
+        5,
+        14
+       ],
+       [
+        4,
+        14
+       ],
+       [
+        4,
+        15
+       ],
+       [
+        3.03,
+        15
+       ],
+       [
+        3.03,
+        27
+       ],
+       [
+        2.5,
+        27
+       ],
+       [
+        2.5,
+        33
+       ],
+       [
+        1.4,
+        33
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "转子轴 (20CrMnTi 渗碳淬火; Ø10 配 6800 + 压转子杯, Ø5 配 685 — 比太阳轮齿根细, 行星轮能沿轴向退出, 内孔 Ø2.8 深孔钻)",
+   "params": {
+    "sketch": "f1",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false,
+   "process": {
+    "id": "turning",
+    "name": "数控车削",
+    "short": "车削",
+    "color": "#35A7A0",
+    "auto": false,
+    "kind": null,
+    "why": "手动指定",
+    "alternatives": [],
+    "standard": false
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "太阳轮齿",
+   "params": {
+    "plane": "XY",
+    "offset": 15.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        2.95,
+        -0.62
+       ],
+       [
+        4.38,
+        -0.22
+       ],
+       [
+        4.38,
+        0.22
+       ],
+       [
+        2.95,
+        0.62
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "太阳轮齿",
+   "params": {
+    "sketch": "f3",
+    "distance": 12.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "pattern_circular",
+   "name": "太阳轮 12T m0.6 x=+0.3 (插齿, z13~15 是插刀退刀槽)",
+   "params": {
+    "features": [
+     "f4"
+    ],
+    "axis": "Z",
+    "count": 12,
+    "angle": 360.0
+   },
+   "suppressed": false
+  }
+ ]
+}

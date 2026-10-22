@@ -13,8 +13,8 @@ Rectangle {
     // 开着时挡住下面的视图: 鼠标、滚轮都不漏下去
     MouseArea { anchors.fill: parent; acceptedButtons: Qt.AllButtons; onWheel: (wheel) => wheel.accepted = true }
 
-    readonly property var kinds: ({ part: "cube", assembly: "assembly", drawing: "drawing" })
-    readonly property var kindNames: ({ part: qsTr("零件"), assembly: qsTr("装配体"), drawing: qsTr("工程图") })
+    readonly property var kinds: ({ part: "cube", assembly: "assembly", drawing: "drawing", step: "cube" })
+    readonly property var kindNames: ({ part: qsTr("零件"), assembly: qsTr("装配体"), drawing: qsTr("工程图"), step: qsTr("STEP 文件") })
 
     Flickable {
         anchors.fill: parent

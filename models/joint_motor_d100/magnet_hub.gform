@@ -1,0 +1,133 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 4,
+ "upto": null,
+ "props": {
+  "material": "铝合金 6061",
+  "feature_colors": {
+   "f4": "#C03030"
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "磁环座",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        5,
+        3.6
+       ],
+       [
+        15,
+        3.6
+       ],
+       [
+        15,
+        3
+       ],
+       [
+        20,
+        3
+       ],
+       [
+        20,
+        4.2
+       ],
+       [
+        7,
+        4.2
+       ],
+       [
+        7,
+        4.4
+       ],
+       [
+        5,
+        4.4
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "磁环座 (压在转子轴后端)",
+   "params": {
+    "sketch": "f1",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false,
+   "process": {
+    "id": "turning",
+    "name": "数控车削",
+    "short": "车削",
+    "color": "#35A7A0",
+    "auto": false,
+    "kind": null,
+    "why": "手动指定",
+    "alternatives": [],
+    "standard": false
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "多极磁环",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 18,
+      "cy": 2.4,
+      "w": 4,
+      "h": 1.2
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "revolve",
+   "name": "多极磁环 Ø40/Ø32×1.2 21 对极 (TMAG5170 读转子)",
+   "params": {
+    "sketch": "f3",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": null,
+    "why": "多极充磁磁环 Ø40/Ø32×1.2, 端面 42 极 (21 对极), 定制。手动指定",
+    "alternatives": [],
+    "standard": true,
+    "spec": "多极充磁磁环 Ø40/Ø32×1.2, 端面 42 极 (21 对极), 定制"
+   }
+  }
+ ]
+}

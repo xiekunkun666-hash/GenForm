@@ -1,0 +1,56 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "合金钢",
+  "standard": {
+   "spec": "GB/T 70.3 M2×10 内六角沉头",
+   "name": ""
+  }
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "位置",
+   "suppressed": false,
+   "params": {
+    "plane": "XY",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 0,
+      "y": 0
+     }
+    ]
+   }
+  },
+  {
+   "id": "f2",
+   "type": "screw",
+   "name": "M2×10 内六角沉头 (真实牙)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f1",
+    "size": "M2",
+    "head": "flat",
+    "length": 10.0,
+    "flip": false,
+    "thread": true,
+    "phase": 0.0
+   },
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "standard": true,
+    "spec": "GB/T 70.3 M2×10 内六角沉头",
+    "why": "GB/T 70.3 M2×10 内六角沉头。标准件库生成"
+   }
+  }
+ ]
+}

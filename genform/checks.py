@@ -14,6 +14,7 @@
   small_text       字比规则矮
   closed_cavity    空心件里有封闭空腔: 电泳、喷涂、防锈都要开排液孔
   cost             按绑的工艺汇总的成本 (info)
+  proof_*          设计规则里打开 proofing 时: 铨洲智造 CNC 打样的限制 (见 genform/proofing.py)
 """
 from __future__ import annotations
 
@@ -49,6 +50,8 @@ def _concave_corners(shape):
 
 def run(features, model, report, rules=None, material=''):
     """→ 问题列表 (从严重到不严重)。features: 文档的特征表 (带绑定的工艺); model: session.model; report: 内核的 inspect。"""
+    from .kernel.model.variables import resolve
+    features = resolve(features)[0]                 # "=表达式" 的参数换成数 (全局变量)
     rules = dict(design_rules.DEFAULTS, **(rules or {}))
     by_id = {feature['id']: feature for feature in features}
     issues = []
@@ -135,6 +138,9 @@ def run(features, model, report, rules=None, material=''):
     if unbound:
         issues.append(_issue('warning', 'no_process', f'{len(unbound)} 个特征还没绑加工工艺',
                              '评估 → 绑定工艺：按性价比自动给每个特征挑工艺', unbound[:30]))
+    if rules.get('proofing'):                       # 铨洲智造 CNC 打样的限制 (genform/proofing.py)
+        from . import proofing
+        issues.extend(proofing.run(features, report, material, rules))
     if total:
         top = sorted(by_process.items(), key=lambda item: -item[1])[:5]
         issues.append(_issue('info', 'cost', f'估算成本：每件约 ¥{manufacturing._money(total)} (模具 / 工装合计 ¥{manufacturing._money(tooling)})',

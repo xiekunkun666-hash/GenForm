@@ -196,10 +196,14 @@ REFERENCE_KINDS = {'sketch': ('sketch',), 'path': ('sketch',) + table.CURVE_KIND
 
 def _field_schema(field):
     kind, text = field['kind'], field['label'] + ('。' + field['help'] if field.get('help') else '')
+    formula = '；也可以写 "=表达式" 用全局变量特征里的变量'
     if kind == 'number':
-        return {'type': 'number', 'description': text + (f' ({field["unit"]})' if field.get('unit') else '')}
+        return {'type': ['number', 'string'], 'description': text + (f' ({field["unit"]})' if field.get('unit') else '') + formula}
     if kind == 'int':
-        return {'type': 'integer', 'description': text}
+        return {'type': ['integer', 'string'], 'description': text + formula}
+    if kind == 'vars':
+        return {'type': 'object', 'description': text + '。{名字: 数 或 "=表达式"}，按顺序定义',
+                'additionalProperties': {'type': ['number', 'string']}}
     if kind == 'bool':
         return {'type': 'boolean', 'description': text}
     if kind == 'choice':

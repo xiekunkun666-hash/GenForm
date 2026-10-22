@@ -1,0 +1,1039 @@
+{
+ "format": "genform-assembly",
+ "version": 1,
+ "parts": [
+  {
+   "name": "后底板",
+   "file": "rear_plate.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "前壳",
+   "file": "front_housing.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "齿圈 (钢)",
+   "file": "ring_gear.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "定子",
+   "file": "stator.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "后轴承 6800",
+   "file": "bearing_6800.gform",
+   "move": [
+    0,
+    0,
+    5
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "转子杯 + 磁钢",
+   "file": "rotor.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "转子轴 + 太阳轮",
+   "file": "sun_shaft.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "磁环座 + 多极磁环",
+   "file": "magnet_hub.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "前轴承 685",
+   "file": "standard/std_685.gform",
+   "move": [
+    0,
+    0,
+    28
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "行星架 (输出)",
+   "file": "carrier.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "输出轴承 6709",
+   "file": "bearing_6709.gform",
+   "move": [
+    0.0,
+    0.0,
+    29.0
+   ],
+   "turn": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "行星销 Ø5×20 圆柱销 #1",
+   "file": "standard/std_dowel_5x20.gform",
+   "move": [
+    18.0,
+    0.0,
+    13.5
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "滚针 #1",
+   "file": "needle_5x9x12.gform",
+   "move": [
+    18.0,
+    0.0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "行星轮 #1",
+   "file": "planet.gform",
+   "move": [
+    18.0,
+    0.0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    3.75
+   ]
+  },
+  {
+   "name": "行星销 Ø5×20 圆柱销 #2",
+   "file": "standard/std_dowel_5x20.gform",
+   "move": [
+    -9.0,
+    15.5885,
+    13.5
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "滚针 #2",
+   "file": "needle_5x9x12.gform",
+   "move": [
+    -9.0,
+    15.5885,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "行星轮 #2",
+   "file": "planet.gform",
+   "move": [
+    -9.0,
+    15.5885,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    3.75
+   ]
+  },
+  {
+   "name": "行星销 Ø5×20 圆柱销 #3",
+   "file": "standard/std_dowel_5x20.gform",
+   "move": [
+    -9.0,
+    -15.5885,
+    13.5
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "滚针 #3",
+   "file": "needle_5x9x12.gform",
+   "move": [
+    -9.0,
+    -15.5885,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "行星轮 #3",
+   "file": "planet.gform",
+   "move": [
+    -9.0,
+    -15.5885,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    3.75
+   ]
+  },
+  {
+   "name": "穿心轴 + 磁铁",
+   "file": "output_shaft.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "PCB (嘉立创导出)",
+   "file": "pcb_board.step",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    180,
+    0
+   ]
+  },
+  {
+   "name": "后盖",
+   "file": "rear_cap.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "相线 PH1",
+   "file": "lead_ac.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    248.96
+   ]
+  },
+  {
+   "name": "相线 PH2",
+   "file": "lead_b.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    270
+   ]
+  },
+  {
+   "name": "相线 PH3",
+   "file": "lead_ac.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    291.04
+   ]
+  },
+  {
+   "name": "后盖密封垫",
+   "file": "cap_gasket.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "导热垫",
+   "file": "thermal_pad.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "导光柱 LED1",
+   "file": "light_pipe.gform",
+   "move": [
+    -12.2,
+    34.2,
+    -9.6
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "导光柱 LED2",
+   "file": "light_pipe.gform",
+   "move": [
+    -15.6,
+    34.2,
+    -9.6
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "PCB 隔离柱 Ø6×5 #1",
+   "file": "spacer_6x5.gform",
+   "move": [
+    25.809,
+    25.809,
+    0.0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "PCB 隔离柱 Ø6×5 #2",
+   "file": "spacer_6x5.gform",
+   "move": [
+    -25.809,
+    25.809,
+    0.0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "PCB 隔离柱 Ø6×5 #3",
+   "file": "spacer_6x5.gform",
+   "move": [
+    -25.809,
+    -25.809,
+    0.0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "PCB 隔离柱 Ø6×5 #4",
+   "file": "spacer_6x5.gform",
+   "move": [
+    25.809,
+    -25.809,
+    0.0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "F-F 铜柱 M3×6 #1",
+   "file": "standoff_ff_m3x6.gform",
+   "move": [
+    25.809,
+    25.809,
+    -7.6
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "F-F 铜柱 M3×6 #2",
+   "file": "standoff_ff_m3x6.gform",
+   "move": [
+    -25.809,
+    25.809,
+    -7.6
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "F-F 铜柱 M3×6 #3",
+   "file": "standoff_ff_m3x6.gform",
+   "move": [
+    -25.809,
+    -25.809,
+    -7.6
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "F-F 铜柱 M3×6 #4",
+   "file": "standoff_ff_m3x6.gform",
+   "move": [
+    25.809,
+    -25.809,
+    -7.6
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "PCB 螺丝 M3×12 沉头 #1",
+   "file": "screw_m3x12_flat.gform",
+   "move": [
+    25.809,
+    25.809,
+    7.5
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "PCB 螺丝 M3×12 沉头 #2",
+   "file": "screw_m3x12_flat.gform",
+   "move": [
+    -25.809,
+    25.809,
+    7.5
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "PCB 螺丝 M3×12 沉头 #3",
+   "file": "screw_m3x12_flat.gform",
+   "move": [
+    -25.809,
+    -25.809,
+    7.5
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "PCB 螺丝 M3×12 沉头 #4",
+   "file": "screw_m3x12_flat.gform",
+   "move": [
+    25.809,
+    -25.809,
+    7.5
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "后盖螺丝 M3×5 沉头 #1",
+   "file": "screw_m3x5_flat.gform",
+   "move": [
+    25.809,
+    25.809,
+    -9.6
+   ],
+   "turn": [
+    180,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "后盖螺丝 M3×5 沉头 #2",
+   "file": "screw_m3x5_flat.gform",
+   "move": [
+    -25.809,
+    25.809,
+    -9.6
+   ],
+   "turn": [
+    180,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "后盖螺丝 M3×5 沉头 #3",
+   "file": "screw_m3x5_flat.gform",
+   "move": [
+    -25.809,
+    -25.809,
+    -9.6
+   ],
+   "turn": [
+    180,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "后盖螺丝 M3×5 沉头 #4",
+   "file": "screw_m3x5_flat.gform",
+   "move": [
+    25.809,
+    -25.809,
+    -9.6
+   ],
+   "turn": [
+    180,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "壳体螺丝 M2×10 沉头 #1",
+   "file": "standard/std_screw_M2x10_flat.gform",
+   "move": [
+    37.8656,
+    37.8656,
+    5.0
+   ],
+   "turn": [
+    180.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "壳体螺丝 M2×10 沉头 #2",
+   "file": "standard/std_screw_M2x10_flat.gform",
+   "move": [
+    13.8598,
+    51.7253,
+    5.0
+   ],
+   "turn": [
+    180.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "壳体螺丝 M2×10 沉头 #3",
+   "file": "standard/std_screw_M2x10_flat.gform",
+   "move": [
+    -13.8598,
+    51.7253,
+    5.0
+   ],
+   "turn": [
+    180.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "壳体螺丝 M2×10 沉头 #4",
+   "file": "standard/std_screw_M2x10_flat.gform",
+   "move": [
+    -51.7253,
+    13.8598,
+    5.0
+   ],
+   "turn": [
+    180.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "壳体螺丝 M2×10 沉头 #5",
+   "file": "standard/std_screw_M2x10_flat.gform",
+   "move": [
+    -51.7253,
+    -13.8598,
+    5.0
+   ],
+   "turn": [
+    180.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "壳体螺丝 M2×10 沉头 #6",
+   "file": "standard/std_screw_M2x10_flat.gform",
+   "move": [
+    -37.8656,
+    -37.8656,
+    5.0
+   ],
+   "turn": [
+    180.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "壳体定位销 Ø2×8 #1",
+   "file": "standard/std_dowel_2x8.gform",
+   "move": [
+    51.7253,
+    13.8598,
+    5.0
+   ],
+   "turn": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "壳体定位销 Ø2×8 #2",
+   "file": "standard/std_dowel_2x8.gform",
+   "move": [
+    -37.8656,
+    37.8656,
+    5.0
+   ],
+   "turn": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "壳体定位销 Ø2×8 #3",
+   "file": "standard/std_dowel_2x8.gform",
+   "move": [
+    -13.8598,
+    -51.7253,
+    5.0
+   ],
+   "turn": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "输出定位销 Ø5×10 #1",
+   "file": "standard/std_dowel_5x10.gform",
+   "move": [
+    3.4941,
+    13.04,
+    31.5
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "输出定位销 Ø5×10 #2",
+   "file": "standard/std_dowel_5x10.gform",
+   "move": [
+    -13.04,
+    -3.4941,
+    31.5
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "输出定位销 Ø5×10 #3",
+   "file": "standard/std_dowel_5x10.gform",
+   "move": [
+    9.5459,
+    -9.5459,
+    31.5
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "安装定位销 Ø4×8 #1",
+   "file": "standard/std_dowel_4x8.gform",
+   "move": [
+    48.0065,
+    12.8633,
+    31.5
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "安装定位销 Ø4×8 #2",
+   "file": "standard/std_dowel_4x8.gform",
+   "move": [
+    -35.1432,
+    35.1432,
+    31.5
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "安装定位销 Ø4×8 #3",
+   "file": "standard/std_dowel_4x8.gform",
+   "move": [
+    -12.8633,
+    -48.0065,
+    31.5
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "壳体螺丝 M2×10 沉头 #7",
+   "file": "standard/std_screw_M2x10_flat.gform",
+   "move": [
+    13.8598,
+    -51.7253,
+    5.0
+   ],
+   "turn": [
+    180.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "壳体螺丝 M2×10 沉头 #8",
+   "file": "standard/std_screw_M2x10_flat.gform",
+   "move": [
+    37.8656,
+    -37.8656,
+    5.0
+   ],
+   "turn": [
+    180.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "壳体螺丝 M2×10 沉头 #9",
+   "file": "standard/std_screw_M2x10_flat.gform",
+   "move": [
+    51.7253,
+    -13.8598,
+    5.0
+   ],
+   "turn": [
+    180.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "行星架挡板",
+   "file": "carrier_plate.gform",
+   "move": [
+    0,
+    0,
+    0
+   ],
+   "turn": [
+    0,
+    0,
+    0
+   ]
+  }
+ ],
+ "joints": [
+  {
+   "name": "转子 (电机)",
+   "kind": "hinge",
+   "origin": [
+    0,
+    0,
+    0
+   ],
+   "axis": [
+    0,
+    0,
+    1
+   ],
+   "parts": [
+    5,
+    6,
+    7
+   ],
+   "base": 0,
+   "min": -360,
+   "max": 360,
+   "speed": 360
+  },
+  {
+   "name": "输出 (行星架, 10:1)",
+   "kind": "hinge",
+   "origin": [
+    0,
+    0,
+    0
+   ],
+   "axis": [
+    0,
+    0,
+    1
+   ],
+   "parts": [
+    9,
+    11,
+    14,
+    17,
+    20,
+    55,
+    56,
+    57,
+    64
+   ],
+   "base": 0,
+   "min": -360,
+   "max": 360,
+   "speed": 36
+  },
+  {
+   "name": "行星轮 #1 自转",
+   "kind": "hinge",
+   "origin": [
+    18,
+    0,
+    0
+   ],
+   "axis": [
+    0,
+    0,
+    1
+   ],
+   "parts": [
+    13,
+    12
+   ],
+   "base": 9,
+   "min": -360,
+   "max": 360,
+   "speed": -81,
+   "on": 1
+  },
+  {
+   "name": "行星轮 #2 自转",
+   "kind": "hinge",
+   "origin": [
+    -9,
+    15.5885,
+    0
+   ],
+   "axis": [
+    0,
+    0,
+    1
+   ],
+   "parts": [
+    16,
+    15
+   ],
+   "base": 9,
+   "min": -360,
+   "max": 360,
+   "speed": -81,
+   "on": 1
+  },
+  {
+   "name": "行星轮 #3 自转",
+   "kind": "hinge",
+   "origin": [
+    -9,
+    -15.5885,
+    0
+   ],
+   "axis": [
+    0,
+    0,
+    1
+   ],
+   "parts": [
+    19,
+    18
+   ],
+   "base": 9,
+   "min": -360,
+   "max": 360,
+   "speed": -81,
+   "on": 1
+  }
+ ]
+}

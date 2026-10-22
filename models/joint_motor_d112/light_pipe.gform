@@ -1,0 +1,59 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "聚碳酸酯 PC",
+  "color": "#DDEEFF"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "截面",
+   "params": {
+    "plane": "XY",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 1.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "导光柱 Ø2 (PC, 出口和后盖外表面平)",
+   "params": {
+    "sketch": "f1",
+    "distance": 7.3,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": null,
+    "why": "导光柱 Ø2×7.3 PC 透明",
+    "alternatives": [],
+    "standard": true,
+    "spec": "导光柱 Ø2×7.3 PC 透明"
+   }
+  }
+ ]
+}

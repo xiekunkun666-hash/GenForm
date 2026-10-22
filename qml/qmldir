@@ -32,3 +32,4 @@ AssemblyTree 1.0 AssemblyTree.qml
 AssemblyProps 1.0 AssemblyProps.qml
 ValueSlider 1.0 ValueSlider.qml
 MotionBar 1.0 MotionBar.qml
+StdPicker 1.0 StdPicker.qml

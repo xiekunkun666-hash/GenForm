@@ -1,6 +1,8 @@
 """拾取和鼠标: 点中什么、旋转 / 平移 / 缩放、框选、悬停、草图里的鼠标转给草图编辑器。"""
 from __future__ import annotations
 
+import math
+
 import numpy as np
 import time
 from PySide6.QtCore import Qt
@@ -8,6 +10,19 @@ from PySide6.QtCore import Qt
 from .. import picking
 from ... import planes
 from .common import CLICK_SLOP, SKETCH_REACH
+
+
+def _edge_text(entry):
+    """一条边的尺寸: 直边报长度; 整圆报直径、半径、周长; 圆弧报直径、半径、弧长; 别的曲线报长度。"""
+    length = entry['length']
+    if entry['type'] == 'circle' and 'radius' in entry:
+        radius = entry['radius']
+        whole = abs(length - 2 * np.pi * radius) <= max(1e-6, 1e-4 * length)
+        if whole:
+            return f'圆，直径 {radius * 2:.4g} mm，半径 {radius:.4g} mm，周长 {length:.4g} mm'
+        return f'圆弧，直径 {radius * 2:.4g} mm，半径 {radius:.4g} mm，弧长 {length:.4g} mm（{np.degrees(length / radius):.4g}°）'
+    names = {'line': '直边', 'circle': '圆弧边', 'curve': '曲线边'}
+    return f'{names.get(entry["type"], "边")}，长 {length:.4g} mm'
 
 
 class MouseMixin:
@@ -50,6 +65,23 @@ class MouseMixin:
         if hit is None:
             return ''
         kind, identifier = hit
+        if kind == 'part_edge':             # 装配体里零部件的一条边: 零件名 + 这条边的尺寸
+            number, edge = identifier
+            part = next((part for part in self._data.get('extras') or () if part.get('pick') == number), None) or {}
+            name = part.get('label') or f'零部件 {number + 1}'
+            kinds = ('line', 'circle', 'curve')
+            kind_of = part.get('edge_kind')
+            entry = {'type': kinds[int(kind_of[edge])] if kind_of is not None and edge < len(kind_of) else 'curve',
+                     'length': float(part['edge_length'][edge]) if part.get('edge_length') is not None else 0.0}
+            radius = float(part['edge_radius'][edge]) if part.get('edge_radius') is not None else float('nan')
+            if radius == radius:
+                entry['radius'] = radius
+            return f'{name}　{_edge_text(entry)}'
+        if kind == 'component':             # 装配体里的零部件: 它的名字 (和设计树上一样) + 能做什么
+            part = next((part for part in self._data.get('extras') or () if part.get('pick') == identifier), None)
+            name = (part or {}).get('label') or f'零部件 {identifier + 1}'
+            about = (part or {}).get('about') or ''
+            return f'{name}{"　" + about if about else ""}（单击选中，双击打开零件，右键菜单）'
         if kind == 'plane':
             return f'{planes.NAMES[identifier]}（单击选中，再点“草图”在它上面画）'
         if kind == 'sketch':
@@ -62,11 +94,9 @@ class MouseMixin:
         if entry is None:
             return ''
         if kind == 'edge':
-            names = {'line': '直边', 'circle': '圆弧边', 'curve': '曲线边'}
-            extra = f'，半径 {entry["radius"]:.3g} mm' if 'radius' in entry else ''
-            return f'{names[entry["type"]]}，长 {entry["length"]:.4g} mm{extra}'
+            return _edge_text(entry)
         names = {'plane': '平面', 'cylinder': '圆柱面', 'cone': '圆锥面', 'sphere': '球面', 'torus': '圆环面'}
-        extra = f'，半径 {entry["radius"]:.3g} mm' if 'radius' in entry else ''
+        extra = f'，直径 {entry["radius"] * 2:.4g} mm，半径 {entry["radius"]:.4g} mm' if 'radius' in entry else ''
         return f'{names.get(entry["type"], "曲面")}，面积 {entry["area"]:.4g} mm²{extra}'
 
     # ---- 鼠标 ----
@@ -153,6 +183,7 @@ class MouseMixin:
             else:
                 self._remember()
                 self._pivot = self._orbit_pivot(x0, y0)
+                self._orbit_flip = math.cos(math.radians(self._camera.pitch)) < 0   # 这一次拖动左右方向定死: 转过头顶也不突然反过来
         if self._band is not None:
             self._band[2], self._band[3] = point.x(), point.y()
             self._sync_band()
@@ -165,7 +196,7 @@ class MouseMixin:
             pan = button == Qt.MiddleButton and shifted
             if orbit:
                 self._stop_glide()
-                self._camera.orbit(dx, dy, self._pivot)
+                self._camera.orbit(dx, dy, self._pivot, getattr(self, '_orbit_flip', None))
                 self._redraw()
             elif pan:
                 self._stop_glide()
@@ -299,12 +330,50 @@ class MouseMixin:
         if self._hover_held:                # 截图中: 不按光标找悬停 (视角跳过去以后鼠标还停在窗口上, 会又亮起来一块)
             return
         hit = self._pick(x, y)
+        if hit is not None and hit[0] == 'component':
+            hit = self._part_edge(x, y, hit[1]) or hit
         if hit != self._hover:
+            if (hit and hit[0] == 'part_edge') or (self._hover and self._hover[0] == 'part_edge'):
+                self._show_part_edge(hit if hit and hit[0] == 'part_edge' else None)
             self._hover = hit
             self._set('states', self._make_states())
             self._set('planes', self._make_planes())
             self.hoverChanged.emit(self._describe(hit))
             self.update()
+
+    def _part_edge(self, x, y, number):
+        """光标在装配体的零部件上: 离光标 6 像素以内、没被挡住的那条边 → ('part_edge', (零部件序号, 边序号)), 没有是 None。"""
+        part = next((part for part in self._data.get('extras') or () if part.get('pick') == number), None)
+        segments = part.get('segments') if part else None
+        if segments is None or not len(segments) or part.get('segment_edge') is None:
+            return None
+        width, height = self.width(), self.height()
+        if part.get('matrix') is not None:      # 动着的件: 线段摆到现在的位置 (同一个矩阵只算一次)
+            matrix = np.asarray(part['matrix'], float)
+            cache = getattr(self, '_moved_segments', None)
+            if cache is None or cache[0] is not segments or not np.array_equal(cache[1], matrix):
+                moved = (np.asarray(segments, float).reshape(-1, 3) @ matrix[:3, :3].T + matrix[:3, 3]).reshape(-1, 2, 3)
+                cache = self._moved_segments = (segments, matrix, moved)
+            segments = cache[2]
+        segment, gap, reach = picking.nearest_segment(self._camera, x, y, width, height, segments, f'part{number}')
+        if segment < 0 or gap > 6.0:
+            return None
+        origin, direction = self._camera.ray(x, y, width, height)
+        _, distance = picking.pick_extras(origin, direction, [part])
+        depth = distance * float(direction @ self._camera.basis()[0])
+        if np.isfinite(depth) and reach > depth * (1 + picking.EDGE_DEPTH_SLACK) + 0.05:
+            return None                         # 这条边在零件背面, 被挡住了
+        return 'part_edge', (int(number), int(part['segment_edge'][segment]))
+
+    def _show_part_edge(self, hit):
+        """悬停的那条零件边亮出来: 把它的线段挂在那个零部件上送给视图 (只换这一项, 别的缓冲照用)。"""
+        extras = [dict(part) for part in self._data.get('extras') or ()]
+        for part in extras:
+            part.pop('hover_points', None)
+            if hit is not None and part.get('pick') == hit[1][0] and part.get('segments') is not None:
+                chosen = np.asarray(part['segment_edge']) == hit[1][1]
+                part['hover_points'] = np.asarray(part['segments'], dtype=np.float32)[chosen].reshape(-1, 3)
+        self._set('extras', extras)
 
     def hoverLeaveEvent(self, event):
         self.clear_hover()
@@ -315,6 +384,8 @@ class MouseMixin:
         self._hover_held = bool(hold)
         self._hover_wait = None
         if self._hover is not None:
+            if self._hover[0] == 'part_edge':
+                self._show_part_edge(None)
             self._hover = None
             self._set('states', self._make_states())
             self._set('planes', self._make_planes())
@@ -325,17 +396,20 @@ class MouseMixin:
         self._hover_held = False
 
     def _orbit_pivot(self, x, y):
-        """中键拖着转的时候绕哪一点转: 按下的地方指着零件就是零件表面那一点, 指着空白处就是零件的中心 —
-        这样转的是零件, 不是整个画面绕着别处甩。还没有实体时绕画面中心 (返回 None)。"""
-        if not self._model.get('has_body'):
+        """中键拖着转的时候绕哪一点转: 整个场景 (零件 + 装配体里显示着的零部件) 的中心 — 场景连同它的坐标系在原地转,
+        不会绕着光标点到的某个表面点甩来甩去。什么都没有时绕画面中心 (返回 None)。x, y 不用了, 留着是为了接口不变。"""
+        lows, highs = [], []
+        for part in self._data.get('extras') or ():
+            if part.get('low') is not None and part.get('high') is not None and part.get('visible', True) is not False:
+                lows.append(np.asarray(part['low'], dtype=float))
+                highs.append(np.asarray(part['high'], dtype=float))
+        if self._model.get('has_body') and self._display['body'] is not False:
+            props = self._model['props']
+            lows.append(np.asarray(props['bbox_min'], dtype=float))
+            highs.append(np.asarray(props['bbox_max'], dtype=float))
+        if not lows:
             return None
-        origin, direction = self._camera.ray(x, y, self.width(), self.height())
-        # 先和每个三角面的包围盒比, 再只和碰得到的那几个求交: 拿整个零件十几万个三角面逐个求交的话, 每次开始拖都要顿一下
-        triangle, distance = picking.ray_boxed(origin, direction, self._model)
-        if triangle >= 0 and self._display['body']:
-            return origin + direction * distance
-        props = self._model['props']
-        return (np.asarray(props['bbox_min'], dtype=float) + np.asarray(props['bbox_max'], dtype=float)) / 2
+        return (np.min(lows, axis=0) + np.max(highs, axis=0)) / 2
 
     def wheelEvent(self, event):
         steps = event.angleDelta().y() / 120.0

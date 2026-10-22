@@ -1,0 +1,110 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "props": {
+  "material": "65Mn"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "挡板",
+   "suppressed": false,
+   "params": {
+    "plane": "XY",
+    "offset": 13.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 21.5
+     },
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 10.0
+     }
+    ]
+   }
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "行星架挡板 (65Mn 1.0 激光切 + 淬火; 压在 3 根行星销下端, 挡住行星轮往下滑, 离转子端盖 0.5)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f1",
+    "distance": 1.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0A040",
+    "auto": false,
+    "kind": null,
+    "why": "1 mm 钢板激光切, 销孔铰到 Ø5 压配",
+    "alternatives": [],
+    "standard": false
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "销孔",
+   "suppressed": false,
+   "params": {
+    "plane": "XY",
+    "offset": 13.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 18.0,
+      "cy": 0.0,
+      "r": 2.5
+     },
+     {
+      "type": "circle",
+      "cx": -9.0,
+      "cy": 15.5885,
+      "r": 2.5
+     },
+     {
+      "type": "circle",
+      "cx": -9.0,
+      "cy": -15.5885,
+      "r": 2.5
+     }
+    ]
+   }
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "销孔 Ø5 x3 (压配)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f3",
+    "distance": 1.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   }
+  }
+ ],
+ "serial": 4,
+ "upto": null
+}

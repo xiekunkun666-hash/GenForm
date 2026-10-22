@@ -1,0 +1,114 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 5,
+ "upto": null,
+ "props": {},
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "行星轮齿根",
+   "params": {
+    "plane": "XY",
+    "offset": 37.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 15.925
+     },
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 4.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "行星轮本体 (孔 Ø9 装满针 HK0509)",
+   "params": {
+    "sketch": "f1",
+    "distance": 8.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "齿",
+   "params": {
+    "plane": "XY",
+    "offset": 37.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        15.8,
+        -0.6
+       ],
+       [
+        17.5,
+        -0.25
+       ],
+       [
+        17.5,
+        0.25
+       ],
+       [
+        15.8,
+        0.6
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "齿",
+   "params": {
+    "sketch": "f3",
+    "distance": 8.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "pattern_circular",
+   "name": "48T m0.7",
+   "params": {
+    "features": [
+     "f4"
+    ],
+    "axis": "Z",
+    "count": 48,
+    "angle": 360.0
+   },
+   "suppressed": false
+  }
+ ]
+}

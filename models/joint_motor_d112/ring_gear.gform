@@ -1,0 +1,212 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 7,
+ "upto": null,
+ "props": {
+  "material": "合金钢"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "齿圈套截面",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        33.15,
+        15
+       ],
+       [
+        35.5,
+        15
+       ],
+       [
+        35.5,
+        27.0
+       ],
+       [
+        36.7,
+        27.0
+       ],
+       [
+        36.7,
+        27.6
+       ],
+       [
+        35.5,
+        27.6
+       ],
+       [
+        35.5,
+        35
+       ],
+       [
+        27.5,
+        35
+       ],
+       [
+        27.5,
+        29.0
+       ],
+       [
+        31.8,
+        29.0
+       ],
+       [
+        31.8,
+        28
+       ],
+       [
+        33.15,
+        28
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "齿圈钢套 (40Cr 调质; 外圆压定子, 前端装 6709, 压进前壳内止口 + 648)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f1",
+    "axis": "Z",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "process": {
+    "id": "millturn",
+    "name": "车铣复合",
+    "short": "车铣",
+    "color": "#6FA8DC",
+    "auto": false,
+    "kind": null,
+    "why": "车外圆/轴承座 + C 轴铣 3 个防转凸台, 内齿再慢走丝",
+    "alternatives": [],
+    "standard": false
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "内齿",
+   "params": {
+    "plane": "XY",
+    "offset": 15.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        33.3,
+        -0.5
+       ],
+       [
+        31.8,
+        -0.22
+       ],
+       [
+        31.8,
+        0.22
+       ],
+       [
+        33.3,
+        0.5
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "内齿",
+   "params": {
+    "sketch": "f3",
+    "distance": 13.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "pattern_circular",
+   "name": "108T m0.6",
+   "params": {
+    "features": [
+     "f4"
+    ],
+    "axis": "Z",
+    "count": 108,
+    "angle": 360.0
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "sketch",
+   "name": "防转凸台",
+   "suppressed": false,
+   "params": {
+    "plane": "XY",
+    "offset": 32.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 31.6099,
+      "cy": 18.25,
+      "r": 2.0
+     },
+     {
+      "type": "circle",
+      "cx": -31.6099,
+      "cy": 18.25,
+      "r": 2.0
+     },
+     {
+      "type": "circle",
+      "cx": -0.0,
+      "cy": -36.5,
+      "r": 2.0
+     }
+    ]
+   }
+  },
+  {
+   "id": "f7",
+   "type": "extrude",
+   "name": "防转凸台 Ø4 x3 (车铣: 前端外圆车到 Ø77, Ø3 立铣刀从前面绕凸台铣掉一圈; 卡进前壳背面 U 形槽, 前面看不见)",
+   "suppressed": false,
+   "params": {
+    "sketch": "f6",
+    "distance": 2.5,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   }
+  }
+ ]
+}

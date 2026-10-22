@@ -1,0 +1,96 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 4,
+ "upto": null,
+ "props": {
+  "material": "橡胶",
+  "color": "#3A3A40"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "塞体",
+   "params": {
+    "plane": "XY",
+    "offset": -9.6,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": -25.5,
+      "cy": 6.0,
+      "w": 10.4,
+      "h": 7.6
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "塞体",
+   "params": {
+    "sketch": "f1",
+    "distance": 2.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": null,
+    "why": "拨码窗口硅胶塞 (定制, 带 1 mm 外翻边)。手动指定",
+    "alternatives": [],
+    "standard": true,
+    "spec": "拨码窗口硅胶塞 (定制, 带 1 mm 外翻边)"
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "翻边",
+   "params": {
+    "plane": "XY",
+    "offset": -9.6,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": -25.5,
+      "cy": 6.0,
+      "w": 12.4,
+      "h": 9.6
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "外翻边 0.8",
+   "params": {
+    "sketch": "f3",
+    "distance": -0.8,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  }
+ ]
+}
