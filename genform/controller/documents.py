@@ -9,7 +9,7 @@ from ..document import DocumentError
 from .common import _local
 from .signals import startChanged
 
-RECENT_KINDS = {'.gform': 'part', '.gasm': 'assembly', '.gdrw': 'drawing', '.step': 'step', '.stp': 'step'}   # STEP: 点了导入成新零件
+RECENT_KINDS = {'.gform': 'part', '.gasm': 'assembly', '.gdrw': 'drawing', '.step': 'step', '.stp': 'step', '.stl': 'stl'}
 
 
 class DocumentMixin:
@@ -128,6 +128,8 @@ class DocumentMixin:
         elif kind in ('.step', '.stp'):
             self._set_kind('part')
             self._open_step(target)
+        elif kind == '.stl':
+            self._open_components([target])
         else:
             self._set_kind('part')
             self._run('open_document', {'path': target}, lambda result: result.get('ok') and self._remember(target))
@@ -141,24 +143,50 @@ class DocumentMixin:
 
     @Slot('QVariantList')
     def dropFiles(self, paths):
-        """文件拖进窗口 (和 SOLIDWORKS 一样): 有 .gasm / .gdrw 就打开第一个; 装配体里拖的零件 (.gform / .step / .stp)
-        一个个插进来当零部件; 零件里拖 .gform 就打开它, 拖 .step 就开一个导入它的新零件。"""
+        self.openFiles(paths)
+
+    @Slot('QVariantList')
+    def openFiles(self, paths):
+        if not self._leave_modes():
+            return
         files = [_local(path.toString() if hasattr(path, 'toString') else path) for path in paths]
         files = [os.path.normpath(path) for path in files if os.path.isfile(path)]
         kinds = [os.path.splitext(path)[1].lower() for path in files]
         documents = [path for path, kind in zip(files, kinds) if kind in ('.gasm', '.gdrw')]
-        parts = [path for path, kind in zip(files, kinds) if kind in ('.gform', '.step', '.stp')]
+        parts = [path for path, kind in zip(files, kinds) if kind in ('.gform', '.step', '.stp', '.stl')]
         if documents:
+            if len(documents) > 1:
+                self.notice.emit('装配体和工程图请一次打开一个；多个零件、STEP、STL 可以一起加载')
+                return
             self.openDocument(documents[0])
+            if parts:
+                self.notice.emit('已打开所选文档；同批零件文件请另行拖入或选择')
         elif self._kind == 'assembly' and parts:
-            for path in parts:
-                self.sim.addPart(path)
-        elif any(path.lower().endswith('.gform') for path in parts):
-            self.openDocument(next(path for path in parts if path.lower().endswith('.gform')))
-        elif parts:                             # 零件里拖 STEP: 和打开一样, 开一个导入它的新零件
+            self._set_start(False)
+            self.sim.addParts(parts)
+        elif len(parts) > 1 or (parts and parts[0].lower().endswith('.stl')):
+            self._open_components(parts)
+        elif parts:
             self.openDocument(parts[0])
         else:
-            self.notice.emit('只认 GenForm 文件 (.gform / .gasm / .gdrw) 和 STEP (.step / .stp)')
+            self.notice.emit('请选择 GenForm 文件 (.gform / .gasm / .gdrw)、STEP (.step / .stp) 或 STL (.stl)')
+        ignored = len(paths) - len(documents) - len(parts)
+        if ignored and (documents or parts):
+            self.notice.emit(f'已跳过 {ignored} 个不支持或不存在的文件')
+
+    def _open_components(self, paths):
+        self._set_return('')
+        self._set_start(False)
+        self._set_kind('part')
+        self._set_kind('assembly')
+        self.sim.pin()
+        self.sim.addParts(paths)
+        message = f'已加入 {len(paths)} 个文件，保留原始坐标'
+        if any(path.lower().endswith('.stl') for path in paths):
+            message += '；STL 为网格参考，不能进行精确实体运算'
+        self.notice.emit(message)
+        for path in paths:
+            self._remember(path)
 
     @Slot(str)
     def saveDocument(self, path):

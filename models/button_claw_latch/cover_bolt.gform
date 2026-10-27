@@ -1,0 +1,55 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "color": "#434D5B"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "bolt_position",
+   "params": {
+    "plane": "XY",
+    "offset": 20.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 0,
+      "y": 0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "screw",
+   "name": "螺丝1",
+   "params": {
+    "sketch": "f1",
+    "size": "M3",
+    "head": "button",
+    "length": 25.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false,
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "auto": false,
+    "kind": null,
+    "why": "M3x25盘头内六角，螺纹仅包络；供应商报价待定。手动指定",
+    "alternatives": [],
+    "standard": true,
+    "spec": "M3x25盘头内六角，螺纹仅包络；供应商报价待定"
+   }
+  }
+ ]
+}

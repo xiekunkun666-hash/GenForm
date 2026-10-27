@@ -36,7 +36,9 @@ def describe(session, brief=False, focus=(), only=None):
         raise DocumentError(f'没有特征 {only}')
     material = document.props.get('material')
     result = {'features': features, 'rollback': document.upto, 'has_body': bool(model.get('has_body')),
-              'path': document.path, 'unsaved_changes': document.dirty, 'material': material}
+              'path': document.path, 'unsaved_changes': document.dirty, 'material': material,
+              'busy': session.busy, 'model_stale': session.model_revision != document.revision,
+              'progress': session.progress, 'query_progress': session.query_progress}
     if not brief:
         result['materials'] = materials.NAMES
         if document.props.get('feature_colors'):

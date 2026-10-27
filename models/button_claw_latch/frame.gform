@@ -1,0 +1,611 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 22,
+ "upto": null,
+ "props": {
+  "color": "#748495"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "demo_base",
+   "params": {
+    "plane": "XY",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": -2,
+      "cy": 7,
+      "w": 148,
+      "h": 62
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "frame_plate",
+   "params": {
+    "sketch": "f1",
+    "distance": 4.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "auto": false,
+    "kind": null,
+    "why": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图"
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "cover_posts",
+   "params": {
+    "plane": "XY",
+    "offset": 3.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -56,
+      "cy": -16,
+      "r": 4
+     },
+     {
+      "type": "circle",
+      "cx": -56,
+      "cy": 30,
+      "r": 4
+     },
+     {
+      "type": "circle",
+      "cx": 8,
+      "cy": -16,
+      "r": 4
+     },
+     {
+      "type": "circle",
+      "cx": 8,
+      "cy": 30,
+      "r": 4
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "four_cover_spacers",
+   "params": {
+    "sketch": "f3",
+    "distance": 14.5,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "auto": false,
+    "kind": null,
+    "why": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图"
+   }
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "pivot_boss",
+   "params": {
+    "plane": "XY",
+    "offset": 3.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 6
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "rotary_claw_support",
+   "params": {
+    "sketch": "f5",
+    "distance": 4.5,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "auto": false,
+    "kind": null,
+    "why": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图"
+   }
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "pivot_seat",
+   "params": {
+    "plane": "XY",
+    "offset": 3.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 2.2
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "blind_dowel_seat",
+   "params": {
+    "sketch": "f7",
+    "distance": 6.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "auto": false,
+    "kind": null,
+    "why": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图"
+   }
+  },
+  {
+   "id": "f9",
+   "type": "sketch",
+   "name": "guide_60",
+   "params": {
+    "plane": "YZ",
+    "offset": -60.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 10,
+      "cy": 10.75,
+      "w": 18,
+      "h": 14.5
+     },
+     {
+      "type": "rect",
+      "cx": 10,
+      "cy": 10,
+      "w": 6.4,
+      "h": 4.4
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f10",
+   "type": "extrude",
+   "name": "guide_60_block",
+   "params": {
+    "sketch": "f9",
+    "distance": 4.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "auto": false,
+    "kind": null,
+    "why": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图"
+   }
+  },
+  {
+   "id": "f11",
+   "type": "sketch",
+   "name": "guide_32",
+   "params": {
+    "plane": "YZ",
+    "offset": -35.5,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 10,
+      "cy": 10.75,
+      "w": 18,
+      "h": 14.5
+     },
+     {
+      "type": "rect",
+      "cx": 10,
+      "cy": 10,
+      "w": 6.4,
+      "h": 4.4
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f12",
+   "type": "extrude",
+   "name": "guide_32_block",
+   "params": {
+    "sketch": "f11",
+    "distance": 2,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "auto": false,
+    "kind": null,
+    "why": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图"
+   }
+  },
+  {
+   "id": "f13",
+   "type": "sketch",
+   "name": "through_bolt_clearances",
+   "params": {
+    "plane": "XY",
+    "offset": -1.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -56,
+      "cy": -16,
+      "r": 1.7
+     },
+     {
+      "type": "circle",
+      "cx": -56,
+      "cy": 30,
+      "r": 1.7
+     },
+     {
+      "type": "circle",
+      "cx": 8,
+      "cy": -16,
+      "r": 1.7
+     },
+     {
+      "type": "circle",
+      "cx": 8,
+      "cy": 30,
+      "r": 1.7
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f14",
+   "type": "extrude",
+   "name": "M3_clearance_not_tap_drills",
+   "params": {
+    "sketch": "f13",
+    "distance": 20.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "auto": false,
+    "kind": null,
+    "why": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图"
+   }
+  },
+  {
+   "id": "f15",
+   "type": "sketch",
+   "name": "fixture_mounting",
+   "params": {
+    "plane": "XY",
+    "offset": -1.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -70,
+      "cy": -18,
+      "r": 2.7
+     },
+     {
+      "type": "circle",
+      "cx": -70,
+      "cy": 32,
+      "r": 2.7
+     },
+     {
+      "type": "circle",
+      "cx": 66,
+      "cy": -18,
+      "r": 2.7
+     },
+     {
+      "type": "circle",
+      "cx": 66,
+      "cy": 32,
+      "r": 2.7
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f16",
+   "type": "extrude",
+   "name": "base_mount_holes",
+   "params": {
+    "sketch": "f15",
+    "distance": 6.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "auto": false,
+    "kind": null,
+    "why": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图"
+   }
+  },
+  {
+   "id": "f17",
+   "type": "sketch",
+   "name": "collar_open_stop",
+   "params": {
+    "plane": "YZ",
+    "offset": -53.314,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 10,
+      "cy": 10.75,
+      "w": 18,
+      "h": 14.5
+     },
+     {
+      "type": "rect",
+      "cx": 10,
+      "cy": 10,
+      "w": 6.4,
+      "h": 4.4
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f18",
+   "type": "extrude",
+   "name": "open_stroke_stop",
+   "params": {
+    "sketch": "f17",
+    "distance": 2.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "auto": false,
+    "kind": null,
+    "why": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图"
+   }
+  },
+  {
+   "id": "f19",
+   "type": "sketch",
+   "name": "link_sweep_relief",
+   "params": {
+    "plane": "XY",
+    "offset": 11.3,
+    "shapes": [
+     {
+      "type": "slot",
+      "x1": -34.5,
+      "y1": 5.5,
+      "x2": -34.5,
+      "y2": 14.5,
+      "w": 3
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f20",
+   "type": "extrude",
+   "name": "guide_top_open_for_link",
+   "params": {
+    "sketch": "f19",
+    "distance": 8.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "auto": false,
+    "kind": null,
+    "why": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图"
+   }
+  },
+  {
+   "id": "f21",
+   "type": "sketch",
+   "name": "rivet_head_relief",
+   "params": {
+    "plane": "XY",
+    "offset": 6.5,
+    "shapes": [
+     {
+      "type": "slot",
+      "x1": -33.5,
+      "y1": 7,
+      "x2": -33.5,
+      "y2": 13,
+      "w": 2
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f22",
+   "type": "extrude",
+   "name": "guide_front_clearance",
+   "params": {
+    "sketch": "f21",
+    "distance": 11.6,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "cnc3",
+    "name": "三轴 CNC 铣",
+    "short": "三轴",
+    "color": "#4C94FF",
+    "auto": false,
+    "kind": null,
+    "why": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "概念样机：底板、导向块和支柱的等效整体件；需拆件后出加工图"
+   }
+  }
+ ]
+}

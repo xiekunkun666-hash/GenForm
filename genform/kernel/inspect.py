@@ -170,11 +170,21 @@ def pairs(ctx, rules):
     pieces = _pieces(ctx)
     candidates = []
     for i, (fa, na, sa, ba) in enumerate(pieces):
-        for fb, nb, sb, bb in pieces[i + 1:]:
+        for second, (fb, nb, sb, bb) in enumerate(pieces[i + 1:], i + 1):
             if fa != fb and _near(ba, bb, gap_limit):
-                candidates.append(((fa, na, sa, ba), (fb, nb, sb, bb)))
+                candidates.append((i, second))
+    parents = list(range(len(pieces)))
+
+    def root(index):
+        while parents[index] != index:
+            parents[index] = parents[parents[index]]
+            index = parents[index]
+        return index
+
     found, worst = [], {}
-    for (fa, na, sa, ba), (fb, nb, sb, bb) in candidates[:limit]:
+    for first, second in candidates[:limit]:
+        fa, na, sa, ba = pieces[first]
+        fb, nb, sb, bb = pieces[second]
         try:
             distance = BRepExtrema_DistShapeShape(sa, sb)
             if not distance.IsDone():
@@ -196,12 +206,18 @@ def pairs(ctx, rules):
                     low, high = _box(shape)
                     depth = min(h - l for l, h in zip(low, high))
                     if depth >= depth_limit:
+                        parents[root(first)] = root(second)
                         continue
                     item = {'kind': 'shallow', 'value': depth, 'point': [(l + h) / 2 for l, h in zip(low, high)]}
         except Exception:
             continue
         key = tuple(sorted((fa, fb)))
         item.update(a=key[0], b=key[1])
+        found.append((first, second, item))
+    for first, second, item in found:
+        if item['kind'] == 'gap' and root(first) == root(second):
+            continue
+        key = item['a'], item['b']
         if key not in worst or item['value'] < worst[key]['value']:       # 同一对特征 (阵列的几份) 只报最差的一处
             worst[key] = item
     found = sorted(worst.values(), key=lambda item: item['value'])

@@ -1,0 +1,153 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 6,
+ "upto": null,
+ "props": {
+  "color": "#D5A13B"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "door_sample",
+   "params": {
+    "plane": "XY",
+    "offset": 4.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 36,
+      "cy": 0,
+      "w": 28,
+      "h": 36
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "sliding_door_coupon",
+   "params": {
+    "sketch": "f1",
+    "distance": 2.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "millturn",
+    "name": "车铣复合",
+    "short": "车铣",
+    "color": "#6FA8DC",
+    "auto": false,
+    "kind": null,
+    "why": "演示门板与扣销等效件；实际需独立扣销安装图。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "演示门板与扣销等效件；实际需独立扣销安装图"
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "striker_pin",
+   "params": {
+    "plane": "XY",
+    "offset": 5.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 26,
+      "cy": 0,
+      "r": 3
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "six_mm_striker",
+   "params": {
+    "sketch": "f3",
+    "distance": 10.5,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "millturn",
+    "name": "车铣复合",
+    "short": "车铣",
+    "color": "#6FA8DC",
+    "auto": false,
+    "kind": null,
+    "why": "演示门板与扣销等效件；实际需独立扣销安装图。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "演示门板与扣销等效件；实际需独立扣销安装图"
+   }
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "striker_head",
+   "params": {
+    "plane": "XY",
+    "offset": 15.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 26,
+      "cy": 0,
+      "r": 4.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "striker_retention_head",
+   "params": {
+    "sketch": "f5",
+    "distance": 2,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "millturn",
+    "name": "车铣复合",
+    "short": "车铣",
+    "color": "#6FA8DC",
+    "auto": false,
+    "kind": null,
+    "why": "演示门板与扣销等效件；实际需独立扣销安装图。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "演示门板与扣销等效件；实际需独立扣销安装图"
+   }
+  }
+ ]
+}

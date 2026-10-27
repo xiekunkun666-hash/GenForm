@@ -194,6 +194,10 @@ class Document:
                            'name': str(feature.get('name') or feature['id']),
                            'params': copy.deepcopy(feature['params']),
                            'suppressed': bool(feature.get('suppressed'))})
+            if isinstance(feature.get('process'), dict):
+                loaded[-1]['process'] = copy.deepcopy(feature['process'])
+            if feature.get('folder'):
+                loaded[-1]['folder'] = str(feature['folder'])
         self.features = loaded
         self.upto = data.get('upto')
         self.props = {str(key): value for key, value in (data.get('props') or {}).items()} if isinstance(data.get('props'), dict) else {}

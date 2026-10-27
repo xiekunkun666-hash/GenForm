@@ -9,6 +9,7 @@ import copy
 
 from . import commands
 from .document import Document, DocumentError
+from .operations import CURRENT_OPERATION
 
 
 BUSY_AFTER = 150                # 重算超过这么多毫秒还没完, 才让界面显示 "正在重算"
@@ -61,6 +62,7 @@ class Session:
         self.on_progress = None         # 进度变了叫一声 (不走 notify: 一秒二十次, 不该让整个界面跟着刷新)
         self.later = None               # 界面接上后: later(毫秒, 函数) 过一会儿再调 — "开始忙了" 晚一点再通知 (见 rebuild)
         self._listeners = []
+        self._builds = set()
         if hasattr(self.builder, 'on_progress'):
             self.builder.on_progress = self._on_progress
         if hasattr(self.builder, 'on_query_progress'):
@@ -130,6 +132,9 @@ class Session:
 
     def rebuild(self, done=None):
         revision = self.document.revision
+        owner = CURRENT_OPERATION.get()
+        ticket = object()
+        self._builds.add(ticket)
         self.busy = True
         if self.later is None:
             self.notify()
@@ -137,14 +142,16 @@ class Session:
             self.later(BUSY_AFTER, lambda: self.notify() if self.busy else None)
 
         def built(model, error):
+            self._builds.discard(ticket)
             # 期间文档又变了: 这份结果已经过期, 等更新的那次重算回来 (它会带上最新的回调)
-            if revision == self.document.revision or self.model_revision < revision:
+            if not (owner is not None and owner.cancelled.is_set()) and (
+                    revision == self.document.revision or self.model_revision < revision):
                 if model is None:
                     status = {f['id']: f'error: {error}' for f in self.document.features}
                     model = {'status': status, 'sketches': {}, 'has_body': False}
                 self.model, self.model_revision = model, revision
                 self._prune_selection()
-            self.busy = revision != self.document.revision
+            self.busy = bool(self._builds)
             if not self.busy:
                 self.progress = None
                 if self.on_progress is not None:

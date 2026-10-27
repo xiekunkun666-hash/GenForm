@@ -1,0 +1,129 @@
+{
+  "ok": true,
+  "counts": {
+    "error": 5,
+    "warning": 2,
+    "info": 1
+  },
+  "issues": [
+    {
+      "level": "error",
+      "code": "touch",
+      "title": "只贴着没压进去：frame_plate ↔ four_cover_spacers",
+      "detail": "两个件的面正好贴在一起：按公差 ±0.1 mm 做出来可能有缝、连不上；压进去 ≥ 0.3 mm",
+      "features": [
+        "f2",
+        "f4"
+      ],
+      "point": [
+        -52.0,
+        -16.0,
+        4.0
+      ]
+    },
+    {
+      "level": "error",
+      "code": "touch",
+      "title": "只贴着没压进去：frame_plate ↔ rotary_claw_support",
+      "detail": "两个件的面正好贴在一起：按公差 ±0.1 mm 做出来可能有缝、连不上；压进去 ≥ 0.3 mm",
+      "features": [
+        "f2",
+        "f6"
+      ],
+      "point": [
+        6.0,
+        0.0,
+        4.0
+      ]
+    },
+    {
+      "level": "error",
+      "code": "touch",
+      "title": "只贴着没压进去：guide_60_block ↔ frame_plate",
+      "detail": "两个件的面正好贴在一起：按公差 ±0.1 mm 做出来可能有缝、连不上；压进去 ≥ 0.3 mm",
+      "features": [
+        "f10",
+        "f2"
+      ],
+      "point": [
+        -60.0,
+        1.0,
+        4.0
+      ]
+    },
+    {
+      "level": "error",
+      "code": "touch",
+      "title": "只贴着没压进去：guide_32_block ↔ frame_plate",
+      "detail": "两个件的面正好贴在一起：按公差 ±0.1 mm 做出来可能有缝、连不上；压进去 ≥ 0.3 mm",
+      "features": [
+        "f12",
+        "f2"
+      ],
+      "point": [
+        -35.5,
+        1.0,
+        4.0
+      ]
+    },
+    {
+      "level": "error",
+      "code": "touch",
+      "title": "只贴着没压进去：open_stroke_stop ↔ frame_plate",
+      "detail": "两个件的面正好贴在一起：按公差 ±0.1 mm 做出来可能有缝、连不上；压进去 ≥ 0.3 mm",
+      "features": [
+        "f18",
+        "f2"
+      ],
+      "point": [
+        -53.314,
+        1.0,
+        4.0
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "no_material",
+      "title": "没有指定材质",
+      "detail": "重量算不出来，工艺按普通碳钢估价：在设计树的 “材质” 上右键指定",
+      "features": [],
+      "point": null
+    },
+    {
+      "level": "warning",
+      "code": "no_process",
+      "title": "11 个特征还没绑加工工艺",
+      "detail": "评估 → 绑定工艺：按性价比自动给每个特征挑工艺",
+      "features": [
+        "f2",
+        "f4",
+        "f6",
+        "f8",
+        "f10",
+        "f12",
+        "f14",
+        "f16",
+        "f18",
+        "f20",
+        "f22"
+      ],
+      "point": null
+    },
+    {
+      "level": "info",
+      "code": "pairs",
+      "title": "比较了 8 对离得近的件",
+      "detail": "",
+      "features": [],
+      "point": null
+    }
+  ],
+  "red": [
+    "f2",
+    "f4",
+    "f6",
+    "f10",
+    "f12",
+    "f18"
+  ]
+}

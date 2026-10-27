@@ -1,0 +1,58 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "color": "#444F5E"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "dowel",
+   "params": {
+    "plane": "XY",
+    "offset": 3.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 2
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "captured_pivot_dowel",
+   "params": {
+    "sketch": "f1",
+    "distance": 15.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "turning",
+    "name": "数控车削",
+    "short": "车削",
+    "color": "#35A7A0",
+    "auto": false,
+    "kind": null,
+    "why": "直径4 长15 主转轴，按模型配合确认。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "直径4 长15 主转轴，按模型配合确认"
+   }
+  }
+ ]
+}

@@ -89,8 +89,8 @@ ApplicationWindow {
                     id: dropHint
                     anchors.centerIn: parent
                     horizontalAlignment: Text.AlignHCenter
-                    text: root.kind === "assembly" ? qsTr("松开：零件 (.gform / .step) 插入为零部件，.gasm / .gdrw 直接打开")
-                                                   : qsTr("松开：打开 (.gform / .gasm / .gdrw)")
+                    text: root.kind === "assembly" ? qsTr("松开：批量插入 STEP / STL / 零件，保留原始坐标")
+                                                   : qsTr("松开：打开文件；多个 STEP / STL / 零件自动组成装配体")
                     color: "#FFFFFF"; font.family: Theme.font; font.pixelSize: Theme.textSize + 1
                 }
             }
@@ -101,9 +101,10 @@ ApplicationWindow {
     readonly property string kind: app.docKind
     FileDialog {
         id: openDialog
-        title: qsTr("打开")
-        nameFilters: [qsTr("GenForm 文件和 STEP (*.gform *.gasm *.gdrw *.step *.stp)"), qsTr("GenForm 零件 (*.gform)"), qsTr("GenForm 装配体 (*.gasm)"), qsTr("GenForm 工程图 (*.gdrw)"), qsTr("STEP 文件，导入成新零件 (*.step *.stp)")]
-        onAccepted: app.openDocument(selectedFile)
+        title: qsTr("打开文件（可多选，多个零件组成装配体）")
+        fileMode: FileDialog.OpenFiles
+        nameFilters: [qsTr("GenForm / STEP / STL (*.gform *.gasm *.gdrw *.step *.stp *.stl)"), qsTr("零件 / STEP / STL (*.gform *.step *.stp *.stl)"), qsTr("GenForm 装配体 (*.gasm)"), qsTr("GenForm 工程图 (*.gdrw)"), qsTr("STEP 文件 (*.step *.stp)"), qsTr("STL 网格 (*.stl)")]
+        onAccepted: app.openFiles(selectedFiles)
     }
     FileDialog {
         id: saveDialog
@@ -135,8 +136,9 @@ ApplicationWindow {
     FileDialog {                            // 装配体里插入零件 / 工程图选要画的零件
         id: partDialog
         title: root.kind === "drawing" ? qsTr("选择零件") : qsTr("插入零件")
-        nameFilters: [qsTr("零件 (*.gform *.step *.stp)")]
-        onAccepted: root.kind === "drawing" ? drawing.setPart(selectedFile) : sim.addPart(selectedFile)
+        fileMode: root.kind === "drawing" ? FileDialog.OpenFile : FileDialog.OpenFiles
+        nameFilters: root.kind === "drawing" ? [qsTr("零件 (*.gform *.step *.stp)")] : [qsTr("零件 / STEP / STL (*.gform *.step *.stp *.stl)")]
+        onAccepted: root.kind === "drawing" ? drawing.setPart(selectedFile) : sim.addParts(selectedFiles)
     }
 
     component SectionTitle: Text {
@@ -193,7 +195,7 @@ ApplicationWindow {
                 x: 12; y: 6; height: 54
                 visible: app.tab === "assembly"
                 spacing: 1
-                RibbonBtn { icon: "plus"; text: qsTr("插入零件"); tip: qsTr("插入零件：选一个 .gform 或 .step 文件，排在装配顺序的最后"); onClicked: partDialog.open() }
+                RibbonBtn { icon: "plus"; text: qsTr("插入零件"); tip: qsTr("多选 .gform / STEP / STL 文件，批量添加到装配体，也可直接拖入窗口"); onClicked: partDialog.open() }
                 RibbonBtn {
                     icon: "screw"; text: qsTr("标准件")
                     tip: qsTr("插入标准件：深沟球轴承、HK 滚针、圆柱销、内六角螺丝、螺母、垫圈、六角铜柱、挡圈、钢球 — 选规格就按国标尺寸生成零件（绑好“标准件”工艺），文件放在装配体旁边的 standard/ 文件夹")
@@ -221,7 +223,6 @@ ApplicationWindow {
                 RibbonBtn { icon: "dimension"; text: qsTr("尺寸链"); tip: qsTr("尺寸链 / 高度分配：沿一根轴把装配体切成一段段，列出每一段多高、里面是哪几个零件 — 看高度都花在哪了"); onClicked: sim.runStack("Z") }
                 RibbonSeparator {}
                 RibbonBtn { icon: "drc"; text: app.checkBusy ? qsTr("检查中…") : qsTr("设计检查"); tip: qsTr("装配体的设计检查：零件之间有没有压进去（干涉）、间隙是不是太小、有没有悬空没装在任何东西上的零件、零件绑没绑工艺，再按标准件 / 外购件 / 非标件汇总物料清单和成本；有问题的零件标红，结果在底部的日志窗口"); active: app.checkOpen; enabled: !app.checkBusy; onClicked: app.runCheck() }
-                RibbonBtn { icon: "check"; text: qsTr("实时检查"); tip: qsTr("实时检查（像画 PCB 的在线 DRC）：插入、挪动、转、镜像一个零件以后马上在后台查件与件——压进去了就在视图里画一个红叉，设计树上也打红叉；算过的、没变的几对不重算。再点一下关掉"); active: sim.live.on; onClicked: sim.toggleLive() }
                 RibbonSeparator {}
                 RibbonBtn { icon: "props"; text: qsTr("物料清单"); tip: qsTr("物料清单（BOM）：每种零件几件、标准件还是非标件、规格、工艺、材质、估算单价，存成 CSV（Excel 能直接打开）"); onClicked: bomDialog.open() }
                 RibbonBtn { icon: "rules"; text: qsTr("设计规则"); tip: qsTr("设计规则：公差、件与件最小间隙…（在设置里）；实时检查和设计检查都按它查"); onClicked: settingsDialog.openPage("rules") }
@@ -422,7 +423,7 @@ ApplicationWindow {
                 // 孤立中: 工具条下面一条提示, 点 "退出孤立" 回到原来的样子
                 Rectangle {
                     objectName: "isolateBar"
-                    visible: app.isolatedName !== ""
+                    visible: root.kind === "assembly" ? sim.isolatedName !== "" : app.isolatedName !== ""
                     anchors.top: viewBar.bottom; anchors.topMargin: 8
                     anchors.horizontalCenter: parent.horizontalCenter
                     width: isolateRow.implicitWidth + 20; height: 34
@@ -436,7 +437,7 @@ ApplicationWindow {
                         Icon { anchors.verticalCenter: parent.verticalCenter; name: "isolate"; size: 17; color: Theme.cAccent }
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
-                            text: qsTr("孤立：") + app.isolatedName
+                            text: qsTr("孤立：") + (root.kind === "assembly" ? sim.isolatedName : app.isolatedName)
                             color: Theme.cText
                             font.family: Theme.font; font.pixelSize: Theme.smallSize
                         }
@@ -456,7 +457,7 @@ ApplicationWindow {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: app.toggleShow("isolate_exit")
+                                onClicked: root.kind === "assembly" ? sim.exitIsolation() : app.toggleShow("isolate_exit")
                             }
                         }
                     }

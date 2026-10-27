@@ -112,11 +112,14 @@ class Live(unittest.TestCase):
     def test_moving_a_part_into_another_shows_a_clash(self):
         self.sim.addPart(self.files.block('底板', bind=True))
         self.sim.addPart(self.files.block('块', z=10, w=10, h=10, bind=True))
-        self.assertTrue(self.sim.live['running'])                       # 排上了
+        self.assertFalse(self.sim.live['running'])
+        self.assertFalse(self.sim._live_timer.isActive())
         self.settle()
         self.assertEqual((self.sim.live['running'], self.sim.live['clashes']), (False, 0))
         self.sim.placePart(1, 'move', 2, '-4')                          # 压进去 4 mm
         self.settle()
+        self.assertEqual(self.sim.live['clashes'], 0)
+        self.controller.runCheck()
         self.assertEqual(self.sim.live['clashes'], 1)
         self.assertEqual(self.sim.components[1]['clash'], ['底板'])
         labels = self.sim._live_labels()
@@ -131,7 +134,6 @@ class Live(unittest.TestCase):
     def test_turning_live_off_clears_and_check_still_works(self):
         self.sim.addPart(self.files.block('底板', bind=True))
         self.sim.addPart(self.files.block('块', z=6, w=10, h=10, bind=True))
-        self.sim.toggleLive()
         self.assertFalse(self.sim.live['on'])
         self.assertFalse(self.sim._live_timer.isActive())
         self.controller.runCheck()                                      # 关着也能手动查: 现算一趟
@@ -140,7 +142,7 @@ class Live(unittest.TestCase):
     def test_check_reuses_the_live_result(self):
         self.sim.addPart(self.files.block('底板', bind=True))
         self.sim.addPart(self.files.block('块', z=10, w=10, h=10, bind=True))
-        self.settle()
+        self.controller.runCheck()
         asked = []
         real = self.controller.session.query
 
@@ -149,8 +151,35 @@ class Live(unittest.TestCase):
             return real(mode, data, done)
         with patch.object(self.controller.session, 'query', counted):
             self.controller.runCheck()
-        self.assertNotIn('contacts', asked)                            # 刚查过: 直接用
+        self.assertIn('contacts', asked)
         self.assertTrue(self.controller.checkOpen)
+
+    def test_clear_removes_assembly_crosses_and_tree_flags(self):
+        self.sim.addPart(self.files.block('底板', bind=True))
+        self.sim.addPart(self.files.block('块', z=6, w=10, h=10, bind=True))
+        self.controller.runCheck()
+        self.assertTrue(self.sim._live_labels())
+        self.assertTrue(any(part['clash'] for part in self.sim.components))
+        self.controller.clearCheck()
+        self.assertFalse(self.sim._live_labels())
+        self.assertFalse(any(part['clash'] or part['bad'] for part in self.sim.components))
+        self.sim.placePart(1, 'move', 0, '1')
+        self.settle()
+        self.assertFalse(self.sim.live['running'])
+        self.assertFalse(self.sim._live_labels())
+        self.assertEqual(self.controller.checkIssues, [])
+        self.controller.runCheck()
+        self.assertTrue(self.sim._live_labels())
+
+    def test_assembly_isolation_can_exit_without_changing_hidden_parts(self):
+        self.sim.addPart(self.files.block('底板', bind=True))
+        self.sim.addPart(self.files.block('块', z=10, bind=True))
+        self.sim._hidden_parts = {0}
+        self.sim.partAction(1, 'isolate')
+        self.assertEqual(self.sim.isolatedName, '块')
+        self.sim.exitIsolation()
+        self.assertEqual(self.sim.isolatedName, '')
+        self.assertEqual(self.sim._hidden_parts, {0})
 
 
 if __name__ == '__main__':

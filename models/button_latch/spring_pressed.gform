@@ -1,0 +1,99 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 5,
+ "upto": null,
+ "props": {
+  "color": "#BCBFC4"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "spring_mean_coil",
+   "params": {
+    "plane": "YZ",
+    "offset": -9.4,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 10,
+      "r": 4.1
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "curve_helix",
+   "name": "螺旋线1",
+   "params": {
+    "sketch": "f1",
+    "kind": "helix",
+    "pitch": 3.3111111111111113,
+    "turns": 9.0,
+    "taper": 0.0,
+    "start": 0.0,
+    "clockwise": false
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "plane",
+   "name": "基准面1",
+   "params": {
+    "base": "XY",
+    "offset": 0.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      -9.4,
+      4.1,
+      10.0
+     ]
+    ],
+    "normal": [
+     [
+      0.5269797004598313,
+      0.0,
+      4.1
+     ]
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "sketch",
+   "name": "wire_section",
+   "params": {
+    "plane": "f3",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 0.6
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sweep",
+   "name": "扫描1",
+   "params": {
+    "sketch": "f4",
+    "path": "f2",
+    "op": "add"
+   },
+   "suppressed": false
+  }
+ ]
+}

@@ -1,0 +1,59 @@
+{
+  "ok": true,
+  "counts": {
+    "error": 1,
+    "warning": 2,
+    "info": 1
+  },
+  "issues": [
+    {
+      "level": "error",
+      "code": "touch",
+      "title": "只贴着没压进去：rectangular_pushrod ↔ push_button",
+      "detail": "两个件的面正好贴在一起：按公差 ±0.1 mm 做出来可能有缝、连不上；压进去 ≥ 0.3 mm",
+      "features": [
+        "f2",
+        "f8"
+      ],
+      "point": [
+        -60.0,
+        7.0,
+        8.0
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "no_material",
+      "title": "没有指定材质",
+      "detail": "重量算不出来，工艺按普通碳钢估价：在设计树的 “材质” 上右键指定",
+      "features": [],
+      "point": null
+    },
+    {
+      "level": "warning",
+      "code": "no_process",
+      "title": "5 个特征还没绑加工工艺",
+      "detail": "评估 → 绑定工艺：按性价比自动给每个特征挑工艺",
+      "features": [
+        "f2",
+        "f4",
+        "f6",
+        "f8",
+        "f10"
+      ],
+      "point": null
+    },
+    {
+      "level": "info",
+      "code": "pairs",
+      "title": "比较了 3 对离得近的件",
+      "detail": "",
+      "features": [],
+      "point": null
+    }
+  ],
+  "red": [
+    "f2",
+    "f8"
+  ]
+}

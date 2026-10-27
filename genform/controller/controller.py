@@ -107,6 +107,7 @@ class AppController(ViewBarMixin, StateMixin, ShortcutMixin, SolidMixin, Context
         viewport.set_model(self.session.model)
 
     def _on_session(self):
+        self._check_model_changed()
         if self.viewport is not None and self._shown_revision != (self.session.model_revision, id(self.session.model)):
             self._shown_revision = (self.session.model_revision, id(self.session.model))
             self.viewport.set_hidden(self._hidden_features(), rebuild=False)
@@ -118,7 +119,6 @@ class AppController(ViewBarMixin, StateMixin, ShortcutMixin, SolidMixin, Context
                 self._measure.update(items=[], result=None, error='')
                 self._show_measure()
             self.sim.model_changed()
-            self._check_model_changed()
             if self._form is not None and self._sketch is None:
                 self._preview()             # 面板还开着 (编辑特征时点了确定): 预览跟着新的模型重算
                 self._show_handle()

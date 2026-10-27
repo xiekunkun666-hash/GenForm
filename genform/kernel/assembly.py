@@ -3,7 +3,7 @@
 查件与件是贴着装上的还是悬空的 (装配体的设计检查)。
 
 零件的写法 (data['parts'] 里的每一项, 顺序就是装配顺序):
-    {'name': 名称, 'path': .gform / .step / .stp 文件; 没有 path = 现在打开的这个零件,
+    {'name': 名称, 'path': .gform / .step / .stp / .stl 文件; STL 仅网格, 没有 path = 现在打开的这个零件,
      'move': [x, y, z] 平移 (mm), 'turn': [rx, ry, rz] 绕 X、Y、Z 依次转的角度 (度),
      'mirror': True = 先对零件自己的 XZ 面镜像 (y → -y): 左右对称的一对件 (左边的车灯 → 右边的), 再转、再挪,
      'swing': 运动副让它动了多少 (摆好以后再动): {'origin': 轴上一点, 'axis': 轴的方向, 'angle': 绕轴转的度数 (右手定则)
@@ -45,6 +45,7 @@ _PLACED = {}                    # 零件的钥匙 (文件版本 + 摆放) → {'
 _PAIRS = {}                     # 一对零件的钥匙 → 这一对的检查结果 (None = 离得远, 不用管); 也存在磁盘上 (_PAIRS_FILE)
 _PAIRS_FILE = []                # [磁盘上那份的路径] (读过一次以后); 关了缓存是 [None]
 KEEP_PAIRS = 20000              # 磁盘上最多记这么多对 (最近算的)
+GAP_SLACK = 1e-3                # 间隙和最小间隙差不到 0.001 mm: 浮点误差, 算够
 
 
 def _alone(features, upto):
@@ -81,9 +82,18 @@ def _part_file(path):
     elif lower.endswith(('.step', '.stp')):
         shape = _step_shape(full, stamp)
         record = {'shape': shape, 'owners': None, 'origins': None, 'props': {}, 'box': _step_box(full, stamp, shape)}
+    elif lower.endswith('.stl'):
+        from .stl import read_stl
+        mesh = read_stl(full)
+        mesh.update(geometry='mesh', tints=np.tile(np.asarray(PLAIN, dtype=np.float32), (len(mesh['verts']), 1)), alpha=1.0,
+                    segments=np.zeros((0, 2, 3), dtype=np.float32), segment_edge=np.zeros(0, dtype=np.uint32),
+                    edge_kind=np.zeros(0, dtype=np.int8), edge_length=np.zeros(0, dtype=np.float32),
+                    edge_radius=np.zeros(0, dtype=np.float32))
+        record = {'shape': None, 'owners': None, 'origins': None, 'props': {}, 'geometry': 'mesh', 'mesh': mesh,
+                  'box': (mesh['verts'].min(axis=0), mesh['verts'].max(axis=0))}
     else:
-        raise build.FeatureError('零件文件只认 .gform / .step / .stp')
-    record['mesh'] = None
+        raise build.FeatureError('零件文件只认 .gform / .step / .stp / .stl')
+    record.setdefault('mesh', None)
     _FILES[key] = (stamp, record)
     return record
 
@@ -141,8 +151,10 @@ def _step_box(full, stamp, shape):
 
 
 def _step_mesh(part):
-    """STEP 零部件的显示网格: 磁盘上有就直接读 (连实体都不用读), 没有返回 (None, 存的位置)。"""
-    path = part.get('path') or ''
+    """外部零部件的显示网格: STL 直接读网格; STEP 磁盘缓存没有则返回 (None, 存的位置)。"""
+    path = str(part.get('path') or '')
+    if path.lower().endswith('.stl'):
+        return _mesh(_part_file(path)), None
     if not path.lower().endswith(('.step', '.stp')):
         return None, None
     full = os.path.abspath(str(path))
@@ -173,13 +185,19 @@ def _record(part, features, upto):
         shape, ctx, _ = build._rebuild(features, upto)
         record = {'shape': shape, 'owners': dict(ctx.owners), 'origins': dict(ctx.origins), 'props': part.get('props') or {},
                   'mesh': None}
-    if record['shape'] is None or build._is_empty(record['shape']):
+    if record.get('geometry') != 'mesh' and (record['shape'] is None or build._is_empty(record['shape'])):
         raise build.FeatureError(f'“{part.get("name", path or "当前零件")}”里没有实体')
     return record
 
 
 def _load(part, features, upto):
-    return _record(part, features, upto)['shape']
+    return _solid_shape(_record(part, features, upto))
+
+
+def _solid_shape(record):
+    if record.get('geometry') == 'mesh':
+        raise build.FeatureError('STL 组件仅含三角网格，不是精确实体；不支持实体几何查询、干涉/接触检查、质量计算或 STEP 导出')
+    return record['shape']
 
 
 def _transform(move=(0, 0, 0), turn=(0, 0, 0), mirror=False, swing=None):
@@ -323,7 +341,7 @@ def _parts(features, upto, data, least=2):
     if len(parts) < least:
         raise build.FeatureError('装配体里至少要有两个零件')
     records = [_record(part, features, upto) for part in parts]
-    shapes = [_placed(record['shape'], *_where(part)) for record, part in zip(records, parts)]
+    shapes = [_placed(_solid_shape(record), *_where(part)) for record, part in zip(records, parts)]
     names = [part.get('name') or f'零件{number + 1}' for number, part in enumerate(parts)]
     boxes = [_placed_box(record, part) for record, part in zip(records, parts)]
     return shapes, names, boxes
@@ -456,6 +474,11 @@ def meshes(features, upto, data):
                         os.replace(cache + '.tmp', cache)
                     except OSError:
                         pass
+        except Exception as error:
+            if not data.get('allow_partial'):
+                raise
+            result.append({'name': name, 'error': f'{name}：{error}'})
+            continue
         finally:
             steps.on_step = outer
         rotation, offset = _matrix(*_where(part))
@@ -467,6 +490,7 @@ def meshes(features, upto, data):
         segments = (np.asarray(mesh['segments'], dtype=np.float64).reshape(-1, 3) @ rotation.T + offset).astype(np.float32).reshape(-1, 2, 3)
         result.append({'name': part.get('name') or f'零件{number + 1}', 'verts': verts, 'normals': normals, 'tris': tris,
                        'tints': mesh['tints'], 'alpha': mesh['alpha'], 'low': low, 'high': high, 'segments': segments,
+                       'geometry': mesh.get('geometry', 'brep'),
                        **{key: mesh[key] for key in EDGE_KEYS[1:]}})
     return result
 
@@ -533,7 +557,7 @@ def _placed_part(part, key, features, upto):
     item = _PLACED.get(key) if key is not None else None
     if item is None:
         record = _record(part, features, upto)
-        shape = _placed(record['shape'], *_where(part))
+        shape = _placed(_solid_shape(record), *_where(part))
         item = {'shape': shape, 'box': _placed_box(record, part), 'meshed': False, 'faces': None}
         if key is not None:
             _PLACED[key] = item
@@ -599,7 +623,7 @@ def _pair_result(first, second, filters, tolerance, clearance):
             return None
         shapes = near
     distance, point = _distance(shapes[0], shapes[1], clearance + 1.0)
-    if distance is None or distance > clearance:
+    if distance is None or distance >= clearance - GAP_SLACK:     # 正好隔 0.5 (算出来 0.4999999) 不算太近
         return None
     if distance <= tolerance:
         volume, centre, depth = _overlap(first['shape'], second['shape'], depth=True)

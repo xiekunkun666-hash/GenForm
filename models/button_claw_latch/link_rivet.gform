@@ -1,0 +1,152 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 6,
+ "upto": null,
+ "props": {
+  "color": "#46505C"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "rivet_shank",
+   "params": {
+    "plane": "XY",
+    "offset": 7.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 1.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "three_mm_joint_pin",
+   "params": {
+    "sketch": "f1",
+    "distance": 8,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "turning",
+    "name": "数控车削",
+    "short": "车削",
+    "color": "#35A7A0",
+    "auto": false,
+    "kind": null,
+    "why": "直径3阶梯铆钉，两端铆成头；装配工序未仿真。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "直径3阶梯铆钉，两端铆成头；装配工序未仿真"
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "upper_head",
+   "params": {
+    "plane": "XY",
+    "offset": 15.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 2.7
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "formed_upper_head",
+   "params": {
+    "sketch": "f3",
+    "distance": 1.2,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "turning",
+    "name": "数控车削",
+    "short": "车削",
+    "color": "#35A7A0",
+    "auto": false,
+    "kind": null,
+    "why": "直径3阶梯铆钉，两端铆成头；装配工序未仿真。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "直径3阶梯铆钉，两端铆成头；装配工序未仿真"
+   }
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "lower_head",
+   "params": {
+    "plane": "XY",
+    "offset": 7.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 2.7
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "peened_lower_head",
+   "params": {
+    "sketch": "f5",
+    "distance": 1.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "turning",
+    "name": "数控车削",
+    "short": "车削",
+    "color": "#35A7A0",
+    "auto": false,
+    "kind": null,
+    "why": "直径3阶梯铆钉，两端铆成头；装配工序未仿真。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "直径3阶梯铆钉，两端铆成头；装配工序未仿真"
+   }
+  }
+ ]
+}

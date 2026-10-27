@@ -1,0 +1,43 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "color": "#434B56"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "screw_position",
+   "params": {
+    "plane": "XY",
+    "offset": 19.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 0,
+      "y": 0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "screw",
+   "name": "螺丝1",
+   "params": {
+    "sketch": "f1",
+    "size": "M3",
+    "head": "button",
+    "length": 6.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  }
+ ]
+}

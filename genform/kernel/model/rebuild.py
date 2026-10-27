@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import time
 from OCP.BRepMesh import BRepMesh_IncrementalMesh
 from OCP.BRepTools import BRepTools
@@ -54,9 +55,18 @@ def _step_keys(features):
     (它的 id 出现在那个特征的参数里), 从提到它的那个特征起也算进钥匙里。"""
     from .. import features as more
     # 名字、文件夹、加工工艺不算: 改名、归类、绑工艺不改几何, 不该引起重算
-    texts = [json.dumps({key: value for key, value in feature.items() if key not in ('name', 'folder', 'process')}, sort_keys=True,
-                        ensure_ascii=False, default=str)
-             for feature in features]
+    texts = []
+    for feature in features:
+        data = {key: value for key, value in feature.items() if key not in ('name', 'folder', 'process')}
+        if feature.get('type') == 'import_step':
+            path = str((feature.get('params') or {}).get('path') or '').strip().strip('"')
+            full = os.path.normcase(os.path.abspath(path))
+            try:
+                stamp = os.stat(full)
+                data['source_file'] = [full, stamp.st_mtime_ns, stamp.st_size]
+            except OSError:
+                data['source_file'] = [full, None, None]
+        texts.append(json.dumps(data, sort_keys=True, ensure_ascii=False, default=str))
     borrowed = [[] for _ in features]           # 第 i 个特征起, 要多算进哪些排在后面的参考几何体
     for position, feature in enumerate(features):
         if feature.get('type') in more.REFERENCES:

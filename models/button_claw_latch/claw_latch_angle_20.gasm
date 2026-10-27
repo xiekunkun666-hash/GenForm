@@ -1,0 +1,286 @@
+{
+  "format": "genform-assembly",
+  "version": 1,
+  "parts": [
+    {
+      "name": "固定框架与导向座",
+      "file": "frame.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "橙色旋转锁爪",
+      "file": "rotary_claw.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        20
+      ]
+    },
+    {
+      "name": "蓝色按钮推杆",
+      "file": "pushrod.gform",
+      "move": [
+        -3.412623195163775,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "绿色传动连杆",
+      "file": "connecting_link.gform",
+      "move": [
+        -3.671482179982067,
+        -0.5999161929355346,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        -1.4398841817881425
+      ]
+    },
+    {
+      "name": "门板试片与扣销",
+      "file": "door_striker.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "主转轴",
+      "file": "pivot_dowel.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "锁爪连杆铆钉",
+      "file": "link_rivet.gform",
+      "move": [
+        -3.420201433256687,
+        9.396926207859085,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "按钮连杆铆钉",
+      "file": "link_rivet.gform",
+      "move": [
+        -27.412623195163775,
+        10,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "压簧",
+      "file": "spring_20.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "检修上盖",
+      "file": "cover.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "移动弹簧支承垫圈",
+      "file": "spring_seat.gform",
+      "move": [
+        -45.412623195163775,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "固定弹簧支承垫圈",
+      "file": "spring_seat.gform",
+      "move": [
+        -36,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "上盖穿透螺栓 M3x25",
+      "file": "cover_bolt.gform",
+      "move": [
+        -56,
+        -16,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "上盖配套六角螺母 M3",
+      "file": "cover_nut.gform",
+      "move": [
+        -56,
+        -16,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "上盖穿透螺栓 M3x25",
+      "file": "cover_bolt.gform",
+      "move": [
+        -56,
+        30,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "上盖配套六角螺母 M3",
+      "file": "cover_nut.gform",
+      "move": [
+        -56,
+        30,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "上盖穿透螺栓 M3x25",
+      "file": "cover_bolt.gform",
+      "move": [
+        8,
+        -16,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "上盖配套六角螺母 M3",
+      "file": "cover_nut.gform",
+      "move": [
+        8,
+        -16,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "上盖穿透螺栓 M3x25",
+      "file": "cover_bolt.gform",
+      "move": [
+        8,
+        30,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "上盖配套六角螺母 M3",
+      "file": "cover_nut.gform",
+      "move": [
+        8,
+        30,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

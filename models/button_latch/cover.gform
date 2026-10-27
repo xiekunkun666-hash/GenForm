@@ -1,0 +1,153 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 6,
+ "upto": null,
+ "props": {
+  "color": "#B5DDE8"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "lid_outline",
+   "params": {
+    "plane": "XY",
+    "offset": 17.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 0,
+      "w": 56,
+      "h": 32
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "clear_inspection_cover",
+   "params": {
+    "sketch": "f1",
+    "distance": 2.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "cover_holes",
+   "params": {
+    "plane": "XY",
+    "offset": 16.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -16,
+      "cy": -13,
+      "r": 1.7
+     },
+     {
+      "type": "circle",
+      "cx": -16,
+      "cy": 13,
+      "r": 1.7
+     },
+     {
+      "type": "circle",
+      "cx": 16,
+      "cy": -13,
+      "r": 1.7
+     },
+     {
+      "type": "circle",
+      "cx": 16,
+      "cy": 13,
+      "r": 1.7
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "cover_clearance_holes",
+   "params": {
+    "sketch": "f3",
+    "distance": 4.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "mounting_access",
+   "params": {
+    "plane": "XY",
+    "offset": 16.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -24,
+      "cy": -13,
+      "r": 3.4
+     },
+     {
+      "type": "circle",
+      "cx": -24,
+      "cy": 13,
+      "r": 3.4
+     },
+     {
+      "type": "circle",
+      "cx": 24,
+      "cy": -13,
+      "r": 3.4
+     },
+     {
+      "type": "circle",
+      "cx": 24,
+      "cy": 13,
+      "r": 3.4
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "mounting_screw_access",
+   "params": {
+    "sketch": "f5",
+    "distance": 4.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  }
+ ]
+}

@@ -1,0 +1,116 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 6,
+ "upto": null,
+ "props": {
+  "color": "#2778CE"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "bolt_shaft",
+   "params": {
+    "plane": "YZ",
+    "offset": -36,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 10,
+      "r": 2.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "five_mm_sliding_bolt",
+   "params": {
+    "sketch": "f1",
+    "distance": 62,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "return_stop",
+   "params": {
+    "plane": "YZ",
+    "offset": -21.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 10,
+      "r": 4.8
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "spring_reaction_collar",
+   "params": {
+    "sketch": "f3",
+    "distance": 3.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "button_pad",
+   "params": {
+    "plane": "YZ",
+    "offset": -40,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 10,
+      "r": 6.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "push_button",
+   "params": {
+    "sketch": "f5",
+    "distance": 4.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  }
+ ]
+}

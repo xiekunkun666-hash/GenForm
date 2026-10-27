@@ -1,6 +1,7 @@
 """装配体设计检查里 "件与件之间" 以外的几条规则 (纯函数, 输入是检查的结果和零件的资料, 输出是日志条目):
 - 电化学腐蚀: 两种金属贴着, 电位差 (阳极指数) 超过 GALVANIC_LIMIT — 铝和不锈钢 / 铜、钢和铜;
 - 紧固件没起作用: 标准件 (螺栓、螺丝) 只贴着一个件 — 没把两个件连起来;
+- 孤立的标准件: 螺丝、销、堵头大半截埋在别的件的实料里 — 它原来装的孔被删了 / 挪了, 件还留在原处;
 - 重复摆放: 同一个零件在同一个位置摆了两次 (复制多了);
 - 外购件没报价、标准件没写规格: 物料清单算不准 / 采购不知道买什么;
 - 重量和重心: 整套多重、重心在哪, 左右偏得多了提醒;
@@ -55,6 +56,32 @@ def fasteners(pairs, kinds, names):
     return [checks._issue('warning', 'fastener', f'{len(lonely)} 个紧固件没起作用',
                           f'{shown}：只贴着一个件（或一个都没贴着），没把两个件连在一起——长度不够、孔没对上，或者放错了地方',
                           [f'part:{index}' for index in lonely])]
+
+
+ORPHAN_SHARE = 0.25             # 标准件有这么多体积埋在别的件的实料里: 不是配合紧, 是孔没了
+
+
+def orphans(pairs, kinds, names, props):
+    """标准件 (螺丝、销、堵头) 和别的件干涉, 压进去的体积占了它自己的一大块 → 报错: 它装的那个孔已经不在了
+    (删了走线孔, 堵孔的钢珠还留着), 单看 "干涉" 两个字想不到是这个原因。props = mass_props 的结果 (每件的体积)。"""
+    buried = {}
+    for pair in pairs:
+        if pair['kind'] != 'clash':
+            continue
+        for mine, other in ((pair['a'], pair['b']), (pair['b'], pair['a'])):
+            if mine < len(kinds) and kinds[mine] == 'standard':
+                buried.setdefault(mine, []).append((other, pair['volume'], pair.get('point')))
+    issues = []
+    for index, rows in sorted(buried.items()):
+        own = props[index]['volume'] if index < len(props) and props[index].get('volume') else 0.0
+        volume = sum(row[1] for row in rows)
+        if own <= 0 or volume < own * ORPHAN_SHARE:
+            continue
+        hosts = '、'.join(names[row[0]] for row in rows)
+        issues.append(checks._issue('error', 'orphan', f'孤立的标准件：{names[index]}',
+                                    f'{volume / own:.0%} 的体积埋在 {hosts} 的实料里：它装的孔多半被删了或挪了，件还留在原处——'
+                                    f'删掉这个件，或把孔补回来', [f'part:{index}'] + [f'part:{row[0]}' for row in rows], rows[0][2]))
+    return issues
 
 
 def duplicates(parts):

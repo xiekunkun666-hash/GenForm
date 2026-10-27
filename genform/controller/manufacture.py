@@ -9,6 +9,7 @@ from __future__ import annotations
 from PySide6.QtCore import Property, Signal, Slot
 
 from .. import checks, rules as design_rules
+from ..operations import Operation, operation_scope
 
 RED = (1.0, 0.18, 0.16)
 
@@ -21,6 +22,9 @@ class ManufactureMixin:
         self._check = {'open': False, 'busy': False, 'issues': [], 'counts': {}, 'highlight': True, 'binding': False, 'stale': False}
         self._check_red = []
         self.session.design_rules = self.settings.rules      # 命令 (AI 接口) 和界面用同一份
+        self._check_ticket = 0
+        self._check_operation = None
+        self._check['completed'] = False
         self.session.save_rules = self.settings.save
 
     # ---- 绑定工艺 ----
@@ -78,31 +82,69 @@ class ManufactureMixin:
     def checkHighlight(self):
         return self._check['highlight']
 
+    @Property(bool, notify=checkChanged)
+    def checkCompleted(self):
+        return self._check['completed']
+
     @Slot()
     def runCheck(self):
         """设计检查: 全部查一遍, 结果在底部的日志窗口里, 有报错的件标红。"""
         if self._check['busy']:
             return
-        self._check.update(busy=True, open=True)
+        self._check_ticket += 1
+        ticket = self._check_ticket
+        revision = self.session.document.revision
+        self._checked_revision = revision
+        operation = self._check_operation = Operation()
+        self._check.update(busy=True, open=True, stale=False, completed=False)
         self.checkChanged.emit()
 
         def done(reply):
+            if ticket != self._check_ticket:
+                return
             self._check['busy'] = False
+            self._check_operation = None
             if not reply.get('ok'):
                 self._check.update(issues=[checks._issue('error', 'check_failed', '检查没做完', reply.get('error') or '')],
                                    counts={'error': 1, 'warning': 0, 'info': 0})
             else:
-                self._check.update(issues=reply['issues'], counts=reply['counts'], stale=False)
-            self._check_red = checks.red_features(self._check['issues']) if self._check['highlight'] else []
-            self._checked_revision = self.session.document.revision
+                self._check.update(issues=reply['issues'], counts=reply['counts'])
+            self._check['completed'] = True
+            self._check['stale'] = self._check['stale'] or revision != self.session.document.revision
+            self._check_red = checks.red_features(self._check['issues']) if self._check['highlight'] and self._check['open'] and not self._check['stale'] else []
+            self._checked_revision = revision
             self._mark_parts()
             self._push_appearance()
             self.checkChanged.emit()
             self.changed.emit()
-        if self._kind == 'assembly':
-            self.sim.check(lambda issues: done({'ok': True, 'issues': issues, 'counts': checks.summary(issues)}))
-        else:
-            self.session.execute('check_design', {}, done)
+        with operation_scope(operation):
+            if self._kind == 'assembly':
+                self.sim._live_clear()
+                self.sim.check(lambda issues: done({'ok': True, 'issues': issues, 'counts': checks.summary(issues)}))
+            else:
+                self.session.execute('check_design', {}, done)
+
+    @Slot()
+    def clearCheck(self):
+        had_colors = bool(self._check_red)
+        self._check_ticket += 1
+        operation, self._check_operation = self._check_operation, None
+        if operation is not None:
+            operation.cancel('设计检查日志已清除')
+            cancel = getattr(self.session.builder, 'cancel', None)
+            if cancel is not None:
+                cancel(operation, operation.reason)
+        self._check.update(busy=False, issues=[], counts={}, stale=False, completed=False)
+        self._checked_revision = None
+        self._check_red = []
+        self.sim._live_clear()
+        self.sim._assembly.update(clashes=None, steps=None, fasteners=None, error='')
+        self.sim.mark([])
+        self.sim._paint()
+        if had_colors:
+            self._push_appearance()
+        self.checkChanged.emit()
+        self.changed.emit()
 
     @Slot()
     def closeCheck(self):
@@ -119,11 +161,8 @@ class ManufactureMixin:
         if self._check['open']:
             self.closeCheck()
             return
-        if not self._check['issues'] and not self._check['busy']:
-            self.runCheck()
-            return
         self._check['open'] = True
-        self._check_red = checks.red_features(self._check['issues']) if self._check['highlight'] else []
+        self._check_red = checks.red_features(self._check['issues']) if self._check['highlight'] and not self._check['stale'] else []
         self._mark_parts()
         self._push_appearance()
         self.checkChanged.emit()
@@ -132,7 +171,7 @@ class ManufactureMixin:
     @Slot()
     def toggleCheckHighlight(self):
         self._check['highlight'] = not self._check['highlight']
-        self._check_red = checks.red_features(self._check['issues']) if self._check['highlight'] and self._check['open'] else []
+        self._check_red = checks.red_features(self._check['issues']) if self._check['highlight'] and self._check['open'] and not self._check['stale'] else []
         self._mark_parts()
         self._push_appearance()
         self.checkChanged.emit()
@@ -157,10 +196,14 @@ class ManufactureMixin:
         """装配体: 检查报错的零件在视图里整个标红 (sim.mark); 关掉日志 / 不标红时恢复。"""
         if self._kind == 'assembly':
             self.sim.mark([int(identifier[5:]) for identifier in self._check_red if str(identifier).startswith('part:')])
+            self.sim._paint()
 
-    def _check_model_changed(self):
-        if self._check['open'] and getattr(self, '_checked_revision', None) != self.session.document.revision and not self._check['stale']:
+    def _check_model_changed(self, assembly=False):
+        if (self._check['completed'] or self._check['busy']) and (assembly or getattr(self, '_checked_revision', None) != self.session.document.revision) and not self._check['stale']:
             self._check['stale'] = True
+            self._check_red = []
+            self._mark_parts()
+            self._push_appearance()
             self.checkChanged.emit()
 
     # ---- 设计规则 (设置 → 设计规则) ----

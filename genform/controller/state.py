@@ -188,8 +188,7 @@ class StateMixin:
         if getattr(self, '_check', {}).get('open'):        # 换了文档种类: 上一份检查结果说的不是现在这个了
             self.closeCheck()
         if hasattr(self, '_check'):
-            self._check.update(issues=[], counts={}, stale=False)
-            self.checkChanged.emit()
+            self.clearCheck()
         self._kind = kind
         self._tab = {'part': 'feature', 'assembly': 'assembly', 'drawing': 'drawing'}[kind]
         self._drop_context()

@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "counts": {
+    "error": 0,
+    "warning": 1,
+    "info": 1
+  },
+  "issues": [
+    {
+      "level": "warning",
+      "code": "no_material",
+      "title": "没有指定材质",
+      "detail": "重量算不出来，工艺按普通碳钢估价：在设计树的 “材质” 上右键指定",
+      "features": [],
+      "point": null
+    },
+    {
+      "level": "info",
+      "code": "pairs",
+      "title": "比较了 0 对离得近的件",
+      "detail": "",
+      "features": [],
+      "point": null
+    }
+  ],
+  "red": []
+}

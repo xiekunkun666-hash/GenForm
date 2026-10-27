@@ -14,6 +14,10 @@ import json
 import os
 import socket
 import sys
+import threading
+import time
+
+from ..operations import CURRENT_OPERATION
 
 PROTOCOL = '2024-11-05'
 INSTRUCTIONS = (
@@ -39,43 +43,108 @@ class WindowBackend:
 
     def __init__(self, port):
         self._port = port
-        self._link = self._stream = None
+        self._link = None
+        self._buffer = b''
+        self._owner = None
+        self._state_lock = threading.Lock()
 
     def _drop(self):
-        for item in (self._stream, self._link):
+        with self._state_lock:
+            link, self._link = self._link, None
+            self._buffer = b''
+        if link is not None:
             try:
-                if item is not None:
-                    item.close()
+                link.shutdown(socket.SHUT_RDWR)
             except OSError:
                 pass
-        self._link = self._stream = None
+        if link is not None:
+            link.close()
 
     def _send(self, payload):
-        if self._stream is None:
-            self._link = socket.create_connection(('127.0.0.1', self._port), timeout=5)
-            self._link.settimeout(320)
-            self._stream = self._link.makefile('rwb')
-        self._stream.write(payload)
-        self._stream.flush()
-        line = self._stream.readline()
-        if not line.endswith(b'\n'):
-            raise ConnectionError('GenForm 断开了连接')
+        if self._link is None:
+            link = socket.create_connection(('127.0.0.1', self._port), timeout=3)
+            with self._state_lock:
+                if self._owner is not None and self._owner.cancelled.is_set():
+                    link.close()
+                    raise ConnectionAbortedError('请求已取消')
+                self._link = link
+        link = self._link
+        if link is None:
+            raise ConnectionAbortedError('请求已取消')
+        link.settimeout(3)
+        link.sendall(payload)
+        link.settimeout(0.1)
+        deadline = time.monotonic() + 295
+        while b'\n' not in self._buffer:
+            owner = CURRENT_OPERATION.get()
+            if owner is not None and owner.cancelled.is_set():
+                raise ConnectionAbortedError('请求已取消')
+            if time.monotonic() >= deadline:
+                raise TimeoutError('等待 GenForm 结果超时')
+            try:
+                chunk = link.recv(65536)
+            except socket.timeout:
+                continue
+            if not chunk:
+                raise ConnectionError('GenForm 断开了连接')
+            self._buffer += chunk
+        line, self._buffer = self._buffer.split(b'\n', 1)
         return json.loads(line.decode('utf-8'))
 
     def _ask(self, request):
+        owner = CURRENT_OPERATION.get()
+        with self._state_lock:
+            self._owner = owner
+        if owner is not None:
+            if owner.cancelled.is_set():
+                return owner.failure()
+            request = dict(request, request_id=owner.transport_id, timeout_s=285)
+        try:
+            return self._exchange(request)
+        finally:
+            with self._state_lock:
+                if self._owner is owner:
+                    self._owner = None
+
+    def _exchange(self, request):
         payload = (json.dumps(request, ensure_ascii=False) + '\n').encode('utf-8')
-        reused = self._stream is not None
+        reused = self._link is not None
         try:
             return self._send(payload)
-        except OSError:
+        except TimeoutError:
             self._drop()
-        if reused:                          # 用的是上次留下的连接 (GenForm 可能重开过): 新建一条再试一次
+            return {'ok': False, 'code': 'timeout',
+                    'error': '等待 GenForm 结果超时，连接已关闭并请求取消；请检查模型，不要直接重发。'}
+        except (OSError, ValueError):
+            self._drop()
+        owner = CURRENT_OPERATION.get()
+        if owner is not None and owner.cancelled.is_set():
+            return owner.failure()
+        if reused and request.get('cmd') in {'tools', 'ping', 'get_model', 'get_selection',
+                                             'get_design_rules', 'list_edges', 'list_faces', 'list_processes'}:
             try:
                 return self._send(payload)
-            except OSError:
+            except (OSError, ValueError):
                 self._drop()
-        return {'ok': False, 'error': f'连不上 GenForm（端口 {self._port}）。请先启动 GenForm，'
-                                      '或者用 --headless 参数以无界面方式运行本服务。'}
+        return {'ok': False, 'error': f'连不上 GenForm（端口 {self._port}）或等待结果时连接中断。'
+                                      '命令可能已经执行；请先检查模型，不要直接重发修改命令。'}
+
+    def cancel(self, operation):
+        with self._state_lock:
+            if self._owner is not operation:
+                return
+            link = self._link
+            if link is not None:
+                try:
+                    link.shutdown(socket.SHUT_RDWR)
+                except OSError:
+                    pass
+        try:
+            with socket.create_connection(('127.0.0.1', self._port), timeout=1) as control:
+                request = {'cmd': 'cancel_request', 'request_id': operation.transport_id}
+                control.sendall((json.dumps(request) + '\n').encode('utf-8'))
+        except OSError:
+            pass
 
     def tools(self):
         answer = self._ask({'cmd': 'tools'})
@@ -101,6 +170,9 @@ class HeadlessBackend:
         return commands.catalog()
 
     def call(self, name, args):
+        owner = CURRENT_OPERATION.get()
+        if owner is not None and owner.cancelled.is_set():
+            return owner.failure()
         box = []
         self._session.execute(name, args, box.append)
         return box[0] if box else {'ok': False, 'error': '命令没有返回结果'}
@@ -152,18 +224,22 @@ def main(argv=None):
         protocol_out = os.fdopen(os.dup(1), 'w', encoding='utf-8', newline='\n')
         from .wire import DEFAULT_PORT
         backend = WindowBackend(int(os.environ.get('GENFORM_PORT', DEFAULT_PORT)))
-    for line in sys.stdin.buffer:
-        line = line.strip()
-        if not line:
-            continue
-        try:
-            message = json.loads(line.decode('utf-8'))
-        except ValueError:
-            continue
-        answer = respond(backend, message)
-        if answer is not None:
-            protocol_out.write(json.dumps(answer, ensure_ascii=False) + '\n')
-            protocol_out.flush()
+    from .mcp_runtime import StdioRuntime
+
+    def output(answer):
+        protocol_out.write(json.dumps(answer, ensure_ascii=False) + '\n')
+        protocol_out.flush()
+
+    runtime = StdioRuntime(backend, respond, output)
+    try:
+        for line in sys.stdin.buffer:
+            try:
+                message = json.loads(line.decode('utf-8'))
+            except ValueError:
+                continue
+            runtime.submit(message)
+    finally:
+        runtime.close()
 
 
 if __name__ == '__main__':

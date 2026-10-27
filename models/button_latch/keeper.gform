@@ -1,0 +1,159 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 8,
+ "upto": null,
+ "props": {
+  "color": "#D3A64A"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "keeper_foot",
+   "params": {
+    "plane": "XY",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 35,
+      "cy": 0,
+      "w": 10,
+      "h": 32
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "keeper_mount",
+   "params": {
+    "sketch": "f1",
+    "distance": 3.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "keeper_lug",
+   "params": {
+    "plane": "XY",
+    "offset": 3.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 33,
+      "cy": 0,
+      "w": 6,
+      "h": 18
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "keeper_body",
+   "params": {
+    "sketch": "f3",
+    "distance": 14.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "receiver",
+   "params": {
+    "plane": "YZ",
+    "offset": 29.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 10,
+      "r": 2.9
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "receiving_bore",
+   "params": {
+    "sketch": "f5",
+    "distance": 8.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "keeper_mount_holes",
+   "params": {
+    "plane": "XY",
+    "offset": -1.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 35,
+      "cy": -13,
+      "r": 1.7
+     },
+     {
+      "type": "circle",
+      "cx": 35,
+      "cy": 13,
+      "r": 1.7
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "two_keeper_mounting_holes",
+   "params": {
+    "sketch": "f7",
+    "distance": 5.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  }
+ ]
+}

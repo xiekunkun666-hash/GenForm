@@ -88,7 +88,7 @@ Rectangle {
             Tip { shown: logArea.containsMouse
                   text: app.checkOpen ? qsTr("收起设计检查的日志") : (logButton.errors + logButton.warnings > 0 || (logButton.counts.info || 0) > 0)
                         ? qsTr("拉出设计检查的日志：%1 条报错、%2 条警告").arg(logButton.errors).arg(logButton.warnings)
-                        : qsTr("设计检查的日志：还没查过，点一下查一遍") }
+                        : qsTr("打开检查日志；需要检查时点击设计检查") }
         }
         Rectangle { width: 1; height: 14; color: Theme.cDivider; visible: logButton.visible }
         Rectangle { width: 6; height: 6; radius: 3; color: Theme.cAccent }

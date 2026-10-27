@@ -19,7 +19,7 @@ class SelectionMixin:
             pass                                # 点中了布局草图的线: 和零件里一样选中这个草图
         elif self._kind == 'assembly' and self._sketch is None and not self._picking_plane:
             # 装配体: 点的是零部件 (视图里画的别的零件), 点空白处 = 不选
-            self.sim.selectPart(identifier if kind == 'component' else -1)
+            self.sim.selectPart(identifier if kind == 'component' else -1, additive)
             if kind == 'component':             # 旁边弹出它的小工具条 (和零件里点一个面一样)
                 self._context = {'kind': 'component', 'id': identifier, 'feature': f'part:{identifier}', 'faces': []}
                 self.changed.emit()
@@ -140,6 +140,13 @@ class SelectionMixin:
         if self._sketch is not None or self._picking_plane or self._measure is not None:
             return
         self._drop_context()
+        if self._kind == 'assembly':
+            components = list(found.get('components', []))
+            if found.get('body'):
+                components += [index for index, part in enumerate(self.sim._parts) if not part['path']]
+            self.sim.selectParts(components, additive)
+            if components or not found.get('sketches'):
+                return
         selection = self.session.selection
         pick = self._form.get('pick') if self._form else None
         key = 'faces' if pick and pick['kind'] == 'face' else 'edges'

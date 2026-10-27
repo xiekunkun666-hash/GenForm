@@ -471,8 +471,7 @@ class Scene:
                 strokes(self._edges, tint, 'edge_hover', 'edge_chosen', 1.4, 0.0 if style == 'shaded' else 0.90)
                 glDisable(GL_CLIP_DISTANCE0)
                 glUniform4f(self._line.loc('clip'), 0.0, 0.0, 0.0, 1.0)
-            if self._extra_edges and style != 'shaded' and not (options.get('moving') and style == 'shaded_edges'):
-                # 转视角、缩放的时候 (moving) 带边线上色先不画零件边线, 停下来再补; 消除隐藏线 / 隐藏线可见 / 线架图靠线看形状, 照画
+            if self._extra_edges and style != 'shaded':
                 # 装配体里零件的边线: 和实体的边一样按显示样式 (上色 = 不画)
                 tint = 'edge' if style == 'shaded_edges' else 'edge_wire'
                 for buffer, model in self._extra_edges:

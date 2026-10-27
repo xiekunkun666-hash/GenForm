@@ -1,0 +1,73 @@
+{
+  "ok": true,
+  "counts": {
+    "error": 2,
+    "warning": 2,
+    "info": 1
+  },
+  "issues": [
+    {
+      "level": "error",
+      "code": "touch",
+      "title": "只贴着没压进去：sliding_door_coupon ↔ six_mm_striker",
+      "detail": "两个件的面正好贴在一起：按公差 ±0.1 mm 做出来可能有缝、连不上；压进去 ≥ 0.3 mm",
+      "features": [
+        "f2",
+        "f4"
+      ],
+      "point": [
+        29.0,
+        0.0,
+        6.0
+      ]
+    },
+    {
+      "level": "error",
+      "code": "touch",
+      "title": "只贴着没压进去：six_mm_striker ↔ striker_retention_head",
+      "detail": "两个件的面正好贴在一起：按公差 ±0.1 mm 做出来可能有缝、连不上；压进去 ≥ 0.3 mm",
+      "features": [
+        "f4",
+        "f6"
+      ],
+      "point": [
+        29.0,
+        0.0,
+        16.0
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "no_material",
+      "title": "没有指定材质",
+      "detail": "重量算不出来，工艺按普通碳钢估价：在设计树的 “材质” 上右键指定",
+      "features": [],
+      "point": null
+    },
+    {
+      "level": "warning",
+      "code": "no_process",
+      "title": "3 个特征还没绑加工工艺",
+      "detail": "评估 → 绑定工艺：按性价比自动给每个特征挑工艺",
+      "features": [
+        "f2",
+        "f4",
+        "f6"
+      ],
+      "point": null
+    },
+    {
+      "level": "info",
+      "code": "pairs",
+      "title": "比较了 2 对离得近的件",
+      "detail": "",
+      "features": [],
+      "point": null
+    }
+  ],
+  "red": [
+    "f2",
+    "f4",
+    "f6"
+  ]
+}

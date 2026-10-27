@@ -1,0 +1,113 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 4,
+ "upto": null,
+ "props": {
+  "color": "#56AA92"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "link_profile",
+   "params": {
+    "plane": "XY",
+    "offset": 12.0,
+    "shapes": [
+     {
+      "type": "slot",
+      "x1": -24,
+      "y1": 10,
+      "x2": 0,
+      "y2": 10,
+      "w": 6
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "rigid_24mm_link",
+   "params": {
+    "sketch": "f1",
+    "distance": 3.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "auto": false,
+    "kind": null,
+    "why": "3 mm传动连杆，中心距24 mm。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "3 mm传动连杆，中心距24 mm"
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "link_eyes",
+   "params": {
+    "plane": "XY",
+    "offset": 11.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -24,
+      "cy": 10,
+      "r": 1.7
+     },
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 10,
+      "r": 1.7
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "two_link_bores",
+   "params": {
+    "sketch": "f3",
+    "distance": 5.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "auto": false,
+    "kind": null,
+    "why": "3 mm传动连杆，中心距24 mm。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "3 mm传动连杆，中心距24 mm"
+   }
+  }
+ ]
+}

@@ -1,7 +1,4 @@
-"""装配体的实时检查 (和画 PCB 的在线 DRC 一样): 插入、挪、转、镜像、删一个零件以后, 后台把件与件重新查一遍。
-算过的、两个零件都没变的那几对内核记着 (kernel/assembly.contacts 按零件的文件版本 + 摆放缓存), 只算变了的几对;
-一段最多算 LIVE_BUDGET 秒就回来, 没算完接着问 — 中间别的活 (重算、视图里的网格) 能插进来, 内核的看门狗也不会当它卡死。
-压进去了 (干涉) 的两个件: 视图里在重叠的地方画一个红叉, 设计树上这两行也打红叉。工具栏 "设计检查" 用同一份结果。"""
+"""装配体的手动接触检查：用户请求时分段计算，模型变化只使旧结果失效。"""
 from __future__ import annotations
 
 from PySide6.QtCore import Property, QTimer, Slot
@@ -14,10 +11,10 @@ LIVE_BUDGET = 1.5               # 秒: 一段最多算这么久
 
 
 class LiveCheckMixin:
-    """实时检查 (仿真页的一部分; 只在开着的文档是装配体时跑)。"""
+    """保留原有接口名称，检查由工具栏显式请求。"""
 
     def _live_init(self):
-        self._live = {'on': True, 'running': False, 'done': 0, 'total': 0, 'clashes': [], 'gaps': [], 'error': '', 'result': None}
+        self._live = {'on': False, 'running': False, 'done': 0, 'total': 0, 'clashes': [], 'gaps': [], 'error': '', 'result': None}
         self._live_ticket = 0
         self._live_waiters = []         # 等这一份结果的 (工具栏 "设计检查")
         self._live_timer = QTimer(self)
@@ -26,15 +23,16 @@ class LiveCheckMixin:
         self._live_timer.timeout.connect(self._live_start)
 
     def _live_schedule(self):
-        """零件变了: 上一份结果作废, 过一会儿重新查。"""
+        """零件变了使旧结果作废，不启动新的检查。"""
         self._live_ticket += 1
         self._live.update(result=None, clashes=[], gaps=[], error='', done=0, total=0)
-        if self.pinned and self._live['on'] and len(self._parts) >= 2 or self._live_waiters:
-            self._live['running'] = True
-            self._live_timer.start()
-        else:
-            self._live['running'] = False
-            self._live_timer.stop()
+        self._live['running'] = False
+        self._live_timer.stop()
+        waiters, self._live_waiters = self._live_waiters, []
+        for waiter in waiters:
+            waiter(None, '模型已修改，请完成建模后重新点击设计检查')
+        if hasattr(self.app, '_check_model_changed'):
+            self.app._check_model_changed(assembly=True)
 
     def _live_clear(self):
         self._live_ticket += 1
@@ -45,6 +43,8 @@ class LiveCheckMixin:
             waiter(None, '装配体关掉了')
 
     def _live_start(self):
+        if not self._live_waiters:
+            return
         ticket = self._live_ticket
         if len(self._parts) < 1:
             self._live_done(ticket, {'pairs': [], 'floating': [], 'checked': 0}, '')
@@ -83,20 +83,21 @@ class LiveCheckMixin:
             waiter(None if error else result, error or '')
 
     def _live_need(self, callback):
-        """要一份最新的检查结果 (工具栏 "设计检查"): 有现成的直接给; 正在算就等它; 实时检查关着就现算一趟。"""
+        """显式请求检查结果；进行中的同次请求共用结果。"""
         if self._live['result'] is not None and not self._live['running']:
             callback(self._live['result'], '')
             return
         self._live_waiters.append(callback)
         if not self._live['running']:
-            self._live_schedule()
-        if self._live_timer.isActive():         # 不用再等 "连着挪几下": 马上开始
             self._live_timer.stop()
             self._live_start()
         self.app.progressChanged.emit()
 
     def _live_clash_parts(self):
         found = {}
+        check = getattr(self.app, '_check', {})
+        if not check.get('open') or not check.get('highlight') or check.get('stale'):
+            return found
         for pair in self._live['clashes']:
             found.setdefault(pair['a'], []).append(pair['b'])
             found.setdefault(pair['b'], []).append(pair['a'])
@@ -104,7 +105,8 @@ class LiveCheckMixin:
 
     def _live_labels(self):
         """视图里的红叉: [(文字, 重叠的地方, 'clash')...]。"""
-        if not self.pinned:
+        check = getattr(self.app, '_check', {})
+        if not self.pinned or not check.get('open') or not check.get('highlight') or check.get('stale'):
             return []
         rows = []
         for pair in self._live['clashes']:
@@ -122,11 +124,4 @@ class LiveCheckMixin:
 
     @Slot()
     def toggleLive(self):
-        self._live['on'] = not self._live['on']
-        if self._live['on']:
-            self._live_schedule()
-        else:
-            self._live_clear()
-            self._push_parts()
-            self._paint()
-        self.changed.emit()
+        self.app.runCheck()

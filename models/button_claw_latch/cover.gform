@@ -1,0 +1,124 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 4,
+ "upto": null,
+ "props": {
+  "color": "#B5DDE8"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "cover_outline",
+   "params": {
+    "plane": "XY",
+    "offset": 18.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": -24,
+      "cy": 7,
+      "w": 80,
+      "h": 54
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "removable_cover",
+   "params": {
+    "sketch": "f1",
+    "distance": 2.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "auto": false,
+    "kind": null,
+    "why": "2 mm检修上盖，孔位按模型。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "2 mm检修上盖，孔位按模型"
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "lid_clearances",
+   "params": {
+    "plane": "XY",
+    "offset": 17.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -56,
+      "cy": -16,
+      "r": 1.7
+     },
+     {
+      "type": "circle",
+      "cx": -56,
+      "cy": 30,
+      "r": 1.7
+     },
+     {
+      "type": "circle",
+      "cx": 8,
+      "cy": -16,
+      "r": 1.7
+     },
+     {
+      "type": "circle",
+      "cx": 8,
+      "cy": 30,
+      "r": 1.7
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "four_through_holes",
+   "params": {
+    "sketch": "f3",
+    "distance": 4.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "auto": false,
+    "kind": null,
+    "why": "2 mm检修上盖，孔位按模型。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "2 mm检修上盖，孔位按模型"
+   }
+  }
+ ]
+}

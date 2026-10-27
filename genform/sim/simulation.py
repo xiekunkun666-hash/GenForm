@@ -9,11 +9,12 @@ from .assembly import AssemblyMixin
 from .livecheck import LiveCheckMixin
 from .motion import MotionMixin
 from .params import ParamsMixin
+from .part_selection import PartSelectionMixin
 from .common import MODES, number, ramp
 from .signals import changed, Signals
 
 
-class Simulation(AnalysisMixin, AssemblyMixin, LiveCheckMixin, MotionMixin, ParamsMixin, Signals, QObject):
+class Simulation(AnalysisMixin, PartSelectionMixin, AssemblyMixin, LiveCheckMixin, MotionMixin, ParamsMixin, Signals, QObject):
 
     def __init__(self, app):
         super().__init__(app)
@@ -53,6 +54,18 @@ class Simulation(AnalysisMixin, AssemblyMixin, LiveCheckMixin, MotionMixin, Para
     @Property(str, notify=changed)
     def running(self):
         return self._running
+
+    @Property(str, notify=changed)
+    def isolatedName(self):
+        index = self._alone_part
+        return self._parts[index]['name'] if index is not None and 0 <= index < len(self._parts) else ''
+
+    @Slot()
+    def exitIsolation(self):
+        if self._alone_part is not None:
+            self._alone_part = None
+            self._push_parts()
+            self.changed.emit()
 
     @Slot(str)
     def open(self, mode):

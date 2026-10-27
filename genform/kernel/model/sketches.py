@@ -139,6 +139,28 @@ def _text_faces(shape, frame):
     return faces
 
 
+ON_EDGE = 1e-5                  # 点离轮廓线这么近 (mm) 算压在线上: 既不算里面也不算外面
+
+
+def _off_edge(ring, point):
+    """点离折线 ring 有多远。"""
+    x, y = point
+    best = math.inf
+    for (x0, y0), (x1, y1) in zip(ring, ring[1:] + ring[:1]):
+        dx, dy = x1 - x0, y1 - y0
+        span = dx * dx + dy * dy
+        t = 0.0 if span == 0 else max(0.0, min(1.0, ((x - x0) * dx + (y - y0) * dy) / span))
+        best = min(best, math.hypot(x - x0 - t * dx, y - y0 - t * dy))
+    return best
+
+
+def _nested(outer, inner):
+    """轮廓 inner 是不是套在 outer 里面 (是孔还是另一块): 看 inner 上不压在 outer 线上的点 — 都在里面才算套着。
+    原来只看 inner 的第一个点: 两个矩形共一条边时那个点正好压在线上, 里外全凭浮点误差, 挨着的一块会被当成孔挖掉。"""
+    off = [point for point in inner if _off_edge(outer, point) > ON_EDGE]
+    return bool(off) and all(sketchgeom.contains(outer, point) for point in off)
+
+
 def build_sketch(params, features=()):
     """草图 → Sketch。
     封闭图形和首尾相接成圈的线是轮廓: 套在偶数层里的是实心, 奇数层是孔。没围成圈的线、点只显示, 不参与拉伸。"""
@@ -154,9 +176,9 @@ def build_sketch(params, features=()):
     except ValueError as error:
         raise FeatureError(str(error)) from None
     areas = [abs(sketchgeom.signed_area(ring)) for ring in rings]
-    depths = [sum(1 for other in range(len(rings))
-                  if other != index and areas[other] > areas[index] and sketchgeom.contains(rings[other], rings[index][0]))
-              for index in range(len(rings))]
+    inside = {(outer, inner): areas[outer] > areas[inner] and _nested(rings[outer], rings[inner])
+              for outer in range(len(rings)) for inner in range(len(rings)) if outer != inner}
+    depths = [sum(1 for other in range(len(rings)) if other != index and inside[other, index]) for index in range(len(rings))]
     faces, outer = [], []
     for index, loop in enumerate(loops):
         if depths[index] % 2:
@@ -169,7 +191,7 @@ def build_sketch(params, features=()):
             raise FeatureError('轮廓围不成面')
         face = maker.Shape()
         for hole in range(len(loops)):
-            if depths[hole] == depths[index] + 1 and sketchgeom.contains(rings[index], rings[hole][0]):
+            if depths[hole] == depths[index] + 1 and inside[index, hole]:
                 hole_face = BRepBuilderAPI_MakeFace(_loop_wire(loops[hole], frame), True).Shape()
                 face = _boolean(BRepAlgoAPI_Cut, face, hole_face, '草图挖孔')
         faces.append(face)

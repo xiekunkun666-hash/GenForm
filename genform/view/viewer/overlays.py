@@ -70,7 +70,10 @@ class OverlayMixin:
         width, height = self.width(), self.height()
         low, high = (min(x0, x1), min(y0, y1)), (max(x0, x1), max(y0, y1))
         crossing = x1 < x0
-        found = {'faces': [], 'edges': [], 'sketches': []}
+        found = {'faces': [], 'edges': [], 'sketches': [], 'components': []}
+        found['components'] = sorted({int(part['pick']) for part in self._data.get('extras', ())
+                                      if part.get('pick') is not None
+                                      and picking.mesh_in_rect(self._camera, width, height, part, low, high, crossing)})
 
         def lines(points, owner):
             """一串线段 (端点两两一对) 里, 哪些 owner 被框住了。"""
@@ -85,6 +88,8 @@ class OverlayMixin:
             return sorted(set(owner.tolist()) - set(owner[~inside].tolist()))
 
         geometry = self._data['geometry']
+        if picking.mesh_in_rect(self._camera, width, height, geometry, low, high, crossing):
+            found['body'] = True
         found['edges'] = [int(value) for value in lines(geometry['edge_points'], self._point_edge)]
         if len(geometry['verts']):
             screen, depth = self._camera.project(geometry['verts'], width, height)

@@ -1,0 +1,37 @@
+{
+  "ok": true,
+  "counts": {
+    "error": 0,
+    "warning": 2,
+    "info": 1
+  },
+  "issues": [
+    {
+      "level": "warning",
+      "code": "no_material",
+      "title": "没有指定材质",
+      "detail": "重量算不出来，工艺按普通碳钢估价：在设计树的 “材质” 上右键指定",
+      "features": [],
+      "point": null
+    },
+    {
+      "level": "warning",
+      "code": "no_process",
+      "title": "1 个特征还没绑加工工艺",
+      "detail": "评估 → 绑定工艺：按性价比自动给每个特征挑工艺",
+      "features": [
+        "f2"
+      ],
+      "point": null
+    },
+    {
+      "level": "info",
+      "code": "pairs",
+      "title": "比较了 0 对离得近的件",
+      "detail": "",
+      "features": [],
+      "point": null
+    }
+  ],
+  "red": []
+}

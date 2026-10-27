@@ -267,6 +267,63 @@ def segments_touch_rect(start, end, low, high):
     return ok & (enter <= leave)
 
 
+def triangles_touch_rect(screen, depth, tris, low, high):
+    """投影三角面与矩形相交，包括矩形完全落在大三角面内的情况。"""
+    tris = np.asarray(tris, dtype=np.int64).reshape(-1, 3)
+    if len(tris) == 0:
+        return np.zeros(0, dtype=bool)
+    points = np.asarray(screen)[tris]
+    visible = (np.asarray(depth)[tris] > 0).all(axis=1)
+    touched = np.zeros(len(tris), dtype=bool)
+    for number in range(3):
+        touched |= segments_touch_rect(points[:, number], points[:, (number + 1) % 3], low, high)
+    corner = np.asarray(low, dtype=float)
+    sides = []
+    for number in range(3):
+        start, end = points[:, number], points[:, (number + 1) % 3]
+        delta, offset = end - start, corner - start
+        sides.append(delta[:, 0] * offset[:, 1] - delta[:, 1] * offset[:, 0])
+    sides = np.asarray(sides)
+    area = ((points[:, 1, 0] - points[:, 0, 0]) * (points[:, 2, 1] - points[:, 0, 1])
+            - (points[:, 1, 1] - points[:, 0, 1]) * (points[:, 2, 0] - points[:, 0, 0]))
+    touched |= ((sides >= 0).all(axis=0) | (sides <= 0).all(axis=0)) & (np.abs(area) > 1e-12)
+    return visible & touched
+
+
+def mesh_in_rect(camera, width, height, mesh, low, high, crossing):
+    """按显示网格判断组件框选；matrix 是动态摆放，不能使用原始包围盒代替。"""
+    verts = np.asarray(mesh['verts'], dtype=float).reshape(-1, 3)
+    tris = np.asarray(mesh['tris'], dtype=np.int64).reshape(-1, 3)
+    if len(verts) == 0 or len(tris) == 0:
+        return False
+    if mesh.get('matrix') is not None:
+        matrix = np.asarray(mesh['matrix'], dtype=float)
+        verts = verts @ matrix[:3, :3].T + matrix[:3, 3]
+    screen, depth = camera.project(verts, width, height)
+    inside = in_rect(screen, depth, low, high)[tris]
+    if not crossing:
+        return bool(inside.all())
+    if inside.any() or triangles_touch_rect(screen, depth, tris, low, high).any():
+        return True
+    partial = tris[(depth[tris] > 0).any(axis=1) & ~(depth[tris] > 0).all(axis=1)]
+    near = 1e-6
+    for triangle in partial:
+        polygon = []
+        for number in range(3):
+            start, end = triangle[number], triangle[(number + 1) % 3]
+            if depth[start] >= near:
+                polygon.append(verts[start])
+            if (depth[start] >= near) != (depth[end] >= near):
+                amount = (near - depth[start]) / (depth[end] - depth[start])
+                polygon.append(verts[start] + amount * (verts[end] - verts[start]))
+        if len(polygon) >= 3:
+            clipped, ahead = camera.project(polygon, width, height)
+            fan = [[0, number, number + 1] for number in range(1, len(polygon) - 1)]
+            if triangles_touch_rect(clipped, ahead, fan, low, high).any():
+                return True
+    return False
+
+
 def pick_plane(origin, direction, names, half):
     """射线打在哪个基准面的方框里 (半边长 half) → 基准面名; 打中多个取最近的; 都没打中返回 None。"""
     from .. import planes

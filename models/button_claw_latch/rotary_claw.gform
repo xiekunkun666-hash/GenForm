@@ -1,0 +1,393 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 14,
+ "upto": null,
+ "props": {
+  "color": "#D66A38"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "hook_outline",
+   "params": {
+    "plane": "XY",
+    "offset": 8.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        -4,
+        -5
+       ],
+       [
+        17,
+        -4
+       ],
+       [
+        20,
+        -7
+       ],
+       [
+        34,
+        -7
+       ],
+       [
+        34,
+        7
+       ],
+       [
+        18,
+        7
+       ],
+       [
+        14,
+        5
+       ],
+       [
+        -4,
+        5
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "load_bearing_claw",
+   "params": {
+    "sketch": "f1",
+    "distance": 4.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "auto": false,
+    "kind": null,
+    "why": "4 mm锁爪坯，转轴孔需后续精加工。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "4 mm锁爪坯，转轴孔需后续精加工"
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "pivot_eye",
+   "params": {
+    "plane": "XY",
+    "offset": 8.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 6
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "pivot_hub",
+   "params": {
+    "sketch": "f3",
+    "distance": 4.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "auto": false,
+    "kind": null,
+    "why": "4 mm锁爪坯，转轴孔需后续精加工。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "4 mm锁爪坯，转轴孔需后续精加工"
+   }
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "crank_arm",
+   "params": {
+    "plane": "XY",
+    "offset": 8.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 5,
+      "w": 7,
+      "h": 10
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "button_link_drive_arm",
+   "params": {
+    "sketch": "f5",
+    "distance": 4.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "auto": false,
+    "kind": null,
+    "why": "4 mm锁爪坯，转轴孔需后续精加工。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "4 mm锁爪坯，转轴孔需后续精加工"
+   }
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "crank_eye",
+   "params": {
+    "plane": "XY",
+    "offset": 8.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 10,
+      "r": 4.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "crank_pin_boss",
+   "params": {
+    "sketch": "f7",
+    "distance": 4.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "auto": false,
+    "kind": null,
+    "why": "4 mm锁爪坯，转轴孔需后续精加工。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "4 mm锁爪坯，转轴孔需后续精加工"
+   }
+  },
+  {
+   "id": "f9",
+   "type": "sketch",
+   "name": "striker_clearance",
+   "params": {
+    "plane": "XY",
+    "offset": 7.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 26,
+      "cy": 0,
+      "r": 3.4
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f10",
+   "type": "extrude",
+   "name": "round_striker_pocket",
+   "params": {
+    "sketch": "f9",
+    "distance": 6.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "auto": false,
+    "kind": null,
+    "why": "4 mm锁爪坯，转轴孔需后续精加工。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "4 mm锁爪坯，转轴孔需后续精加工"
+   }
+  },
+  {
+   "id": "f11",
+   "type": "sketch",
+   "name": "release_mouth",
+   "params": {
+    "plane": "XY",
+    "offset": 7.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        22.6,
+        0
+       ],
+       [
+        18,
+        -12
+       ],
+       [
+        35,
+        -12
+       ],
+       [
+        29.4,
+        0
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f12",
+   "type": "extrude",
+   "name": "flared_entry_and_release",
+   "params": {
+    "sketch": "f11",
+    "distance": 6.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "auto": false,
+    "kind": null,
+    "why": "4 mm锁爪坯，转轴孔需后续精加工。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "4 mm锁爪坯，转轴孔需后续精加工"
+   }
+  },
+  {
+   "id": "f13",
+   "type": "sketch",
+   "name": "hinge_bores",
+   "params": {
+    "plane": "XY",
+    "offset": 7.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 2.2
+     },
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 10,
+      "r": 1.7
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f14",
+   "type": "extrude",
+   "name": "pivot_and_crank_holes",
+   "params": {
+    "sketch": "f13",
+    "distance": 6.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "auto": false,
+    "kind": null,
+    "why": "4 mm锁爪坯，转轴孔需后续精加工。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "4 mm锁爪坯，转轴孔需后续精加工"
+   }
+  }
+ ]
+}

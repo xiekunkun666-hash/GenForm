@@ -1,0 +1,66 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "color": "#434D5B"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "hex_nut",
+   "params": {
+    "plane": "XY",
+    "offset": -2.4,
+    "shapes": [
+     {
+      "type": "ngon",
+      "cx": 0,
+      "cy": 0,
+      "r": 3.1754264805429417,
+      "sides": 6,
+      "angle": 0
+     },
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 1.6
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "M3_nut_clearance_envelope",
+   "params": {
+    "sketch": "f1",
+    "distance": 2.4,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "standard",
+    "name": "标准件 (按规格网购)",
+    "short": "标准",
+    "color": "#3FB97F",
+    "auto": false,
+    "kind": null,
+    "why": "M3六角螺母，螺纹仅包络；供应商报价待定。手动指定",
+    "alternatives": [],
+    "standard": true,
+    "spec": "M3六角螺母，螺纹仅包络；供应商报价待定"
+   }
+  }
+ ]
+}

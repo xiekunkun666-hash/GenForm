@@ -1,0 +1,224 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 10,
+ "upto": null,
+ "props": {
+  "color": "#8D99A8"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "housing_blank",
+   "params": {
+    "plane": "XY",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 0,
+      "w": 56,
+      "h": 32
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "housing_block",
+   "params": {
+    "sketch": "f1",
+    "distance": 17.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "slider_chamber",
+   "params": {
+    "plane": "XY",
+    "offset": 3.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 0,
+      "w": 42,
+      "h": 20
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "open_top_chamber",
+   "params": {
+    "sketch": "f3",
+    "distance": 15.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "bolt_guide",
+   "params": {
+    "plane": "YZ",
+    "offset": -29.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 10,
+      "r": 2.8
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "coaxial_guide_bores",
+   "params": {
+    "sketch": "f5",
+    "distance": 58.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "mount_holes",
+   "params": {
+    "plane": "XY",
+    "offset": -1.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -24,
+      "cy": -13,
+      "r": 1.7
+     },
+     {
+      "type": "circle",
+      "cx": -24,
+      "cy": 13,
+      "r": 1.7
+     },
+     {
+      "type": "circle",
+      "cx": 24,
+      "cy": -13,
+      "r": 1.7
+     },
+     {
+      "type": "circle",
+      "cx": 24,
+      "cy": 13,
+      "r": 1.7
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "four_mounting_holes",
+   "params": {
+    "sketch": "f7",
+    "distance": 19.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f9",
+   "type": "sketch",
+   "name": "cover_pilot_holes",
+   "params": {
+    "plane": "XY",
+    "offset": 11.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -16,
+      "cy": -13,
+      "r": 1.25
+     },
+     {
+      "type": "circle",
+      "cx": -16,
+      "cy": 13,
+      "r": 1.25
+     },
+     {
+      "type": "circle",
+      "cx": 16,
+      "cy": -13,
+      "r": 1.25
+     },
+     {
+      "type": "circle",
+      "cx": 16,
+      "cy": 13,
+      "r": 1.25
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f10",
+   "type": "extrude",
+   "name": "cover_M3_tap_drills",
+   "params": {
+    "sketch": "f9",
+    "distance": 7.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  }
+ ]
+}

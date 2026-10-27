@@ -1,0 +1,132 @@
+{
+  "format": "genform-assembly",
+  "version": 1,
+  "parts": [
+    {
+      "name": "Housing | fixed guide",
+      "file": "housing.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "Button + bolt | stroke 8 mm",
+      "file": "button_bolt.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "Keeper | separate mating panel",
+      "file": "keeper.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "Return compression spring",
+      "file": "spring_open.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "Inspection cover",
+      "file": "cover.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "Cover screw M3x6 (-16, -13)",
+      "file": "cover_screw_M3x6.gform",
+      "move": [
+        -16,
+        -13,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "Cover screw M3x6 (-16, 13)",
+      "file": "cover_screw_M3x6.gform",
+      "move": [
+        -16,
+        13,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "Cover screw M3x6 (16, -13)",
+      "file": "cover_screw_M3x6.gform",
+      "move": [
+        16,
+        -13,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "Cover screw M3x6 (16, 13)",
+      "file": "cover_screw_M3x6.gform",
+      "move": [
+        16,
+        13,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

@@ -1,0 +1,247 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 10,
+ "upto": null,
+ "props": {
+  "color": "#247FCC"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "slider_shaft",
+   "params": {
+    "plane": "XY",
+    "offset": 8.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": -42.25,
+      "cy": 10,
+      "w": 36.5,
+      "h": 6
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "rectangular_pushrod",
+   "params": {
+    "sketch": "f1",
+    "distance": 4.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "millturn",
+    "name": "车铣复合",
+    "short": "车铣",
+    "color": "#6FA8DC",
+    "auto": false,
+    "kind": null,
+    "why": "矩形推杆、按钮与轴肩等效整体件。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "矩形推杆、按钮与轴肩等效整体件"
+   }
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "slider_eye",
+   "params": {
+    "plane": "XY",
+    "offset": 8.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -24,
+      "cy": 10,
+      "r": 3
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "link_attachment_eye",
+   "params": {
+    "sketch": "f3",
+    "distance": 4.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "millturn",
+    "name": "车铣复合",
+    "short": "车铣",
+    "color": "#6FA8DC",
+    "auto": false,
+    "kind": null,
+    "why": "矩形推杆、按钮与轴肩等效整体件。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "矩形推杆、按钮与轴肩等效整体件"
+   }
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "eye_hole",
+   "params": {
+    "plane": "XY",
+    "offset": 7.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": -24,
+      "cy": 10,
+      "r": 1.7
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "slider_link_bore",
+   "params": {
+    "sketch": "f5",
+    "distance": 6.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "millturn",
+    "name": "车铣复合",
+    "short": "车铣",
+    "color": "#6FA8DC",
+    "auto": false,
+    "kind": null,
+    "why": "矩形推杆、按钮与轴肩等效整体件。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "矩形推杆、按钮与轴肩等效整体件"
+   }
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "button_head",
+   "params": {
+    "plane": "YZ",
+    "offset": -64.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 10,
+      "cy": 10,
+      "r": 6
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "push_button",
+   "params": {
+    "sketch": "f7",
+    "distance": 4.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "millturn",
+    "name": "车铣复合",
+    "short": "车铣",
+    "color": "#6FA8DC",
+    "auto": false,
+    "kind": null,
+    "why": "矩形推杆、按钮与轴肩等效整体件。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "矩形推杆、按钮与轴肩等效整体件"
+   }
+  },
+  {
+   "id": "f9",
+   "type": "sketch",
+   "name": "spring_stop",
+   "params": {
+    "plane": "YZ",
+    "offset": -45.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 10,
+      "cy": 10,
+      "r": 5.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f10",
+   "type": "extrude",
+   "name": "moving_spring_collar",
+   "params": {
+    "sketch": "f9",
+    "distance": 3.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "millturn",
+    "name": "车铣复合",
+    "short": "车铣",
+    "color": "#6FA8DC",
+    "auto": false,
+    "kind": null,
+    "why": "矩形推杆、按钮与轴肩等效整体件。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "矩形推杆、按钮与轴肩等效整体件"
+   }
+  }
+ ]
+}

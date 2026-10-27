@@ -1,0 +1,165 @@
+{
+  "state": "open",
+  "angle_degrees": 40,
+  "counts": {
+    "error": 0,
+    "warning": 6,
+    "info": 5
+  },
+  "issues": [
+    {
+      "level": "warning",
+      "code": "gap",
+      "title": "间隙太小：固定框架与导向座 ↔ 上盖穿透螺栓 M3x25",
+      "detail": "只隔 0.20 mm (设计规则：不贴着的件至少隔 0.5 mm)，加工误差一叠就碰上了",
+      "features": [
+        "part:0",
+        "part:12"
+      ],
+      "point": [
+        -54.3,
+        -16.0,
+        0.0
+      ],
+      "names": [
+        "固定框架与导向座",
+        "上盖穿透螺栓 M3x25"
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "gap",
+      "title": "间隙太小：固定框架与导向座 ↔ 上盖穿透螺栓 M3x25",
+      "detail": "只隔 0.20 mm (设计规则：不贴着的件至少隔 0.5 mm)，加工误差一叠就碰上了",
+      "features": [
+        "part:0",
+        "part:14"
+      ],
+      "point": [
+        -54.3,
+        30.0,
+        0.0
+      ],
+      "names": [
+        "固定框架与导向座",
+        "上盖穿透螺栓 M3x25"
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "gap",
+      "title": "间隙太小：固定框架与导向座 ↔ 上盖穿透螺栓 M3x25",
+      "detail": "只隔 0.20 mm (设计规则：不贴着的件至少隔 0.5 mm)，加工误差一叠就碰上了",
+      "features": [
+        "part:0",
+        "part:16"
+      ],
+      "point": [
+        9.7,
+        -16.0,
+        0.0
+      ],
+      "names": [
+        "固定框架与导向座",
+        "上盖穿透螺栓 M3x25"
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "gap",
+      "title": "间隙太小：固定框架与导向座 ↔ 上盖穿透螺栓 M3x25",
+      "detail": "只隔 0.20 mm (设计规则：不贴着的件至少隔 0.5 mm)，加工误差一叠就碰上了",
+      "features": [
+        "part:0",
+        "part:18"
+      ],
+      "point": [
+        9.7,
+        30.0,
+        0.0
+      ],
+      "names": [
+        "固定框架与导向座",
+        "上盖穿透螺栓 M3x25"
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "gap",
+      "title": "间隙太小：橙色旋转锁爪 ↔ 主转轴",
+      "detail": "只隔 0.20 mm (设计规则：不贴着的件至少隔 0.5 mm)，加工误差一叠就碰上了",
+      "features": [
+        "part:1",
+        "part:5"
+      ],
+      "point": [
+        1.6852977748617517,
+        1.4141327413103866,
+        8.0
+      ],
+      "names": [
+        "橙色旋转锁爪",
+        "主转轴"
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "no_price",
+      "title": "1 种外购件没报价",
+      "detail": "压簧：打开零件给“外购”工艺填上报价，成本才算得准",
+      "features": [
+        "part:8"
+      ],
+      "point": null,
+      "names": [
+        "压簧"
+      ]
+    },
+    {
+      "level": "info",
+      "code": "contacts",
+      "title": "28 处装配面",
+      "detail": "查了 42 对挨得近的零件：贴着的 28 处，靠它们一个托一个地装在“固定框架与导向座”上",
+      "features": [],
+      "point": null,
+      "names": []
+    },
+    {
+      "level": "info",
+      "code": "bom_custom",
+      "title": "非标件 9 种 11 件",
+      "detail": "估算 ¥0",
+      "features": [],
+      "point": null,
+      "names": []
+    },
+    {
+      "level": "info",
+      "code": "bom_purchase",
+      "title": "外购件 1 种 1 件",
+      "detail": "估算 ¥0",
+      "features": [],
+      "point": null,
+      "names": []
+    },
+    {
+      "level": "info",
+      "code": "bom_standard",
+      "title": "标准件 2 种 8 件",
+      "detail": "估算 ¥0：网上按规格买",
+      "features": [],
+      "point": null,
+      "names": []
+    },
+    {
+      "level": "info",
+      "code": "cost",
+      "title": "整套估算 ¥0",
+      "detail": "12 种零件 20 件，按各零件绑的工艺和设计规则里的生产数量",
+      "features": [],
+      "point": null,
+      "names": []
+    }
+  ],
+  "stale": false
+}

@@ -85,6 +85,9 @@ class Pages(unittest.TestCase):
         class View:
             _data, _hover, pick_vertices, click_at = {'extras': extras}, None, False, (0.0, 0.0)
 
+            def plane_shown(self, plane):
+                return False
+
             def set_overlay(self, *args, **kwargs):
                 self.overlay = args
 
@@ -111,10 +114,12 @@ class Pages(unittest.TestCase):
         self.assertIn('夹角', rows)
         self.assertTrue(view.overlay[0])                               # 两条边描出来了
 
-    def test_log_button_runs_then_toggles(self):
+    def test_log_button_only_toggles_until_explicit_check(self):
         self.assertFalse(self.controller.checkOpen)
-        self.controller.toggleCheckLog()                                # 还没查过: 查一遍, 日志拉出来
+        self.controller.toggleCheckLog()
         self.assertTrue(self.controller.checkOpen)
+        self.assertEqual(self.controller.checkIssues, [])
+        self.controller.runCheck()
         self.assertTrue(self.controller.checkIssues)
         self.controller.toggleCheckLog()
         self.assertFalse(self.controller.checkOpen)

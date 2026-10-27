@@ -1,0 +1,64 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "color": "#9BA6B5"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "spring_seat",
+   "params": {
+    "plane": "YZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 10,
+      "cy": 10,
+      "r": 5.5
+     },
+     {
+      "type": "circle",
+      "cx": 10,
+      "cy": 10,
+      "r": 4.2
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "thin_spring_seat_washer",
+   "params": {
+    "sketch": "f1",
+    "distance": 0.5,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "laser",
+    "name": "激光切割",
+    "short": "激光",
+    "color": "#E0605A",
+    "auto": false,
+    "kind": null,
+    "why": "0.5 mm弹簧支承垫圈。手动指定",
+    "alternatives": [],
+    "standard": false,
+    "spec": "0.5 mm弹簧支承垫圈"
+   }
+  }
+ ]
+}

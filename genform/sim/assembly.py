@@ -22,14 +22,28 @@ class AssemblyMixin:
     # ---- 装配体 ----
     @Slot(str)
     def addPart(self, where):
-        """往装配体里加一个零件文件 (.gform / .step / .stp); 排在最后 = 最后装。"""
-        path = QUrl(where).toLocalFile() if '://' in where else where
-        if not os.path.isfile(path) or not path.lower().endswith(('.gform', '.step', '.stp')):
-            self.app.notice.emit('零件文件只认 .gform / .step / .stp')
+        self.addParts([where])
+
+    @Slot('QVariantList')
+    def addParts(self, paths):
+        if getattr(self.app, '_sketch', None) is not None:
+            self.app.notice.emit('正在编辑草图：先点“完成草图”或“放弃”')
             return
-        self._parts.append({'name': os.path.splitext(os.path.basename(path))[0], 'path': path, 'move': [0.0, 0.0, 0.0],
-                            'turn': [0.0, 0.0, 0.0], 'mirror': False})
-        self._parts_changed()
+        added, rejected = [], []
+        for where in paths:
+            text = where.toString() if hasattr(where, 'toString') else str(where)
+            path = QUrl(text).toLocalFile() if '://' in text else text
+            path = os.path.abspath(path)
+            if not os.path.isfile(path) or not path.lower().endswith(('.gform', '.step', '.stp', '.stl')):
+                rejected.append(os.path.basename(path))
+                continue
+            added.append({'name': os.path.splitext(os.path.basename(path))[0], 'path': path, 'move': [0.0, 0.0, 0.0],
+                          'turn': [0.0, 0.0, 0.0], 'mirror': False})
+        if added:
+            self._parts.extend(added)
+            self._parts_changed()
+        if rejected:
+            self.app.notice.emit('已跳过不支持或不存在的文件：' + '、'.join(rejected))
 
     @Property('QVariantList', constant=True)
     def standardCatalog(self):
@@ -267,11 +281,15 @@ class AssemblyMixin:
                 self._shown = []
                 viewport.set_extras([])
             else:
-                self._shown = [(number, mesh) for (number, _), mesh in zip(others, result)]
+                failures = [mesh['error'] for mesh in result if mesh.get('error')]
+                self._assembly['error'] = '\n'.join(failures)
+                self._shown = [(number, mesh) for (number, _), mesh in zip(others, result) if not mesh.get('error')]
                 self._push_parts()
                 viewport.fit()              # 别的零件可能摆在画面外面
+                if failures:
+                    self.app.notice.emit(f'{len(failures)} 个文件加载失败：' + '；'.join(failures))
             self.changed.emit()
-        self.app.session.query('meshes', {'parts': [part for _, part in others]}, done)
+        self.app.session.query('meshes', {'parts': [part for _, part in others], 'allow_partial': True}, done)
 
     def _push_parts(self):
         """把算好的零件网格送给视图: 零件自己的颜色 (每个顶点); 装配检查报错的零件整个标红、不透明; 选中的往蓝里调;
@@ -280,13 +298,14 @@ class AssemblyMixin:
         if viewport is None:
             return
         shown, labels = [], self._labels()
+        selected = self._selected_part_indices() if hasattr(self, '_selected_part_indices') else {self._picked}
         for number, mesh in self._shown:
             mesh = self._moved_mesh(number, mesh)       # 运动副动过的: 门开着
             if number in self._hidden_parts or (self._alone_part is not None and number != self._alone_part):
                 continue
             if number in self._red:
                 mesh = dict(mesh, color=RED, tints=None, alpha=1.0)
-            elif number == self._picked or number in getattr(self, '_measured', ()):
+            elif number in selected or number in getattr(self, '_measured', ()):
                 mesh = dict(mesh, tints=self._picked_tints(mesh['tints']))
             part = self._parts[number] if number < len(self._parts) else {}
             info = self._kind_of(part['path']) if part.get('path') else None
@@ -332,13 +351,14 @@ class AssemblyMixin:
         """树上的零部件: [{'index', 'label', 'name', 'path', 'fixed' 第一个 (固定), 'mirror', 'hidden', 'selected', 'bad',
         'kind' 标准/外购/非标, 'kindColor', 'spec', 'process', 'material', 'unit'}...]。"""
         rows, clashing = [], self._live_clash_parts()
+        selected = self._selected_part_indices() if hasattr(self, '_selected_part_indices') else {self._picked}
         for index, (part, label) in enumerate(zip(self._parts, self._labels())):
             info = self._kind_of(part['path']) if part['path'] else None
             short, color = KIND_LOOK.get((info or {}).get('kind'), ('', ''))
             rows.append({'index': index, 'label': label if part['path'] else i18n.tr(part['name']), 'name': part['name'],
                          'path': part['path'], 'file': os.path.basename(part['path']) if part['path'] else '',
                          'fixed': index == 0, 'mirror': bool(part.get('mirror')), 'hidden': index in self._hidden_parts,
-                         'selected': index == self._picked, 'bad': index in self._red,
+                         'selected': index in selected, 'bad': index in self._red,
                          'kind': i18n.tr(short) if (info or {}).get('bound') else '', 'kindColor': color,
                          'spec': (info or {}).get('spec') or '', 'process': (info or {}).get('process') or '',
                          'material': (info or {}).get('material') or '', 'unit': (info or {}).get('unit') or 0.0,
@@ -563,7 +583,8 @@ class AssemblyMixin:
         material_of = lambda index: info[index].get('material') or (self.app.session.document.props.get('material') if not self._parts[index]['path'] else '')
         issues = asm_rules.duplicates(self._parts) + issues
         issues += asm_rules.galvanic(result['pairs'], material_of, names)
-        issues += asm_rules.fasteners(result['pairs'], [row.get('kind') if row.get('bound') else '' for row in info], names)
+        kinds = [row.get('kind') if row.get('bound') else '' for row in info]
+        issues += asm_rules.fasteners(result['pairs'], kinds, names)
         issues += asm_rules.bill_gaps(rows)
         posed = self._posed_parts()
         corners = [mesh for _, mesh in self._shown]
@@ -574,7 +595,7 @@ class AssemblyMixin:
             done(sorted(issues + extra, key=lambda item: order.get(item['level'], 3)))
 
         def weighed(props, error):
-            extra = asm_rules.mass(props, material_of, names, size) if props and not error else []
+            extra = asm_rules.mass(props, material_of, names, size) + asm_rules.orphans(result['pairs'], kinds, names, props)                 if props and not error else []
             if not self._joints:
                 finish(extra)
                 return

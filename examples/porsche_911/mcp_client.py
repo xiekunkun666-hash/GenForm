@@ -5,6 +5,7 @@ import queue
 import subprocess
 import sys
 import threading
+import time
 from pathlib import Path
 
 
@@ -16,6 +17,7 @@ DOCUMENT = OUTPUT / 'porsche_911_992.gform'
 class Client:
     def __init__(self):
         self.identifier = 0
+        self.active = None
         self.responses = queue.Queue()
         self.process = subprocess.Popen(
             [sys.executable, '-B', str(ROOT / 'genform_mcp.py')],
@@ -39,20 +41,48 @@ class Client:
         for line in self.process.stderr:
             print(line.rstrip(), file=sys.stderr, flush=True)
 
-    def request(self, method, params):
+    def request(self, method, params, timeout=300):
         self.identifier += 1
-        message = {'jsonrpc': '2.0', 'id': self.identifier, 'method': method, 'params': params}
+        identifier = self.identifier
+        self.active = identifier
+        message = {'jsonrpc': '2.0', 'id': identifier, 'method': method, 'params': params}
         self.process.stdin.write(json.dumps(message, ensure_ascii=False) + '\n')
         self.process.stdin.flush()
+        deadline = time.monotonic() + timeout
         try:
-            response = self.responses.get(timeout=300)
+            while True:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    raise queue.Empty
+                try:
+                    response = self.responses.get(timeout=min(remaining, 0.1))
+                except queue.Empty:
+                    continue
+                if isinstance(response, Exception):
+                    raise response
+                if response.get('id') != identifier:
+                    continue
+                if 'error' in response:
+                    raise RuntimeError(response)
+                return response['result']
         except queue.Empty:
+            self.cancel()
             raise TimeoutError('MCP response timeout; inspect the document before resuming') from None
-        if isinstance(response, Exception):
-            raise response
-        if response.get('id') != self.identifier or 'error' in response:
-            raise RuntimeError(response)
-        return response['result']
+        except KeyboardInterrupt:
+            self.cancel()
+            raise
+        finally:
+            self.active = None
+
+    def cancel(self):
+        if self.active is not None and self.process.poll() is None:
+            message = {'jsonrpc': '2.0', 'method': 'notifications/cancelled',
+                       'params': {'requestId': self.active, 'reason': 'Builder interrupted'}}
+            try:
+                self.process.stdin.write(json.dumps(message) + '\n')
+                self.process.stdin.flush()
+            except (OSError, ValueError):
+                pass
 
     def call(self, name, **arguments):
         response = self.request('tools/call', {'name': name, 'arguments': arguments})
@@ -82,11 +112,16 @@ class Client:
         return result
 
     def close(self):
-        self.process.stdin.close()
+        self.cancel()
         try:
-            self.process.wait(timeout=5)
+            self.process.stdin.close()
+        except (OSError, ValueError):
+            pass
+        try:
+            self.process.wait(timeout=2)
         except subprocess.TimeoutExpired:
             self.process.terminate()
+            self.process.wait(timeout=2)
 
     def __enter__(self):
         OUTPUT.mkdir(parents=True, exist_ok=True)

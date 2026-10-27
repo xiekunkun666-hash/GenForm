@@ -1,0 +1,524 @@
+{
+  "parts": {
+    "connecting_link.gform": {
+      "valid": true,
+      "solids": 1
+    },
+    "cover.gform": {
+      "valid": true,
+      "solids": 1
+    },
+    "cover_bolt.gform": {
+      "valid": true,
+      "solids": 1
+    },
+    "cover_nut.gform": {
+      "valid": true,
+      "solids": 1
+    },
+    "door_striker.gform": {
+      "valid": true,
+      "solids": 1
+    },
+    "frame.gform": {
+      "valid": true,
+      "solids": 1
+    },
+    "link_rivet.gform": {
+      "valid": true,
+      "solids": 1
+    },
+    "pivot_dowel.gform": {
+      "valid": true,
+      "solids": 1
+    },
+    "pushrod.gform": {
+      "valid": true,
+      "solids": 1
+    },
+    "rotary_claw.gform": {
+      "valid": true,
+      "solids": 1
+    },
+    "spring_00.gform": {
+      "valid": true,
+      "solids": 1
+    },
+    "spring_10.gform": {
+      "valid": true,
+      "solids": 1
+    },
+    "spring_20.gform": {
+      "valid": true,
+      "solids": 1
+    },
+    "spring_30.gform": {
+      "valid": true,
+      "solids": 1
+    },
+    "spring_40.gform": {
+      "valid": true,
+      "solids": 1
+    },
+    "spring_seat.gform": {
+      "valid": true,
+      "solids": 1
+    }
+  },
+  "assemblies": [
+    {
+      "angle": 0,
+      "clashes": [],
+      "pairs": 190
+    },
+    {
+      "angle": 10,
+      "clashes": [],
+      "pairs": 190
+    },
+    {
+      "angle": 20,
+      "clashes": [],
+      "pairs": 190
+    },
+    {
+      "angle": 30,
+      "clashes": [],
+      "pairs": 190
+    },
+    {
+      "angle": 40,
+      "clashes": [],
+      "pairs": 190
+    }
+  ],
+  "exports": {
+    "claw_latch_open.step": {
+      "solids": 20,
+      "valid": true,
+      "sha256": "4346f57ed040ff32d399a4e821e50b5bff7ec9059e453dda6756ab4023345e81"
+    },
+    "claw_latch_closed.step": {
+      "solids": 20,
+      "valid": true,
+      "sha256": "814ff68648a58ec00437920306e0b603c955fbe3850f4b4e192e196272f39354"
+    }
+  },
+  "stroke": [
+    {
+      "angle": 0,
+      "button_travel_mm": 0.0,
+      "clashes": [],
+      "pairs": 21
+    },
+    {
+      "angle": 2,
+      "button_travel_mm": -0.34899419391724606,
+      "clashes": [],
+      "pairs": 21
+    },
+    {
+      "angle": 4,
+      "button_travel_mm": -0.6975523752482005,
+      "clashes": [],
+      "pairs": 21
+    },
+    {
+      "angle": 6,
+      "button_travel_mm": -1.0452221125318601,
+      "clashes": [],
+      "pairs": 21
+    },
+    {
+      "angle": 8,
+      "button_travel_mm": -1.3915336952770119,
+      "clashes": [],
+      "pairs": 21
+    },
+    {
+      "angle": 10,
+      "button_travel_mm": -1.7360009294178909,
+      "clashes": [],
+      "pairs": 21
+    },
+    {
+      "angle": 12,
+      "button_travel_mm": -2.0781220389039703,
+      "clashes": [],
+      "pairs": 21
+    },
+    {
+      "angle": 14,
+      "button_travel_mm": -2.4173806691832276,
+      "clashes": [],
+      "pairs": 21
+    },
+    {
+      "angle": 16,
+      "button_travel_mm": -2.7532469874282803,
+      "clashes": [],
+      "pairs": 21
+    },
+    {
+      "angle": 18,
+      "button_travel_mm": -3.0851788735307544,
+      "clashes": [],
+      "pairs": 21
+    },
+    {
+      "angle": 20,
+      "button_travel_mm": -3.412623195163775,
+      "clashes": [],
+      "pairs": 21
+    },
+    {
+      "angle": 22,
+      "button_travel_mm": -3.7350171595967367,
+      "clashes": [],
+      "pairs": 21
+    },
+    {
+      "angle": 24,
+      "button_travel_mm": -4.05178973444778,
+      "clashes": [],
+      "pairs": 21
+    },
+    {
+      "angle": 26,
+      "button_travel_mm": -4.362363129182125,
+      "clashes": [],
+      "pairs": 21
+    },
+    {
+      "angle": 28,
+      "button_travel_mm": -4.666154328909958,
+      "clashes": [],
+      "pairs": 21
+    },
+    {
+      "angle": 30,
+      "button_travel_mm": -4.9625766719042055,
+      "clashes": [],
+      "pairs": 21
+    },
+    {
+      "angle": 32,
+      "button_travel_mm": -5.251041462242199,
+      "clashes": [],
+      "pairs": 21
+    },
+    {
+      "angle": 34,
+      "button_travel_mm": -5.53095960906893,
+      "clashes": [],
+      "pairs": 21
+    },
+    {
+      "angle": 36,
+      "button_travel_mm": -5.8017432841751315,
+      "clashes": [],
+      "pairs": 21
+    },
+    {
+      "angle": 38,
+      "button_travel_mm": -6.0628075898702996,
+      "clashes": [],
+      "pairs": 21
+    },
+    {
+      "angle": 40,
+      "button_travel_mm": -6.313572229497765,
+      "clashes": [],
+      "pairs": 21
+    }
+  ],
+  "spring_seats": [
+    {
+      "angle": 0,
+      "seat": "moving",
+      "gap_mm": 0.0
+    },
+    {
+      "angle": 0,
+      "seat": "fixed",
+      "gap_mm": 0.0
+    },
+    {
+      "angle": 10,
+      "seat": "moving",
+      "gap_mm": 0.0
+    },
+    {
+      "angle": 10,
+      "seat": "fixed",
+      "gap_mm": 0.0
+    },
+    {
+      "angle": 20,
+      "seat": "moving",
+      "gap_mm": 0.0
+    },
+    {
+      "angle": 20,
+      "seat": "fixed",
+      "gap_mm": 0.0
+    },
+    {
+      "angle": 30,
+      "seat": "moving",
+      "gap_mm": 0.0
+    },
+    {
+      "angle": 30,
+      "seat": "fixed",
+      "gap_mm": 0.0
+    },
+    {
+      "angle": 40,
+      "seat": "moving",
+      "gap_mm": 0.0
+    },
+    {
+      "angle": 40,
+      "seat": "fixed",
+      "gap_mm": 0.0
+    }
+  ],
+  "open_door_path": [
+    {
+      "travel_mm": 0.0,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 0.5,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 1.0,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 1.5,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 2.0,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 2.5,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 3.0,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 3.5,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 4.0,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 4.5,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 5.0,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 5.5,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 6.0,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 6.5,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 7.0,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 7.5,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 8.0,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 8.5,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 9.0,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 9.5,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 10.0,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 10.5,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 11.0,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 11.5,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 12.0,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 12.5,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 13.0,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 13.5,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 14.0,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 14.5,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 15.0,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 15.5,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 16.0,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 16.5,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 17.0,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 17.5,
+      "clashes": [],
+      "pairs": 1
+    },
+    {
+      "travel_mm": 18.0,
+      "clashes": [],
+      "pairs": 1
+    }
+  ],
+  "closed_blocking_test": {
+    "forced_door_travel_mm": 0.5,
+    "expected_blocking_collision": [
+      {
+        "a": 0,
+        "b": 1,
+        "names": [
+          "claw",
+          "striker"
+        ],
+        "volume": 0.5847539333539478,
+        "center": [
+          29.33069126640031,
+          0.6920483172745491,
+          9.999999999999998
+        ]
+      }
+    ]
+  },
+  "limitations": [
+    "Discrete checks, not a continuous collision proof.",
+    "Blocking test deliberately forces the door through a stationary closed claw.",
+    "No load, friction, fatigue, spring-force or production-tolerance certification.",
+    "Native design warnings remain available without filtering in design_check_*.json."
+  ],
+  "input_sha256": {
+    "claw_latch_angle_10.gasm": "b09c7d6cde69dbf1f9996d19b60a696d953ebc09ee223fc1b4a88f22564b37fe",
+    "claw_latch_angle_20.gasm": "7adcf8850558fdcb66674aaec4adcb689f1ad48cd5623a86d312d26da10689d5",
+    "claw_latch_angle_30.gasm": "81a4aa7e6ad96dcab951678910fbb4fdb57cbc1029ffc0dd3668e9aad384b799",
+    "claw_latch_closed.gasm": "61667a640b8d6f3fe843299a25ed9073af07e94c79407a1a814f077b6b2c83bc",
+    "claw_latch_exploded.gasm": "68f90d9a70f33b6187c4e6ef8557066b9477977c76021889259b2a429dc341ff",
+    "claw_latch_open.gasm": "274e26029834f162d699b5368901e95237371784c3d02c4c31bc3ee89fb10ae9",
+    "claw_latch_released.gasm": "f69f281fa1d9a02fed7a4911f3d9c9dd11be649c819dd5488e7f3e40b8940110",
+    "connecting_link.gform": "12e3d04f45831666c1b53fbf154a9478266a8420a941f5ca0189193d4afc7453",
+    "cover.gform": "596a4e2a1f5d815a7fbb87c8598452985a30517d8988c94f910fe9ea873080ef",
+    "cover_bolt.gform": "328a3f01c7cf759009a39cf4f5860103057f6762135a9a7b75a63051348c0bd5",
+    "cover_nut.gform": "44291bb4909b9dbf47c5028e0e55cd04d0656f8a981e7ad596c2bfc02e6acf7e",
+    "door_striker.gform": "4f26c6abf4333a9b46d863c76012211db55fadae8001964bb6120cbe6bc88a4e",
+    "frame.gform": "3c56213d77885b942b1e587fd7c49fb96aa8f0385b54c28e773a72e5a1dc9b12",
+    "link_rivet.gform": "feea38b1cbfa185c8576473cb62f783131f9a6ce8fdd32be2ffb2acece440a7d",
+    "pivot_dowel.gform": "7b8ff469ef0549ef369dfc6b81dd9ca8385584e4e6f8465c2c654e0b70766c8e",
+    "pushrod.gform": "68e6b556df2828940f22c841548f3d91b4d507c9e86aca5fe20fab625fd8a50a",
+    "rotary_claw.gform": "f12e1ee376997e360ea853d1d87fe25932f41cf74ed1b3b5cee24091d714335c",
+    "spring_00.gform": "9cca61a66005ad43fff3fd2b88596797d2020b95c64d61e6e801e55079b5637e",
+    "spring_10.gform": "d6b56003493770a5f13dbc2c04b85fbda7343577a85127d31ec7b358cf201603",
+    "spring_20.gform": "337f3edbd557ee1a72487340ca7150fbedff3647f5dd709dc19ad57e0c5a06e7",
+    "spring_30.gform": "2e238861086587b5da3322e1903aaf352bf96df4a6275891bf194d9b18b35105",
+    "spring_40.gform": "f1a42b99ba2c6232aeb3fcba393237e7f9aafcefb670f4a99c31254836f086ae",
+    "spring_seat.gform": "26840d8b66a79c51c29ddd935184ce1864be4f8e30bfe677708a1f17b38e080a"
+  }
+}

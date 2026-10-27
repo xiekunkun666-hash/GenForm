@@ -1,0 +1,56 @@
+{
+  "states": [
+    {
+      "state": "open",
+      "screenshot": "C:\\qt_project\\GenForm\\models\\button_latch\\button_latch_open.png",
+      "step": "C:\\qt_project\\GenForm\\models\\button_latch\\button_latch_open.step",
+      "step_bytes": 1792467,
+      "observed": {
+        "path": "C:\\qt_project\\GenForm\\models\\button_latch\\button_latch_open.gasm",
+        "part_count": 9,
+        "bolt_low": [
+          -40.0,
+          -6.5,
+          3.5181753635406494
+        ],
+        "bolt_high": [
+          26.0,
+          6.5,
+          16.48182487487793
+        ],
+        "spring_low": [
+          -17.991994857788086,
+          -4.6999945640563965,
+          5.3000054359436035
+        ]
+      },
+      "screenshot_sha256": "db01824af2c0534a2150f9cd1c01161ac6a40bc6c66bc6d6df4deffda6144775"
+    },
+    {
+      "state": "pressed",
+      "screenshot": "C:\\qt_project\\GenForm\\models\\button_latch\\button_latch_pressed.png",
+      "step": "C:\\qt_project\\GenForm\\models\\button_latch\\button_latch_pressed.step",
+      "step_bytes": 1855522,
+      "observed": {
+        "path": "C:\\qt_project\\GenForm\\models\\button_latch\\button_latch_pressed.gasm",
+        "part_count": 9,
+        "bolt_low": [
+          -32.0,
+          -6.5,
+          3.5181753635406494
+        ],
+        "bolt_high": [
+          34.0,
+          6.5,
+          16.48182487487793
+        ],
+        "spring_low": [
+          -9.994916915893555,
+          -4.6999945640563965,
+          5.3000054359436035
+        ]
+      },
+      "screenshot_sha256": "6f8b2585b26ee2c407cdf6508ca514308d646289523a0cddbd7ccc39ce5aaa94"
+    }
+  ]
+}

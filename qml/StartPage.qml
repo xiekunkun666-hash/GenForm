@@ -13,8 +13,8 @@ Rectangle {
     // 开着时挡住下面的视图: 鼠标、滚轮都不漏下去
     MouseArea { anchors.fill: parent; acceptedButtons: Qt.AllButtons; onWheel: (wheel) => wheel.accepted = true }
 
-    readonly property var kinds: ({ part: "cube", assembly: "assembly", drawing: "drawing", step: "cube" })
-    readonly property var kindNames: ({ part: qsTr("零件"), assembly: qsTr("装配体"), drawing: qsTr("工程图"), step: qsTr("STEP 文件") })
+    readonly property var kinds: ({ part: "cube", assembly: "assembly", drawing: "drawing", step: "cube", stl: "cube" })
+    readonly property var kindNames: ({ part: qsTr("零件"), assembly: qsTr("装配体"), drawing: qsTr("工程图"), step: qsTr("STEP 文件"), stl: qsTr("STL 网格") })
 
     Flickable {
         anchors.fill: parent
@@ -36,7 +36,7 @@ Rectangle {
             Column {
                 spacing: 6
                 Text { text: qsTr("新建"); color: Theme.cText; font.family: Theme.font; font.pixelSize: 22; font.bold: true }
-                Text { text: qsTr("选一种文档开始；也可以把文件拖进窗口直接打开"); color: Theme.cTextMuted; font.family: Theme.font; font.pixelSize: Theme.smallSize }
+                Text { text: qsTr("多选 STEP / STL 拖入窗口，自动组成装配体"); color: Theme.cTextMuted; font.family: Theme.font; font.pixelSize: Theme.smallSize }
             }
 
             Row {

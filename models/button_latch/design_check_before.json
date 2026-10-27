@@ -1,0 +1,149 @@
+{
+  "counts": {
+    "error": 5,
+    "warning": 1,
+    "info": 3
+  },
+  "issues": [
+    {
+      "level": "error",
+      "code": "clash",
+      "title": "干涉：Housing | fixed guide ↔ Cover screw M3x6 (-16, -13)",
+      "detail": "两个件压进去了 0.23 mm 深、7.93 mm³：装不上，改尺寸或让开",
+      "features": [
+        "part:0",
+        "part:5"
+      ],
+      "point": [
+        -16.000000000000004,
+        -12.999999999999993,
+        15.16368654560462
+      ],
+      "names": [
+        "Housing | fixed guide",
+        "Cover screw M3x6 (-16, -13)"
+      ]
+    },
+    {
+      "level": "error",
+      "code": "clash",
+      "title": "干涉：Housing | fixed guide ↔ Cover screw M3x6 (-16, 13)",
+      "detail": "两个件压进去了 0.23 mm 深、7.93 mm³：装不上，改尺寸或让开",
+      "features": [
+        "part:0",
+        "part:6"
+      ],
+      "point": [
+        -16.000000000000004,
+        12.999999999999993,
+        15.16368654560462
+      ],
+      "names": [
+        "Housing | fixed guide",
+        "Cover screw M3x6 (-16, 13)"
+      ]
+    },
+    {
+      "level": "error",
+      "code": "clash",
+      "title": "干涉：Housing | fixed guide ↔ Cover screw M3x6 (16, -13)",
+      "detail": "两个件压进去了 0.23 mm 深、7.93 mm³：装不上，改尺寸或让开",
+      "features": [
+        "part:0",
+        "part:7"
+      ],
+      "point": [
+        15.999999999999995,
+        -12.999999999999995,
+        15.163686545604621
+      ],
+      "names": [
+        "Housing | fixed guide",
+        "Cover screw M3x6 (16, -13)"
+      ]
+    },
+    {
+      "level": "error",
+      "code": "clash",
+      "title": "干涉：Housing | fixed guide ↔ Cover screw M3x6 (16, 13)",
+      "detail": "两个件压进去了 0.23 mm 深、7.93 mm³：装不上，改尺寸或让开",
+      "features": [
+        "part:0",
+        "part:8"
+      ],
+      "point": [
+        15.999999999999995,
+        12.999999999999995,
+        15.163686545604621
+      ],
+      "names": [
+        "Housing | fixed guide",
+        "Cover screw M3x6 (16, 13)"
+      ]
+    },
+    {
+      "level": "error",
+      "code": "floating",
+      "title": "悬空：Keeper | separate mating panel",
+      "detail": "没贴在任何装到“Housing | fixed guide”上的零件上：装上去没有东西托着它",
+      "features": [
+        "part:2"
+      ],
+      "point": null,
+      "names": [
+        "Keeper | separate mating panel"
+      ]
+    },
+    {
+      "level": "warning",
+      "code": "no_process",
+      "title": "6 种零件还没绑工艺",
+      "detail": "Button + bolt | stroke 8 mm、Cover screw M3x6 (-16, -13)、Housing | fixed guide、Inspection cover、Keeper | separate mating panel、Return compression spring：打开零件，评估 → 绑定工艺",
+      "features": [
+        "part:1",
+        "part:5",
+        "part:0",
+        "part:4",
+        "part:2",
+        "part:3"
+      ],
+      "point": null,
+      "names": [
+        "Button + bolt | stroke 8 mm",
+        "Cover screw M3x6 (-16, -13)",
+        "Housing | fixed guide",
+        "Inspection cover",
+        "Keeper | separate mating panel",
+        "Return compression spring"
+      ]
+    },
+    {
+      "level": "info",
+      "code": "contacts",
+      "title": "8 处装配面",
+      "detail": "查了 13 对挨得近的零件：贴着的 8 处，靠它们一个托一个地装在“Housing | fixed guide”上",
+      "features": [],
+      "point": null,
+      "names": []
+    },
+    {
+      "level": "info",
+      "code": "bom_custom",
+      "title": "非标件 6 种 9 件",
+      "detail": "估算 ¥0",
+      "features": [],
+      "point": null,
+      "names": []
+    },
+    {
+      "level": "info",
+      "code": "cost",
+      "title": "整套估算 ¥0",
+      "detail": "6 种零件 9 件，按各零件绑的工艺和设计规则里的生产数量",
+      "features": [],
+      "point": null,
+      "names": []
+    }
+  ],
+  "stale": false
+}

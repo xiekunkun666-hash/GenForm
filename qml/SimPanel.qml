@@ -21,8 +21,9 @@ Rectangle {
     FileDialog {
         id: partDialog
         title: qsTr("插入零件")
-        nameFilters: [qsTr("零件 (*.gform *.step *.stp)")]
-        onAccepted: sim.addPart(selectedFile)
+        fileMode: FileDialog.OpenFiles
+        nameFilters: [qsTr("零件 / STEP / STL (*.gform *.step *.stp *.stl)")]
+        onAccepted: sim.addParts(selectedFiles)
     }
 
     FileDialog {
@@ -252,7 +253,7 @@ Rectangle {
                 Text {
                     visible: panel.state.parts.length === 0
                     width: parent.width; wrapMode: Text.Wrap
-                    text: qsTr("还没有零件：点下面的“插入零件…”，选 .gform 或 .step 文件")
+                    text: qsTr("点“插入零件”多选 .gform / STEP / STL，也可直接拖入窗口")
                     color: Theme.cTextMuted; font.family: Theme.font; font.pixelSize: Theme.textSize
                 }
                 Row {

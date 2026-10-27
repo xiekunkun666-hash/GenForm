@@ -1,0 +1,229 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 13,
+ "upto": null,
+ "props": {
+  "color": "#BDC4CD"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "coil_mean_circle",
+   "params": {
+    "plane": "YZ",
+    "offset": -47.313572229497765,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 10,
+      "cy": 10,
+      "r": 4.7
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "curve_helix",
+   "name": "螺旋线1",
+   "params": {
+    "sketch": "f1",
+    "kind": "helix",
+    "pitch": 2.7033930573744414,
+    "turns": 4.0,
+    "taper": 0.0,
+    "start": 0.0,
+    "clockwise": false
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": null,
+    "why": "定制压簧几何包络：线径1、平均径9.4、四圈及闭口磨平端；弹力与寿命未校核，报价待定。手动指定",
+    "alternatives": [],
+    "standard": true,
+    "spec": "定制压簧几何包络：线径1、平均径9.4、四圈及闭口磨平端；弹力与寿命未校核，报价待定"
+   }
+  },
+  {
+   "id": "f3",
+   "type": "plane",
+   "name": "基准面1",
+   "params": {
+    "base": "XY",
+    "offset": 0.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      -47.313572229497765,
+      14.7,
+      10
+     ]
+    ],
+    "normal": [
+     [
+      0.4302583682014542,
+      0,
+      4.7
+     ]
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "sketch",
+   "name": "wire_section",
+   "params": {
+    "plane": "f3",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 0.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sweep",
+   "name": "扫描1",
+   "params": {
+    "sketch": "f4",
+    "path": "f2",
+    "op": "add"
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": null,
+    "why": "定制压簧几何包络：线径1、平均径9.4、四圈及闭口磨平端；弹力与寿命未校核，报价待定。手动指定",
+    "alternatives": [],
+    "standard": true,
+    "spec": "定制压簧几何包络：线径1、平均径9.4、四圈及闭口磨平端；弹力与寿命未校核，报价待定"
+   }
+  },
+  {
+   "id": "f10",
+   "type": "sketch",
+   "name": "rear_closed_end",
+   "params": {
+    "plane": "YZ",
+    "offset": -47.813572229497765,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 10,
+      "cy": 10,
+      "r": 5.25
+     },
+     {
+      "type": "circle",
+      "cx": 10,
+      "cy": 10,
+      "r": 4.15
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f11",
+   "type": "extrude",
+   "name": "rear_ground_seat",
+   "params": {
+    "sketch": "f10",
+    "distance": 1.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": null,
+    "why": "定制压簧几何包络：线径1、平均径9.4、四圈及闭口磨平端；弹力与寿命未校核，报价待定。手动指定",
+    "alternatives": [],
+    "standard": true,
+    "spec": "定制压簧几何包络：线径1、平均径9.4、四圈及闭口磨平端；弹力与寿命未校核，报价待定"
+   }
+  },
+  {
+   "id": "f12",
+   "type": "sketch",
+   "name": "front_closed_end",
+   "params": {
+    "plane": "YZ",
+    "offset": -37.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 10,
+      "cy": 10,
+      "r": 5.25
+     },
+     {
+      "type": "circle",
+      "cx": 10,
+      "cy": 10,
+      "r": 4.15
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f13",
+   "type": "extrude",
+   "name": "front_ground_seat",
+   "params": {
+    "sketch": "f12",
+    "distance": 1.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false,
+   "process": {
+    "id": "purchase",
+    "name": "外购总成",
+    "short": "外购",
+    "color": "#5E6268",
+    "auto": false,
+    "kind": null,
+    "why": "定制压簧几何包络：线径1、平均径9.4、四圈及闭口磨平端；弹力与寿命未校核，报价待定。手动指定",
+    "alternatives": [],
+    "standard": true,
+    "spec": "定制压簧几何包络：线径1、平均径9.4、四圈及闭口磨平端；弹力与寿命未校核，报价待定"
+   }
+  }
+ ]
+}
