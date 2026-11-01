@@ -1,0 +1,52 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "橡胶",
+  "color": "#1d1f22"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "section",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 49.5,
+      "cy": 89.3,
+      "r": 1.0
+     },
+     {
+      "type": "line",
+      "x1": 0,
+      "y1": 0,
+      "x2": 0,
+      "y2": 200,
+      "construction": true
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "ring",
+   "params": {
+    "sketch": "f1",
+    "axis": "CL",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false
+  }
+ ]
+}

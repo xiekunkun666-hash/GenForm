@@ -1,0 +1,226 @@
+{
+  "format": "genform-assembly",
+  "version": 1,
+  "parts": [
+    {
+      "name": "集粉锥斗 | 透明 PC 车削, 60° 锥底, Ø22 出粉口",
+      "file": "collection_cup.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "翻板阀座 | PA12 打印, 套在出粉短管上, 带铰耳",
+      "file": "valve_body.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "翻板 | PA12 打印 (轻), 关闭位",
+      "file": "flap.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "翻板密封垫 Ø28×1.5 (硅胶)",
+      "file": "flap_seal.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "配重块 6×10×20 黄铜 ≈10 g (加减垫片调)",
+      "file": "counterweight.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "圆柱销 Ø3×14 (GB/T 119, 压在铰耳里)",
+      "file": "hinge_pin_3x14.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "盘头螺钉 M3×8 ×2 (阀座→锥斗短管) + M3×8 ×1 (配重)",
+      "file": "screws_valve_M3x8.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "旋风头 | PA12 打印 (SLS/MJF), 切向进气 Ø32",
+      "file": "cyclone_head.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "O 形圈 ID97×2 (NBR, 杯口径向密封)",
+      "file": "oring_97x2.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "滤网 Ø116 (H13 HEPA / PTFE 覆膜毡) 边缘夹紧兼作密封垫",
+      "file": "filter_disc.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "滤网框 + 格栅 | PA12 打印, 风扇座",
+      "file": "filter_frame.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "台达 12 cm 风扇 120×120×38 4 线 PWM (外购, 占位)",
+      "file": "delta_fan_120x38.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "沉头螺钉 M4×20 ×4 (滤网框→旋风头)",
+      "file": "screws_frame_M4x20_flat.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "内六角螺钉 M4×50 ×4 (风扇→滤网框)",
+      "file": "screws_fan_M4x50.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "joints": [
+    {
+      "name": "翻板阀 (负 = 打开卸粉)",
+      "kind": "hinge",
+      "origin": [
+        22.0,
+        0,
+        -37.0
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "parts": [
+        2,
+        3,
+        4
+      ],
+      "base": 1,
+      "min": -60,
+      "max": 0
+    }
+  ]
+}

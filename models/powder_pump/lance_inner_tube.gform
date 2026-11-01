@@ -1,0 +1,53 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "不锈钢 304",
+  "color": "#b9bec4"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "tube",
+   "params": {
+    "plane": "XY",
+    "offset": 5.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 6.0
+     },
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 5.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "tube_x",
+   "params": {
+    "sketch": "f1",
+    "distance": 225.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  }
+ ]
+}

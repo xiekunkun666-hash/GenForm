@@ -1,0 +1,470 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 22,
+ "upto": null,
+ "props": {
+  "material": "铝合金 6061",
+  "color": "#c9ced4"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "shoulder",
+   "params": {
+    "plane": "XY",
+    "offset": 195.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 18
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "shoulder_x",
+   "params": {
+    "sketch": "f1",
+    "distance": 10.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "body",
+   "params": {
+    "plane": "XY",
+    "offset": 205.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 15
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "body_x",
+   "params": {
+    "sketch": "f3",
+    "distance": 30.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "nipple",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        0,
+        235.0
+       ],
+       [
+        5.5,
+        235.0
+       ],
+       [
+        5.5,
+        239.5
+       ],
+       [
+        6.0,
+        239.5
+       ],
+       [
+        5.5,
+        242.5
+       ],
+       [
+        5.5,
+        243.5
+       ],
+       [
+        6.0,
+        243.5
+       ],
+       [
+        5.5,
+        246.5
+       ],
+       [
+        5.5,
+        248.5
+       ],
+       [
+        5.0,
+        249.0
+       ],
+       [
+        0,
+        249.0
+       ]
+      ]
+     },
+     {
+      "type": "line",
+      "x1": 0,
+      "y1": 0,
+      "x2": 0,
+      "y2": 400,
+      "construction": true
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "revolve",
+   "name": "nipple_x",
+   "params": {
+    "sketch": "f5",
+    "axis": "CL",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "socket",
+   "params": {
+    "plane": "XY",
+    "offset": 195.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 10
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "socket_cut",
+   "params": {
+    "sketch": "f7",
+    "distance": 10.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f9",
+   "type": "sketch",
+   "name": "air",
+   "params": {
+    "plane": "XY",
+    "offset": 205.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 10
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f10",
+   "type": "extrude",
+   "name": "air_cut",
+   "params": {
+    "sketch": "f9",
+    "distance": 10.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f11",
+   "type": "sketch",
+   "name": "tube_bore",
+   "params": {
+    "plane": "XY",
+    "offset": 215.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 6
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f12",
+   "type": "extrude",
+   "name": "tube_bore_cut",
+   "params": {
+    "sketch": "f11",
+    "distance": 15.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f13",
+   "type": "sketch",
+   "name": "flow",
+   "params": {
+    "plane": "XY",
+    "offset": 249.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 4
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f14",
+   "type": "extrude",
+   "name": "flow_cut",
+   "params": {
+    "sketch": "f13",
+    "distance": -19.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f15",
+   "type": "sketch",
+   "name": "clip_groove",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 14.75,
+      "cy": 215.5,
+      "w": 0.5,
+      "h": 1.0
+     },
+     {
+      "type": "line",
+      "x1": 0,
+      "y1": 0,
+      "x2": 0,
+      "y2": 400,
+      "construction": true
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f16",
+   "type": "revolve",
+   "name": "clip_groove_cut",
+   "params": {
+    "sketch": "f15",
+    "axis": "CL",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "cut"
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f17",
+   "type": "plane",
+   "name": "air_hole_px",
+   "params": {
+    "base": "XY",
+    "offset": 0.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      0.0,
+      0.0,
+      210.0
+     ]
+    ],
+    "normal": [
+     [
+      1.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f18",
+   "type": "sketch",
+   "name": "air_hole_sx",
+   "params": {
+    "plane": "f17",
+    "offset": 20.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 0,
+      "y": 0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f19",
+   "type": "hole",
+   "name": "air_hole_x",
+   "params": {
+    "sketch": "f18",
+    "kind": "simple",
+    "size": "custom",
+    "diameter": 4.0,
+    "through": true,
+    "depth": 10.0,
+    "head_diameter": 10.0,
+    "head_depth": 5.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f20",
+   "type": "plane",
+   "name": "air_hole_py",
+   "params": {
+    "base": "XY",
+    "offset": 0.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      0.0,
+      0.0,
+      210.0
+     ]
+    ],
+    "normal": [
+     [
+      0.0,
+      1.0,
+      0.0
+     ]
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f21",
+   "type": "sketch",
+   "name": "air_hole_sy",
+   "params": {
+    "plane": "f20",
+    "offset": 20.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 0,
+      "y": 0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f22",
+   "type": "hole",
+   "name": "air_hole_y",
+   "params": {
+    "sketch": "f21",
+    "kind": "simple",
+    "size": "custom",
+    "diameter": 4.0,
+    "through": true,
+    "depth": 10.0,
+    "head_diameter": 10.0,
+    "head_depth": 5.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  }
+ ]
+}

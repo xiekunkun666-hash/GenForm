@@ -1,0 +1,143 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 7,
+ "upto": null,
+ "props": {
+  "material": "合金钢",
+  "color": "#3c4048"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "can",
+   "params": {
+    "plane": "XY",
+    "offset": -47.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 14.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "can_x",
+   "params": {
+    "sketch": "f1",
+    "distance": 47.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "chamfer",
+   "name": "can_edges",
+   "params": {
+    "edges": "<Z",
+    "distance": 1.0
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "sketch",
+   "name": "shaft_bore",
+   "params": {
+    "plane": "XY",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 1.6375
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "extrude",
+   "name": "shaft_bore_cut",
+   "params": {
+    "sketch": "f4",
+    "distance": -8.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "sketch",
+   "name": "mount",
+   "params": {
+    "plane": "XY",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 8.0,
+      "y": 0.0
+     },
+     {
+      "type": "point",
+      "x": -8.0,
+      "y": 0.0
+     },
+     {
+      "type": "point",
+      "x": 0.0,
+      "y": 9.5
+     },
+     {
+      "type": "point",
+      "x": 0.0,
+      "y": -9.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f7",
+   "type": "hole",
+   "name": "mount_tap (M3 螺纹孔, 光孔示意)",
+   "params": {
+    "sketch": "f6",
+    "kind": "simple",
+    "size": "custom",
+    "diameter": 3.0,
+    "through": true,
+    "depth": 4.5,
+    "head_diameter": 10.0,
+    "head_depth": 5.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  }
+ ]
+}

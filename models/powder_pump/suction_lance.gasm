@@ -1,0 +1,112 @@
+{
+  "format": "genform-assembly",
+  "version": 1,
+  "parts": [
+    {
+      "name": "吸料枪内管 Ø12×1 (304 不锈钢管), 走粉",
+      "file": "lance_inner_tube.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "吸料枪外管 Ø20×2 (304 不锈钢管), 补气环隙",
+      "file": "lance_outer_sleeve.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "内管定位撑 (PTFE, 3 爪, 留补气通道)",
+      "file": "lance_spacer.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "吸料枪头 | 6061 车削, 补气腔 + 软管接头",
+      "file": "lance_head.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "补气调节环 | 6061, 转 45° 关闭补气孔",
+      "file": "lance_air_collar.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "轴用挡圈 Ø30 (GB/T 894, 挡住调节环)",
+      "file": "lance_circlip.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "joints": [
+    {
+      "name": "补气调节环 (0 = 全开, 45° = 全关)",
+      "kind": "hinge",
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "parts": [
+        4
+      ],
+      "base": 3,
+      "min": 0,
+      "max": 45
+    }
+  ]
+}

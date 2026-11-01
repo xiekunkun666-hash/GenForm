@@ -1,0 +1,187 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 9,
+ "upto": null,
+ "props": {
+  "material": "铝合金 6061",
+  "color": "#d8a24a"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "collar",
+   "params": {
+    "plane": "XY",
+    "offset": 205.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 18.0
+     },
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 15.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "collar_x",
+   "params": {
+    "sketch": "f1",
+    "distance": 10.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "fillet",
+   "name": "knurl_edge",
+   "params": {
+    "edges": ">Z",
+    "radius": 0.5
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "plane",
+   "name": "collar_hole_px",
+   "params": {
+    "base": "XY",
+    "offset": 0.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      0.0,
+      0.0,
+      210.0
+     ]
+    ],
+    "normal": [
+     [
+      1.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "collar_hole_sx",
+   "params": {
+    "plane": "f4",
+    "offset": 20.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 0,
+      "y": 0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "hole",
+   "name": "collar_hole_x",
+   "params": {
+    "sketch": "f5",
+    "kind": "simple",
+    "size": "custom",
+    "diameter": 5.0,
+    "through": true,
+    "depth": 10.0,
+    "head_diameter": 10.0,
+    "head_depth": 5.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f7",
+   "type": "plane",
+   "name": "collar_hole_py",
+   "params": {
+    "base": "XY",
+    "offset": 0.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      0.0,
+      0.0,
+      210.0
+     ]
+    ],
+    "normal": [
+     [
+      0.0,
+      1.0,
+      0.0
+     ]
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "sketch",
+   "name": "collar_hole_sy",
+   "params": {
+    "plane": "f7",
+    "offset": 20.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 0,
+      "y": 0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f9",
+   "type": "hole",
+   "name": "collar_hole_y",
+   "params": {
+    "sketch": "f8",
+    "kind": "simple",
+    "size": "custom",
+    "diameter": 5.0,
+    "through": true,
+    "depth": 10.0,
+    "head_diameter": 10.0,
+    "head_depth": 5.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  }
+ ]
+}

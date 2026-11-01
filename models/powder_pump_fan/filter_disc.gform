@@ -1,0 +1,47 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "聚丙烯 PP",
+  "color": "#f2f2ec"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "disc",
+   "params": {
+    "plane": "XY",
+    "offset": 165.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 58
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "disc_x",
+   "params": {
+    "sketch": "f1",
+    "distance": 1.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  }
+ ]
+}

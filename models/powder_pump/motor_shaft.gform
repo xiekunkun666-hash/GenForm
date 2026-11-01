@@ -1,0 +1,97 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 4,
+ "upto": null,
+ "props": {
+  "material": "合金钢",
+  "color": "#8a9099"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "shaft",
+   "params": {
+    "plane": "XY",
+    "offset": -6.8,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 1.5875
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "shaft_x",
+   "params": {
+    "sketch": "f1",
+    "distance": 21.8,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "dflat",
+   "params": {
+    "plane": "XY",
+    "offset": 15.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        2.366,
+        -2.0981
+       ],
+       [
+        4.9641,
+        -0.5981
+       ],
+       [
+        1.9641,
+        4.5981
+       ],
+       [
+        -0.634,
+        3.0981
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "dflat_cut",
+   "params": {
+    "sketch": "f3",
+    "distance": -8.6,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  }
+ ]
+}

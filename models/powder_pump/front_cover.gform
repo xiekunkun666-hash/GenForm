@@ -1,0 +1,431 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 16,
+ "upto": null,
+ "props": {
+  "material": "铝合金 6061",
+  "color": "#c9ced4"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "cover_disc",
+   "params": {
+    "plane": "XY",
+    "offset": 14.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 37.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "sketch",
+   "name": "cover_boss",
+   "params": {
+    "plane": "XY",
+    "offset": 14.5,
+    "shapes": [
+     {
+      "type": "slot",
+      "x1": 0,
+      "y1": 0,
+      "x2": 30.0,
+      "y2": -26.0,
+      "w": 24.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "extrude",
+   "name": "cover_disc_x",
+   "params": {
+    "sketch": "f1",
+    "distance": 5.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "cover_boss_x",
+   "params": {
+    "sketch": "f2",
+    "distance": 5.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "inlet_nipple",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        0,
+        19.5
+       ],
+       [
+        5.5,
+        19.5
+       ],
+       [
+        5.5,
+        24.0
+       ],
+       [
+        6.0,
+        24.0
+       ],
+       [
+        5.5,
+        27.0
+       ],
+       [
+        5.5,
+        28.0
+       ],
+       [
+        6.0,
+        28.0
+       ],
+       [
+        5.5,
+        31.0
+       ],
+       [
+        5.5,
+        33.0
+       ],
+       [
+        5.0,
+        33.5
+       ],
+       [
+        0,
+        33.5
+       ]
+      ]
+     },
+     {
+      "type": "line",
+      "x1": 0,
+      "y1": 0,
+      "x2": 0,
+      "y2": 40,
+      "construction": true
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "revolve",
+   "name": "inlet_nipple_x",
+   "params": {
+    "sketch": "f5",
+    "axis": "CL",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "outlet_nipple",
+   "params": {
+    "plane": "XZ",
+    "offset": 26.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        30.0,
+        19.5
+       ],
+       [
+        35.5,
+        19.5
+       ],
+       [
+        35.5,
+        24.0
+       ],
+       [
+        36.0,
+        24.0
+       ],
+       [
+        35.5,
+        27.0
+       ],
+       [
+        35.5,
+        28.0
+       ],
+       [
+        36.0,
+        28.0
+       ],
+       [
+        35.5,
+        31.0
+       ],
+       [
+        35.5,
+        33.0
+       ],
+       [
+        35.0,
+        33.5
+       ],
+       [
+        30.0,
+        33.5
+       ]
+      ]
+     },
+     {
+      "type": "line",
+      "x1": 30.0,
+      "y1": 0,
+      "x2": 30.0,
+      "y2": 40,
+      "construction": true
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "revolve",
+   "name": "outlet_nipple_x",
+   "params": {
+    "sketch": "f7",
+    "axis": "CL",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f9",
+   "type": "sketch",
+   "name": "inlet_bore",
+   "params": {
+    "plane": "XY",
+    "offset": 33.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 4.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f10",
+   "type": "extrude",
+   "name": "inlet_bore_cut",
+   "params": {
+    "sketch": "f9",
+    "distance": -19.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f11",
+   "type": "sketch",
+   "name": "eye",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        0,
+        14.5
+       ],
+       [
+        7.0,
+        14.5
+       ],
+       [
+        4.0,
+        17.5
+       ],
+       [
+        0,
+        17.5
+       ]
+      ]
+     },
+     {
+      "type": "line",
+      "x1": 0,
+      "y1": 0,
+      "x2": 0,
+      "y2": 40,
+      "construction": true
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f12",
+   "type": "revolve",
+   "name": "eye_cut",
+   "params": {
+    "sketch": "f11",
+    "axis": "CL",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "cut"
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f13",
+   "type": "sketch",
+   "name": "outlet_bore",
+   "params": {
+    "plane": "XY",
+    "offset": 33.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 30.0,
+      "cy": -26.0,
+      "r": 4.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f14",
+   "type": "extrude",
+   "name": "outlet_bore_cut",
+   "params": {
+    "sketch": "f13",
+    "distance": -19.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f15",
+   "type": "sketch",
+   "name": "cover_holes",
+   "params": {
+    "plane": "XY",
+    "offset": 19.5,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 23.3345,
+      "y": 23.3345
+     },
+     {
+      "type": "point",
+      "x": -23.3345,
+      "y": 23.3345
+     },
+     {
+      "type": "point",
+      "x": -23.3345,
+      "y": -23.3345
+     },
+     {
+      "type": "point",
+      "x": 36.5,
+      "y": -20.5
+     },
+     {
+      "type": "point",
+      "x": 25.0,
+      "y": -33.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f16",
+   "type": "hole",
+   "name": "cover_csk",
+   "params": {
+    "sketch": "f15",
+    "kind": "countersink",
+    "size": "M3",
+    "diameter": 5.0,
+    "through": true,
+    "depth": 10.0,
+    "head_diameter": 10.0,
+    "head_depth": 5.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  }
+ ]
+}

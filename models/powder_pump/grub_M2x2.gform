@@ -1,0 +1,71 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 3,
+ "upto": null,
+ "props": {
+  "material": "合金钢",
+  "color": "#30343a"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "plane",
+   "name": "key_plane",
+   "params": {
+    "base": "XY",
+    "offset": 0.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      0.0,
+      0.0,
+      9.5
+     ]
+    ],
+    "normal": [
+     [
+      0.8660254037844387,
+      0.49999999999999994,
+      0.0
+     ]
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "sketch",
+   "name": "grub_pt",
+   "params": {
+    "plane": "f1",
+    "offset": 1.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 0,
+      "y": 0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "stud",
+   "name": "grub",
+   "params": {
+    "sketch": "f2",
+    "diameter": 2.0,
+    "length": 2.0,
+    "chamfer": 0.2,
+    "flip": false,
+    "thread": false,
+    "pitch": 0.4,
+    "phase": 0.0
+   },
+   "suppressed": false
+  }
+ ]
+}

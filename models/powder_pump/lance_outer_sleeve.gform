@@ -1,0 +1,53 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "不锈钢 304",
+  "color": "#9da3aa"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "sleeve",
+   "params": {
+    "plane": "XY",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 10.0
+     },
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 8.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "sleeve_x",
+   "params": {
+    "sketch": "f1",
+    "distance": 205.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  }
+ ]
+}

@@ -1,0 +1,301 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 16,
+ "upto": null,
+ "props": {
+  "material": "聚碳酸酯 PC",
+  "color": "#202226"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "frame",
+   "params": {
+    "plane": "XY",
+    "offset": 180.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 0,
+      "w": 120.0,
+      "h": 120.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "frame_x",
+   "params": {
+    "sketch": "f1",
+    "distance": 38.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "fillet",
+   "name": "corners",
+   "params": {
+    "edges": "|Z",
+    "radius": 5.0
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "sketch",
+   "name": "bore",
+   "params": {
+    "plane": "XY",
+    "offset": 218.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 58
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "extrude",
+   "name": "bore_cut",
+   "params": {
+    "sketch": "f4",
+    "distance": -38.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "sketch",
+   "name": "hub",
+   "params": {
+    "plane": "XY",
+    "offset": 182.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 22
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f7",
+   "type": "extrude",
+   "name": "hub_x",
+   "params": {
+    "sketch": "f6",
+    "distance": 36.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "sketch",
+   "name": "struts",
+   "params": {
+    "plane": "XY",
+    "offset": 214.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 0,
+      "w": 118,
+      "h": 4
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f9",
+   "type": "extrude",
+   "name": "struts_x",
+   "params": {
+    "sketch": "f8",
+    "distance": 4.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f10",
+   "type": "sketch",
+   "name": "struts2",
+   "params": {
+    "plane": "XY",
+    "offset": 214.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 0,
+      "w": 4,
+      "h": 118
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f11",
+   "type": "extrude",
+   "name": "struts2_x",
+   "params": {
+    "sketch": "f10",
+    "distance": 4.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f12",
+   "type": "sketch",
+   "name": "blade",
+   "params": {
+    "plane": "XY",
+    "offset": 186.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 39.5,
+      "cy": 0,
+      "w": 35,
+      "h": 1.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f13",
+   "type": "extrude",
+   "name": "blade_x",
+   "params": {
+    "sketch": "f12",
+    "distance": 24.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f14",
+   "type": "pattern_circular",
+   "name": "blades",
+   "params": {
+    "features": [
+     "f13"
+    ],
+    "axis": "Z",
+    "count": 7,
+    "angle": 360.0
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f15",
+   "type": "sketch",
+   "name": "holes",
+   "params": {
+    "plane": "XY",
+    "offset": 218.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": -52.5,
+      "y": -52.5
+     },
+     {
+      "type": "point",
+      "x": -52.5,
+      "y": 52.5
+     },
+     {
+      "type": "point",
+      "x": 52.5,
+      "y": -52.5
+     },
+     {
+      "type": "point",
+      "x": 52.5,
+      "y": 52.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f16",
+   "type": "hole",
+   "name": "fan_holes",
+   "params": {
+    "sketch": "f15",
+    "kind": "simple",
+    "size": "custom",
+    "diameter": 4.3,
+    "through": true,
+    "depth": 10.0,
+    "head_diameter": 10.0,
+    "head_depth": 5.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  }
+ ]
+}

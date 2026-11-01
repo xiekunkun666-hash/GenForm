@@ -1,0 +1,84 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 4,
+ "upto": null,
+ "props": {
+  "material": "黄铜",
+  "color": "#c9a227"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "block",
+   "params": {
+    "plane": "XY",
+    "offset": -36.9,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 32.0,
+      "cy": 0,
+      "w": 10,
+      "h": 6
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "block_x",
+   "params": {
+    "sketch": "f1",
+    "distance": -20.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "tap",
+   "params": {
+    "plane": "XY",
+    "offset": -36.9,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 32.0,
+      "y": 0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "hole",
+   "name": "cw_tap",
+   "params": {
+    "sketch": "f3",
+    "kind": "simple",
+    "size": "custom",
+    "diameter": 3.0,
+    "through": true,
+    "depth": 8.0,
+    "head_diameter": 10.0,
+    "head_depth": 5.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  }
+ ]
+}

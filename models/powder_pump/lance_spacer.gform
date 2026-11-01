@@ -1,0 +1,113 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 5,
+ "upto": null,
+ "props": {
+  "material": "聚丙烯 PP",
+  "color": "#f2f2ec"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "ring",
+   "params": {
+    "plane": "XY",
+    "offset": 20.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 8.0
+     },
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 6.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "ring_x",
+   "params": {
+    "sketch": "f1",
+    "distance": 6.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "gap",
+   "params": {
+    "plane": "XY",
+    "offset": 26.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        0,
+        0
+       ],
+       [
+        10.39,
+        6.0
+       ],
+       [
+        10.39,
+        -6.0
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "gap_cut",
+   "params": {
+    "sketch": "f3",
+    "distance": -6.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "pattern_circular",
+   "name": "gaps",
+   "params": {
+    "features": [
+     "f4"
+    ],
+    "axis": "Z",
+    "count": 3,
+    "angle": 360.0
+   },
+   "suppressed": false
+  }
+ ]
+}

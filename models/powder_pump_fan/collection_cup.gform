@@ -1,0 +1,119 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 4,
+ "upto": null,
+ "props": {
+  "material": "聚碳酸酯 PC",
+  "color": "#cfe3ef"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "wall",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        50.5,
+        100.0
+       ],
+       [
+        55,
+        100.0
+       ],
+       [
+        55,
+        46.8
+       ],
+       [
+        15,
+        -22.5
+       ],
+       [
+        15,
+        -33.4
+       ],
+       [
+        11,
+        -33.4
+       ],
+       [
+        11,
+        -23.4
+       ],
+       [
+        50.5,
+        45
+       ]
+      ]
+     },
+     {
+      "type": "line",
+      "x1": 0,
+      "y1": -100,
+      "x2": 0,
+      "y2": 200,
+      "construction": true
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "revolve",
+   "name": "wall_x",
+   "params": {
+    "sketch": "f1",
+    "axis": "CL",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "valve_screw_holes",
+   "params": {
+    "plane": "XZ",
+    "offset": 20.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 0,
+      "y": -28
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "hole",
+   "name": "valve_tap",
+   "params": {
+    "sketch": "f3",
+    "kind": "simple",
+    "size": "custom",
+    "diameter": 3.0,
+    "through": true,
+    "depth": 10.0,
+    "head_diameter": 10.0,
+    "head_depth": 5.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  }
+ ]
+}

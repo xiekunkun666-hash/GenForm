@@ -1,0 +1,53 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "合金钢",
+  "color": "#30343a"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "clip",
+   "params": {
+    "plane": "XY",
+    "offset": 215.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 17.0
+     },
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 14.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "clip_x",
+   "params": {
+    "sketch": "f1",
+    "distance": 1.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  }
+ ]
+}

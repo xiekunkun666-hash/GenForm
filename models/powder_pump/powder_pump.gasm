@@ -1,0 +1,157 @@
+{
+  "format": "genform-assembly",
+  "version": 1,
+  "parts": [
+    {
+      "name": "泵体 | 6061 导电氧化, 蜗壳 + 电机座",
+      "file": "pump_body.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "前盖 | 6061 导电氧化, 进/出口接头",
+      "file": "front_cover.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "叶轮 | 7075, 6 片开式直叶 Ø40, G2.5 动平衡",
+      "file": "impeller.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "紧定螺钉 M2×2 平端 (DIN 913)",
+      "file": "grub_M2x2.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "无刷电机 Surpass KK2845 3800KV (Ø28×47, 3S)",
+      "file": "motor_bldc.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "电机轴 Ø3.175×15 (伸出), 磨 D 面 0.6 (随转子转)",
+      "file": "motor_shaft.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "骨架油封 3.175×8×3 (PTFE 唇, 防粉进电机)",
+      "file": "lip_seal_3x8x3.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "沉头螺钉 M3×10 ×4 (电机安装, 拧进电机 4)",
+      "file": "screws_motor_M3x10_flat.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "沉头螺钉 M3×10 ×5 (前盖)",
+      "file": "screws_cover_M3x10_flat.gform",
+      "move": [
+        0,
+        0,
+        0
+      ],
+      "turn": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "joints": [
+    {
+      "name": "叶轮转动 (俯视逆时针)",
+      "kind": "hinge",
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "parts": [
+        2,
+        3,
+        5
+      ],
+      "base": 0,
+      "min": -360,
+      "max": 360,
+      "speed": 360
+    }
+  ]
+}

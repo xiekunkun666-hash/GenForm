@@ -1,0 +1,188 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 10,
+ "upto": null,
+ "props": {
+  "material": "尼龙 PA12",
+  "color": "#e07b39"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "disc",
+   "params": {
+    "plane": "XY",
+    "offset": -36.9,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 14
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "disc_x",
+   "params": {
+    "sketch": "f1",
+    "distance": 2.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "arm",
+   "params": {
+    "plane": "XY",
+    "offset": -36.9,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 23,
+      "cy": 0,
+      "w": 26,
+      "h": 6
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "arm_x",
+   "params": {
+    "sketch": "f3",
+    "distance": 2.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "boss",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 22.0,
+      "cy": -37.0,
+      "r": 3
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "boss_x",
+   "params": {
+    "sketch": "f5",
+    "distance": 6.0,
+    "op": "add",
+    "symmetric": true,
+    "end": "mid",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "bore",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 22.0,
+      "cy": -37.0,
+      "r": 1.6
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "bore_cut",
+   "params": {
+    "sketch": "f7",
+    "distance": 8.0,
+    "op": "cut",
+    "symmetric": true,
+    "end": "mid",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f9",
+   "type": "sketch",
+   "name": "cw_hole",
+   "params": {
+    "plane": "XY",
+    "offset": -34.9,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 32.0,
+      "cy": 0,
+      "r": 1.7
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f10",
+   "type": "extrude",
+   "name": "cw_hole_cut",
+   "params": {
+    "sketch": "f9",
+    "distance": -2.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  }
+ ]
+}

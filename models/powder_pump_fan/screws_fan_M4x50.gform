@@ -1,0 +1,59 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "不锈钢 304",
+  "color": "#9aa0a8"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "pts",
+   "params": {
+    "plane": "XY",
+    "offset": 218.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": -52.5,
+      "y": -52.5
+     },
+     {
+      "type": "point",
+      "x": -52.5,
+      "y": 52.5
+     },
+     {
+      "type": "point",
+      "x": 52.5,
+      "y": -52.5
+     },
+     {
+      "type": "point",
+      "x": 52.5,
+      "y": 52.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "screw",
+   "name": "s",
+   "params": {
+    "sketch": "f1",
+    "size": "M4",
+    "head": "cap",
+    "length": 50.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  }
+ ]
+}

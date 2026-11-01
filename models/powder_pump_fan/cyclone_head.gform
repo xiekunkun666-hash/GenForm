@@ -1,0 +1,426 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 22,
+ "upto": null,
+ "props": {
+  "material": "尼龙 PA12",
+  "color": "#5d6670"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "flange",
+   "params": {
+    "plane": "XY",
+    "offset": 160.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 0,
+      "w": 120.0,
+      "h": 120.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "flange_x",
+   "params": {
+    "sketch": "f1",
+    "distance": 5.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "barrel",
+   "params": {
+    "plane": "XY",
+    "offset": 100.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 55
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "barrel_x",
+   "params": {
+    "sketch": "f3",
+    "distance": 60.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "spigot",
+   "params": {
+    "plane": "XY",
+    "offset": 80.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 50.3
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "spigot_x",
+   "params": {
+    "sketch": "f5",
+    "distance": 20.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "inlet",
+   "params": {
+    "plane": "YZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 36.0,
+      "cy": 125.0,
+      "r": 16
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "inlet_x",
+   "params": {
+    "sketch": "f7",
+    "distance": 90.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f9",
+   "type": "sketch",
+   "name": "chamber",
+   "params": {
+    "plane": "XY",
+    "offset": 80.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 50
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f10",
+   "type": "extrude",
+   "name": "chamber_cut",
+   "params": {
+    "sketch": "f9",
+    "distance": 65.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f11",
+   "type": "sketch",
+   "name": "finder",
+   "params": {
+    "plane": "XY",
+    "offset": 145.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 22
+     },
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 20
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f12",
+   "type": "extrude",
+   "name": "finder_x",
+   "params": {
+    "sketch": "f11",
+    "distance": -40.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f13",
+   "type": "sketch",
+   "name": "plenum",
+   "params": {
+    "plane": "XY",
+    "offset": 165.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 52
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f14",
+   "type": "extrude",
+   "name": "plenum_cut",
+   "params": {
+    "sketch": "f13",
+    "distance": -17.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f15",
+   "type": "sketch",
+   "name": "finder_exit",
+   "params": {
+    "plane": "XY",
+    "offset": 148.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 20
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f16",
+   "type": "extrude",
+   "name": "finder_exit_cut",
+   "params": {
+    "sketch": "f15",
+    "distance": -3.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f17",
+   "type": "sketch",
+   "name": "inlet_bore",
+   "params": {
+    "plane": "YZ",
+    "offset": 30.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 36.0,
+      "cy": 125.0,
+      "r": 14
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f18",
+   "type": "extrude",
+   "name": "inlet_bore_cut",
+   "params": {
+    "sketch": "f17",
+    "distance": 60.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f19",
+   "type": "sketch",
+   "name": "oring_groove",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 49.4,
+      "cy": 89.3,
+      "w": 1.8,
+      "h": 3.0
+     },
+     {
+      "type": "line",
+      "x1": 0,
+      "y1": 0,
+      "x2": 0,
+      "y2": 200,
+      "construction": true
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f20",
+   "type": "revolve",
+   "name": "groove_cut",
+   "params": {
+    "sketch": "f19",
+    "axis": "CL",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "cut"
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f21",
+   "type": "sketch",
+   "name": "frame_holes",
+   "params": {
+    "plane": "XY",
+    "offset": 165.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": -45,
+      "y": -45
+     },
+     {
+      "type": "point",
+      "x": -45,
+      "y": 45
+     },
+     {
+      "type": "point",
+      "x": 45,
+      "y": -45
+     },
+     {
+      "type": "point",
+      "x": 45,
+      "y": 45
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f22",
+   "type": "hole",
+   "name": "frame_tap",
+   "params": {
+    "sketch": "f21",
+    "kind": "simple",
+    "size": "custom",
+    "diameter": 4.0,
+    "through": true,
+    "depth": 5.0,
+    "head_diameter": 10.0,
+    "head_depth": 5.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  }
+ ]
+}

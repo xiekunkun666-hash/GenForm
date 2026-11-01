@@ -1,0 +1,496 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 16,
+ "upto": null,
+ "props": {
+  "material": "铝合金 6061",
+  "color": "#b8bec6"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "body_disc",
+   "params": {
+    "plane": "XY",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 37.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "sketch",
+   "name": "body_boss",
+   "params": {
+    "plane": "XY",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "slot",
+      "x1": 0,
+      "y1": 0,
+      "x2": 30.0,
+      "y2": -26.0,
+      "w": 24.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "extrude",
+   "name": "body_disc_x",
+   "params": {
+    "sketch": "f1",
+    "distance": 14.5,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "body_boss_x",
+   "params": {
+    "sketch": "f2",
+    "distance": 14.5,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "volute",
+   "params": {
+    "plane": "XY",
+    "offset": 14.5,
+    "shapes": [
+     {
+      "type": "spline",
+      "points": [
+       [
+        3.8588,
+        -21.8846
+       ],
+       [
+        7.6765,
+        -21.0909
+       ],
+       [
+        11.3333,
+        -19.6299
+       ],
+       [
+        14.7127,
+        -17.5339
+       ],
+       [
+        17.7041,
+        -14.8555
+       ],
+       [
+        20.2073,
+        -11.6667
+       ],
+       [
+        22.135,
+        -8.0565
+       ],
+       [
+        23.4165,
+        -4.129
+       ],
+       [
+        24.0,
+        0.0
+       ],
+       [
+        23.8542,
+        4.2061
+       ],
+       [
+        22.9703,
+        8.3605
+       ],
+       [
+        21.362,
+        12.3333
+       ],
+       [
+        19.066,
+        15.9983
+       ],
+       [
+        16.1411,
+        19.2362
+       ],
+       [
+        12.6667,
+        21.9393
+       ],
+       [
+        8.7405,
+        24.0144
+       ],
+       [
+        4.4763,
+        25.3862
+       ],
+       [
+        0.0,
+        26.0
+       ],
+       [
+        -4.5534,
+        25.8238
+       ],
+       [
+        -9.0445,
+        24.8496
+       ],
+       [
+        -13.3333,
+        23.094
+       ],
+       [
+        -17.2838,
+        20.5981
+       ],
+       [
+        -20.7683,
+        17.4267
+       ],
+       [
+        -23.6714,
+        13.6667
+       ],
+       [
+        -25.8938,
+        9.4246
+       ],
+       [
+        -27.3558,
+        4.8236
+       ],
+       [
+        -28.0,
+        0.0
+       ],
+       [
+        -27.7935,
+        -4.9007
+       ],
+       [
+        -26.729,
+        -9.7286
+       ],
+       [
+        -24.8261,
+        -14.3333
+       ],
+       [
+        -22.1302,
+        -18.5694
+       ],
+       [
+        -18.7123,
+        -22.3004
+       ],
+       [
+        -14.6667,
+        -25.4034
+       ],
+       [
+        -10.1086,
+        -27.7731
+       ],
+       [
+        -5.1709,
+        -29.3254
+       ],
+       [
+        -0.0,
+        -30.0
+       ]
+      ]
+     },
+     {
+      "type": "line",
+      "x1": -0.0,
+      "y1": -30.0,
+      "x2": 30.0,
+      "y2": -30.0
+     },
+     {
+      "type": "arc",
+      "cx": 30.0,
+      "cy": -26.0,
+      "r": 4.0,
+      "a0": -90,
+      "a1": 90
+     },
+     {
+      "type": "line",
+      "x1": 30.0,
+      "y1": -22.0,
+      "x2": 3.8588,
+      "y2": -21.8846
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "volute_cut",
+   "params": {
+    "sketch": "f5",
+    "distance": -8.5,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "pilot",
+   "params": {
+    "plane": "XY",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 5.05
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "pilot_cut",
+   "params": {
+    "sketch": "f7",
+    "distance": 1.2,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f9",
+   "type": "sketch",
+   "name": "shaft_hole",
+   "params": {
+    "plane": "XY",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 2.1
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f10",
+   "type": "extrude",
+   "name": "shaft_hole_cut",
+   "params": {
+    "sketch": "f9",
+    "distance": 6.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f11",
+   "type": "sketch",
+   "name": "seal_pocket",
+   "params": {
+    "plane": "XY",
+    "offset": 6.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 4.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f12",
+   "type": "extrude",
+   "name": "seal_pocket_cut",
+   "params": {
+    "sketch": "f11",
+    "distance": -3.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f13",
+   "type": "sketch",
+   "name": "motor_holes",
+   "params": {
+    "plane": "XY",
+    "offset": 6.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 8.0,
+      "y": 0.0
+     },
+     {
+      "type": "point",
+      "x": -8.0,
+      "y": 0.0
+     },
+     {
+      "type": "point",
+      "x": 0.0,
+      "y": 9.5
+     },
+     {
+      "type": "point",
+      "x": 0.0,
+      "y": -9.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f14",
+   "type": "hole",
+   "name": "motor_csk",
+   "params": {
+    "sketch": "f13",
+    "kind": "countersink",
+    "size": "M3",
+    "diameter": 5.0,
+    "through": true,
+    "depth": 10.0,
+    "head_diameter": 10.0,
+    "head_depth": 5.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f15",
+   "type": "sketch",
+   "name": "cover_holes",
+   "params": {
+    "plane": "XY",
+    "offset": 14.5,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 23.3345,
+      "y": 23.3345
+     },
+     {
+      "type": "point",
+      "x": -23.3345,
+      "y": 23.3345
+     },
+     {
+      "type": "point",
+      "x": -23.3345,
+      "y": -23.3345
+     },
+     {
+      "type": "point",
+      "x": 36.5,
+      "y": -20.5
+     },
+     {
+      "type": "point",
+      "x": 25.0,
+      "y": -33.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f16",
+   "type": "hole",
+   "name": "cover_tap (M3 螺纹孔, 光孔示意)",
+   "params": {
+    "sketch": "f15",
+    "kind": "simple",
+    "size": "custom",
+    "diameter": 3.0,
+    "through": true,
+    "depth": 8.0,
+    "head_diameter": 10.0,
+    "head_depth": 5.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  }
+ ]
+}

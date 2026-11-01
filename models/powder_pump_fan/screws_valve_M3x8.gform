@@ -1,0 +1,160 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 8,
+ "upto": null,
+ "props": {
+  "material": "不锈钢 304",
+  "color": "#9aa0a8"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "plane",
+   "name": "pa",
+   "params": {
+    "base": "XY",
+    "offset": 0.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      0.0,
+      0.0,
+      -28.0
+     ]
+    ],
+    "normal": [
+     [
+      0.0,
+      1.0,
+      0.0
+     ]
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "sketch",
+   "name": "sa",
+   "params": {
+    "plane": "f1",
+    "offset": 19.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 0,
+      "y": 0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "screw",
+   "name": "s1",
+   "params": {
+    "sketch": "f2",
+    "size": "M3",
+    "head": "button",
+    "length": 8.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "plane",
+   "name": "pb",
+   "params": {
+    "base": "XY",
+    "offset": 0.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      0.0,
+      0.0,
+      -28.0
+     ]
+    ],
+    "normal": [
+     [
+      0.0,
+      -1.0,
+      0.0
+     ]
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "sb",
+   "params": {
+    "plane": "f4",
+    "offset": 19.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 0,
+      "y": 0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "screw",
+   "name": "s2",
+   "params": {
+    "sketch": "f5",
+    "size": "M3",
+    "head": "button",
+    "length": 8.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "sc",
+   "params": {
+    "plane": "XY",
+    "offset": -34.9,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 32.0,
+      "y": 0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "screw",
+   "name": "s3",
+   "params": {
+    "sketch": "f7",
+    "size": "M3",
+    "head": "button",
+    "length": 8.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  }
+ ]
+}

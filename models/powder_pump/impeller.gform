@@ -1,0 +1,416 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 12,
+ "upto": null,
+ "props": {
+  "material": "铝合金 7075",
+  "color": "#d8a24a"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "disc",
+   "params": {
+    "plane": "XY",
+    "offset": 6.5,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 20.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "disc_x",
+   "params": {
+    "sketch": "f1",
+    "distance": 1.5,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "hub",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        0,
+        8.0
+       ],
+       [
+        3.0,
+        8.0
+       ],
+       [
+        3.0,
+        13.0
+       ],
+       [
+        2.4,
+        15.6
+       ],
+       [
+        0,
+        16.6
+       ]
+      ]
+     },
+     {
+      "type": "line",
+      "x1": 0,
+      "y1": 0,
+      "x2": 0,
+      "y2": 40,
+      "construction": true
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "revolve",
+   "name": "hub_x",
+   "params": {
+    "sketch": "f3",
+    "axis": "CL",
+    "angle": 360.0,
+    "reverse": false,
+    "symmetric": false,
+    "op": "add"
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "blade",
+   "params": {
+    "plane": "XY",
+    "offset": 8.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 11.399999999999999,
+      "cy": 0,
+      "w": 17.2,
+      "h": 1.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "blade_x",
+   "params": {
+    "sketch": "f5",
+    "distance": 6.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f7",
+   "type": "pattern_circular",
+   "name": "blades",
+   "params": {
+    "features": [
+     "f6"
+    ],
+    "axis": "Z",
+    "count": 6,
+    "angle": 360.0
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "sketch",
+   "name": "bore",
+   "params": {
+    "plane": "XY",
+    "offset": 6.5,
+    "shapes": [
+     {
+      "type": "polygon",
+      "points": [
+       [
+        0.2496,
+        1.5678
+       ],
+       [
+        0.0718,
+        1.5859
+       ],
+       [
+        -0.1069,
+        1.5839
+       ],
+       [
+        -0.2842,
+        1.5619
+       ],
+       [
+        -0.4579,
+        1.52
+       ],
+       [
+        -0.6258,
+        1.4589
+       ],
+       [
+        -0.7858,
+        1.3794
+       ],
+       [
+        -0.9358,
+        1.2823
+       ],
+       [
+        -1.074,
+        1.1691
+       ],
+       [
+        -1.1986,
+        1.041
+       ],
+       [
+        -1.308,
+        0.8997
+       ],
+       [
+        -1.4008,
+        0.747
+       ],
+       [
+        -1.4758,
+        0.5849
+       ],
+       [
+        -1.5322,
+        0.4153
+       ],
+       [
+        -1.5692,
+        0.2405
+       ],
+       [
+        -1.5863,
+        0.0626
+       ],
+       [
+        -1.5833,
+        -0.116
+       ],
+       [
+        -1.5602,
+        -0.2932
+       ],
+       [
+        -1.5174,
+        -0.4667
+       ],
+       [
+        -1.4553,
+        -0.6342
+       ],
+       [
+        -1.3748,
+        -0.7937
+       ],
+       [
+        -1.2769,
+        -0.9432
+       ],
+       [
+        -1.1628,
+        -1.0807
+       ],
+       [
+        -1.034,
+        -1.2046
+       ],
+       [
+        -0.8921,
+        -1.3131
+       ],
+       [
+        -0.7389,
+        -1.4051
+       ],
+       [
+        -0.5763,
+        -1.4792
+       ],
+       [
+        -0.4064,
+        -1.5346
+       ],
+       [
+        -0.2314,
+        -1.5705
+       ],
+       [
+        -0.0535,
+        -1.5866
+       ],
+       [
+        0.1252,
+        -1.5826
+       ],
+       [
+        0.3022,
+        -1.5585
+       ],
+       [
+        0.4754,
+        -1.5146
+       ],
+       [
+        0.6426,
+        -1.4516
+       ],
+       [
+        0.8017,
+        -1.3702
+       ],
+       [
+        0.9506,
+        -1.2714
+       ],
+       [
+        1.0874,
+        -1.1566
+       ],
+       [
+        1.2105,
+        -1.027
+       ],
+       [
+        1.3183,
+        -0.8845
+       ],
+       [
+        1.4093,
+        -0.7308
+       ],
+       [
+        1.4825,
+        -0.5678
+       ]
+      ]
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f9",
+   "type": "extrude",
+   "name": "bore_cut",
+   "params": {
+    "sketch": "f8",
+    "distance": 8.6,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f10",
+   "type": "plane",
+   "name": "key_plane",
+   "params": {
+    "base": "XY",
+    "offset": 0.0,
+    "angle": 0.0,
+    "about": "x",
+    "origin": [
+     [
+      0.0,
+      0.0,
+      9.5
+     ]
+    ],
+    "normal": [
+     [
+      0.8660254037844387,
+      0.49999999999999994,
+      0.0
+     ]
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f11",
+   "type": "sketch",
+   "name": "grub_hole",
+   "params": {
+    "plane": "f10",
+    "offset": 3.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 0,
+      "y": 0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f12",
+   "type": "hole",
+   "name": "grub_tap (M2 螺纹孔, 光孔示意)",
+   "params": {
+    "sketch": "f11",
+    "kind": "simple",
+    "size": "custom",
+    "diameter": 2.0,
+    "through": true,
+    "depth": 2.0,
+    "head_diameter": 10.0,
+    "head_depth": 5.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  }
+ ]
+}

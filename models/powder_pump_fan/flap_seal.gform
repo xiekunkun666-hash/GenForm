@@ -1,0 +1,47 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "橡胶",
+  "color": "#c43c3c"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "pad",
+   "params": {
+    "plane": "XY",
+    "offset": -34.9,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 14
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "pad_x",
+   "params": {
+    "sketch": "f1",
+    "distance": 1.5,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  }
+ ]
+}

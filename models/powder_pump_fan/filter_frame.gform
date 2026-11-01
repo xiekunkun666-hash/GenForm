@@ -1,0 +1,320 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 14,
+ "upto": null,
+ "props": {
+  "material": "尼龙 PA12",
+  "color": "#4a525b"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "block",
+   "params": {
+    "plane": "XY",
+    "offset": 165.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 0,
+      "w": 120.0,
+      "h": 120.0
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "block_x",
+   "params": {
+    "sketch": "f1",
+    "distance": 15.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "opening",
+   "params": {
+    "plane": "XY",
+    "offset": 180.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 52
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "opening_cut",
+   "params": {
+    "sketch": "f3",
+    "distance": -15.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "recess",
+   "params": {
+    "plane": "XY",
+    "offset": 165.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 58.1
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "recess_cut",
+   "params": {
+    "sketch": "f5",
+    "distance": 1.0,
+    "op": "cut",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "bars_x",
+   "params": {
+    "plane": "XY",
+    "offset": 166.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": -27.5,
+      "w": 116,
+      "h": 2
+     },
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 0.0,
+      "w": 116,
+      "h": 2
+     },
+     {
+      "type": "rect",
+      "cx": 0,
+      "cy": 27.5,
+      "w": 116,
+      "h": 2
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "bars_x_x",
+   "params": {
+    "sketch": "f7",
+    "distance": 4.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f9",
+   "type": "sketch",
+   "name": "bars_y",
+   "params": {
+    "plane": "XY",
+    "offset": 166.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": -27.5,
+      "cy": 0,
+      "w": 2,
+      "h": 116
+     },
+     {
+      "type": "rect",
+      "cx": 0.0,
+      "cy": 0,
+      "w": 2,
+      "h": 116
+     },
+     {
+      "type": "rect",
+      "cx": 27.5,
+      "cy": 0,
+      "w": 2,
+      "h": 116
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f10",
+   "type": "extrude",
+   "name": "bars_y_x",
+   "params": {
+    "sketch": "f9",
+    "distance": 4.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f11",
+   "type": "sketch",
+   "name": "frame_holes",
+   "params": {
+    "plane": "XY",
+    "offset": 180.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": -45,
+      "y": -45
+     },
+     {
+      "type": "point",
+      "x": -45,
+      "y": 45
+     },
+     {
+      "type": "point",
+      "x": 45,
+      "y": -45
+     },
+     {
+      "type": "point",
+      "x": 45,
+      "y": 45
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f12",
+   "type": "hole",
+   "name": "frame_csk",
+   "params": {
+    "sketch": "f11",
+    "kind": "countersink",
+    "size": "M4",
+    "diameter": 5.0,
+    "through": true,
+    "depth": 10.0,
+    "head_diameter": 10.0,
+    "head_depth": 5.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f13",
+   "type": "sketch",
+   "name": "fan_holes",
+   "params": {
+    "plane": "XY",
+    "offset": 180.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": -52.5,
+      "y": -52.5
+     },
+     {
+      "type": "point",
+      "x": -52.5,
+      "y": 52.5
+     },
+     {
+      "type": "point",
+      "x": 52.5,
+      "y": -52.5
+     },
+     {
+      "type": "point",
+      "x": 52.5,
+      "y": 52.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f14",
+   "type": "hole",
+   "name": "fan_tap",
+   "params": {
+    "sketch": "f13",
+    "kind": "simple",
+    "size": "custom",
+    "diameter": 4.0,
+    "through": true,
+    "depth": 13.0,
+    "head_diameter": 10.0,
+    "head_depth": 5.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  }
+ ]
+}

@@ -1,0 +1,53 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 2,
+ "upto": null,
+ "props": {
+  "material": "橡胶",
+  "color": "#20242a"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "ring",
+   "params": {
+    "plane": "XY",
+    "offset": 3.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 4.0
+     },
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 1.5875
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "ring_x",
+   "params": {
+    "sketch": "f1",
+    "distance": 3.0,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  }
+ ]
+}

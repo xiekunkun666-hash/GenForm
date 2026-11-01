@@ -1,0 +1,196 @@
+{
+ "format": "genform-document",
+ "version": 1,
+ "serial": 10,
+ "upto": null,
+ "props": {
+  "material": "尼龙 PA12",
+  "color": "#4a525b"
+ },
+ "features": [
+  {
+   "id": "f1",
+   "type": "sketch",
+   "name": "sleeve",
+   "params": {
+    "plane": "XY",
+    "offset": -33.4,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 19
+     },
+     {
+      "type": "circle",
+      "cx": 0,
+      "cy": 0,
+      "r": 15
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f2",
+   "type": "extrude",
+   "name": "sleeve_x",
+   "params": {
+    "sketch": "f1",
+    "distance": 10.4,
+    "op": "add",
+    "symmetric": false,
+    "end": "blind",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f3",
+   "type": "sketch",
+   "name": "ear_a",
+   "params": {
+    "plane": "XZ",
+    "offset": -5.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 21,
+      "cy": -33,
+      "w": 10,
+      "h": 18
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f4",
+   "type": "extrude",
+   "name": "ear_a_x",
+   "params": {
+    "sketch": "f3",
+    "distance": 3.0,
+    "op": "add",
+    "symmetric": true,
+    "end": "mid",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f5",
+   "type": "sketch",
+   "name": "ear_b",
+   "params": {
+    "plane": "XZ",
+    "offset": 5.0,
+    "shapes": [
+     {
+      "type": "rect",
+      "cx": 21,
+      "cy": -33,
+      "w": 10,
+      "h": 18
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f6",
+   "type": "extrude",
+   "name": "ear_b_x",
+   "params": {
+    "sketch": "f5",
+    "distance": 3.0,
+    "op": "add",
+    "symmetric": true,
+    "end": "mid",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f7",
+   "type": "sketch",
+   "name": "pin_hole",
+   "params": {
+    "plane": "XZ",
+    "offset": 0.0,
+    "shapes": [
+     {
+      "type": "circle",
+      "cx": 22.0,
+      "cy": -37.0,
+      "r": 1.5
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f8",
+   "type": "extrude",
+   "name": "pin_hole_cut",
+   "params": {
+    "sketch": "f7",
+    "distance": 20.0,
+    "op": "cut",
+    "symmetric": true,
+    "end": "mid",
+    "reverse": false,
+    "distance2": 0.0,
+    "gap": 0.0,
+    "target": []
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f9",
+   "type": "sketch",
+   "name": "screw_holes",
+   "params": {
+    "plane": "XZ",
+    "offset": 20.0,
+    "shapes": [
+     {
+      "type": "point",
+      "x": 0,
+      "y": -28
+     }
+    ]
+   },
+   "suppressed": false
+  },
+  {
+   "id": "f10",
+   "type": "hole",
+   "name": "screw_clear",
+   "params": {
+    "sketch": "f9",
+    "kind": "simple",
+    "size": "custom",
+    "diameter": 3.4,
+    "through": true,
+    "depth": 10.0,
+    "head_diameter": 10.0,
+    "head_depth": 5.0,
+    "flip": false,
+    "thread": false,
+    "phase": 0.0
+   },
+   "suppressed": false
+  }
+ ]
+}
