@@ -60,7 +60,7 @@ Rectangle {
         Text {
             anchors.verticalCenter: parent.verticalCenter
             visible: app.checkStale
-            text: qsTr("模型改过了，结果可能过期")
+            text: qsTr("模型或规则已更改，请重新检查")
             color: log.cWarn; font.family: Theme.font; font.pixelSize: Theme.smallSize
         }
     }
@@ -69,9 +69,9 @@ Rectangle {
         anchors.right: parent.right; anchors.rightMargin: 8; y: 8
         spacing: 2
         ToolBtn { objectName: "clearCheckLog"; compact: true; text: qsTr("清除日志"); tip: qsTr("清空检查结果，并移除场景中的错误标记；再次点击设计检查才会检查"); onClicked: { log.filter = ""; app.clearCheck() } }
-        IconBtn { icon: app.checkHighlight ? "eye" : "eye_off"; tip: app.checkHighlight ? qsTr("标红：报错的件在视图里标红；点一下关掉") : qsTr("标红：点一下在视图里把报错的件标红"); onClicked: app.toggleCheckHighlight() }
-        IconBtn { icon: "reset"; tip: qsTr("重新检查"); enabled: !app.checkBusy; onClicked: app.runCheck() }
-        IconBtn { icon: "close"; tip: qsTr("关闭：收起日志，视图恢复原来的颜色"); onClicked: app.closeCheck() }
+        IconBtn { objectName: "toggleCheckHighlight"; icon: app.checkHighlight ? "eye" : "eye_off"; tip: app.checkHighlight ? qsTr("标红：报错的件在视图里标红；点一下关掉") : qsTr("标红：点一下在视图里把报错的件标红"); onClicked: app.toggleCheckHighlight() }
+        IconBtn { objectName: "rerunDesignCheck"; icon: "reset"; tip: qsTr("重新检查"); enabled: !app.checkBusy; onClicked: app.runCheck() }
+        IconBtn { objectName: "closeCheckLog"; icon: "close"; tip: qsTr("关闭：收起日志，视图恢复原来的颜色"); onClicked: app.closeCheck() }
     }
     Rectangle { x: 0; y: 44; width: parent.width; height: 1; color: Theme.cDivider }
 
@@ -129,7 +129,7 @@ Rectangle {
         Text {
             anchors.centerIn: parent
             visible: list.count === 0 && !app.checkBusy
-            text: !app.checkCompleted ? qsTr("暂无检查结果，建模完成后点击设计检查") : log.filter === "" ? qsTr("没有发现问题") : qsTr("这一级没有")
+            text: !app.checkCompleted ? qsTr("暂无有效检查结果，请运行设计检查") : app.checkStale ? qsTr("检查结果已过期，请重新检查") : log.filter === "" ? qsTr("没有发现问题") : qsTr("这一级没有")
             color: Theme.cTextMuted; font.family: Theme.font; font.pixelSize: Theme.textSize
         }
     }

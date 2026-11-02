@@ -8,6 +8,7 @@ Popup {
     property var items: []              // [{id, icon, title, tip}...]
     property string target: ""          // 特征 id (在视图里点了不属于任何特征的面时是空的)
     padding: 4
+    focus: true
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
     background: Rectangle { color: Theme.cBgCard; radius: 9; border.width: 1; border.color: Theme.cAccentLine }
     enter: Transition { NumberAnimation { property: "opacity"; from: 0; to: 1; duration: 90 } }

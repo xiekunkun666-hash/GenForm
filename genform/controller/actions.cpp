@@ -1,0 +1,29 @@
+#include "genform/controller/ui_support.hpp"
+#include "genform/features.hpp"
+#include <QSet>
+
+namespace genform::controller {
+QVariantList actionCatalog() {
+    QVariantList rows; QSet<QString> identifiers;
+    const auto add=[&](const QString &identifier,const QString &title,const QString &group,const QString &icon,const QString &key=QString()) { if (!identifiers.contains(identifier)) { identifiers.insert(identifier); rows.append(QVariantMap{{"id",identifier},{"title",title},{"group",group},{"icon",icon},{"default",key}}); } };
+    add("file.new",QStringLiteral("新建"),QStringLiteral("文件"),"new","Ctrl+N"); add("file.open",QStringLiteral("打开"),QStringLiteral("文件"),"open","Ctrl+O"); add("file.save",QStringLiteral("保存"),QStringLiteral("文件"),"save","Ctrl+S"); add("file.export",QStringLiteral("导出 STEP / STL"),QStringLiteral("文件"),"export"); add("app.settings",QStringLiteral("设置"),QStringLiteral("文件"),"gear","Ctrl+,");
+    add("edit.undo",QStringLiteral("撤销"),QStringLiteral("编辑"),"undo","Ctrl+Z"); add("edit.redo",QStringLiteral("重做"),QStringLiteral("编辑"),"redo","Ctrl+Y"); add("edit.delete",QStringLiteral("删除选中的"),QStringLiteral("编辑"),"cancel","Del");
+    add("cmd:extrude",QStringLiteral("拉伸凸台/基体"),QStringLiteral("特征"),"extrude","E"); add("cmd:cut",QStringLiteral("拉伸切除"),QStringLiteral("特征"),"cut"); add("cmd:fillet",QStringLiteral("圆角"),QStringLiteral("特征"),"fillet","F"); add("cmd:chamfer",QStringLiteral("倒角"),QStringLiteral("特征"),"chamfer");
+    const auto definitions=features::specs(); for (auto entry=definitions.begin();entry!=definitions.end();++entry) add("cmd:"+entry.key(),entry.value().toObject().value("title").toString(entry.key()),QStringLiteral("特征"),entry.key());
+    for (const auto &kind : {QString("revolve"),QString("sweep"),QString("loft")}) add("cmd:"+kind+"_cut",features::title(kind)+QStringLiteral("切除"),QStringLiteral("特征"),kind);
+    add("sketch.start",QStringLiteral("草图绘制"),QStringLiteral("草图"),"sketch","S"); add("sketch.finish",QStringLiteral("完成草图"),QStringLiteral("草图"),"finish"); add("sketch.cancel",QStringLiteral("放弃草图"),QStringLiteral("草图"),"cancel");
+    const QList<QPair<QString,QString>> tools{{"select",QStringLiteral("选择")},{"dimension",QStringLiteral("智能尺寸")},{"line",QStringLiteral("直线")},{"centerline",QStringLiteral("中心线")},{"midline",QStringLiteral("中点线")},{"rect",QStringLiteral("边角矩形")},{"crect",QStringLiteral("中心矩形")},{"rect3",QStringLiteral("3 点边角矩形")},{"crect3",QStringLiteral("3 点中心矩形")},{"pgram",QStringLiteral("平行四边形")},{"ngon",QStringLiteral("多边形")},{"slot",QStringLiteral("直槽口")},{"cslot",QStringLiteral("中心点直槽口")},{"aslot3",QStringLiteral("三点圆弧槽口")},{"caslot",QStringLiteral("中心点圆弧槽口")},{"circle",QStringLiteral("圆")},{"circle3",QStringLiteral("周边圆")},{"ellipse",QStringLiteral("椭圆")},{"arc",QStringLiteral("圆心/起/终点画弧")},{"arc3",QStringLiteral("三点圆弧")},{"spline",QStringLiteral("样条曲线")},{"sspline",QStringLiteral("样式样条曲线")},{"equation",QStringLiteral("方程式驱动的曲线")},{"point",QStringLiteral("点")},{"text",QStringLiteral("文本")},{"fillet",QStringLiteral("绘制圆角")},{"trim",QStringLiteral("剪裁实体")},{"extend",QStringLiteral("延伸实体")},{"offset",QStringLiteral("等距实体")},{"mirror",QStringLiteral("镜向实体")},{"move",QStringLiteral("移动实体")},{"convert",QStringLiteral("转换实体引用")},{"rotate",QStringLiteral("旋转实体")},{"scale",QStringLiteral("缩放实体")}};
+    const QMap<QString,QString> toolKeys{{"dimension","D"},{"line","L"},{"rect","R"},{"circle","C"},{"arc","A"},{"trim","T"},{"offset","O"},{"move","M"}};
+    for (const auto &tool : tools) add("tool:"+tool.first,tool.second,QStringLiteral("草图"),tool.first,toolKeys.value(tool.first));
+    const QList<QPair<QString,QString>> operations{{"pattern",QStringLiteral("线性草图阵列")},{"cpattern",QStringLiteral("圆周草图阵列")},{"relation",QStringLiteral("添加几何关系")},{"repair",QStringLiteral("修复草图")},{"silhouette",QStringLiteral("侧影实体")},{"section",QStringLiteral("交叉曲线")},{"rapid",QStringLiteral("快速草图")}};
+    for (const auto &operation : operations) add("sketch."+operation.first,operation.second,QStringLiteral("草图"),operation.first);
+    add("eval.measure",QStringLiteral("测量"),QStringLiteral("评估"),"measure","Ctrl+M"); add("eval.process",QStringLiteral("绑定工艺"),QStringLiteral("评估"),"process"); add("eval.check",QStringLiteral("设计检查"),QStringLiteral("评估"),"drc","F8");
+    add("sim.static",QStringLiteral("静力分析"),QStringLiteral("仿真"),"stress"); add("sim.drag",QStringLiteral("风阻估算"),QStringLiteral("仿真"),"wind"); add("sim.assembly",QStringLiteral("装配检查"),QStringLiteral("仿真"),"assembly");
+    const QList<QPair<QString,QString>> views{{"fit",QStringLiteral("整屏显示全图")},{"zoom_box",QStringLiteral("局部放大")},{"previous",QStringLiteral("上一个视图")},{"front",QStringLiteral("前视")},{"back",QStringLiteral("后视")},{"left",QStringLiteral("左视")},{"right",QStringLiteral("右视")},{"top",QStringLiteral("上视")},{"bottom",QStringLiteral("下视")},{"iso",QStringLiteral("等轴测")},{"normal",QStringLiteral("正视于")}};
+    const QMap<QString,QString> viewKeys{{"fit","Z"},{"previous","Ctrl+Shift+Z"},{"front","Ctrl+1"},{"back","Ctrl+2"},{"left","Ctrl+3"},{"right","Ctrl+4"},{"top","Ctrl+5"},{"bottom","Ctrl+6"},{"iso","Ctrl+7"},{"normal","Ctrl+8"}};
+    for (const auto &orientation : views) add("view:"+orientation.first,orientation.second,QStringLiteral("视图"),orientation.first,viewKeys.value(orientation.first));
+    for (const auto &style : QList<QPair<QString,QString>>{{"shaded_edges",QStringLiteral("带边线上色")},{"shaded",QStringLiteral("上色")},{"hlr",QStringLiteral("消除隐藏线")},{"hlv",QStringLiteral("隐藏线可见")},{"wire",QStringLiteral("线架图")}}) add("style:"+style.first,style.second,QStringLiteral("视图"),style.first);
+    add("view.section",QStringLiteral("剖切视图 开/关"),QStringLiteral("视图"),"section"); add("view.perspective",QStringLiteral("透视图 开/关"),QStringLiteral("视图"),"perspective"); add("view.planes",QStringLiteral("主要基准面 显示/隐藏"),QStringLiteral("视图"),"plane");
+    return rows;
+}
+}

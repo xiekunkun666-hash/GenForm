@@ -1,416 +1,249 @@
 # GenForm
 
-GenForm 是面向人和 AI 协作的参数化三维建模软件。用户可以在图形界面中绘制草图、创建特征、修改尺寸；AI 或脚本可以通过 MCP 和本地接口执行建模命令、查询模型、保存文档和导出几何。
+GenForm 是面向人和 AI 协作的参数化三维建模软件。桌面界面、命令会话、几何内核、装配、领域计算、MCP 服务和示例入口现使用 **原生 C++20**；界面使用 **Qt / QML**，精确几何使用 **OpenCascade（OCCT）C++ SDK**。本机已完成 Qt 6.9.1、OCCT 7.9 与 MSVC 工具链下的完整编译链接。
 
-项目使用 **Python + PySide6 + QML + OpenGL** 构建桌面界面，使用 **OpenCascade（cadquery-ocp）** 进行几何计算。模型由有顺序的特征历史生成，修改上游参数后重新计算后续特征。
+**运行不需要 Python、PySide6、numpy、PyOpenGL 或 OCP Python 绑定。** QML、JSON 配方和模型是原生程序读取的数据，不是 Python 替代启动器。长度单位为毫米（mm），世界坐标系 Z 轴向上。
 
-当前项目处于开发阶段，桌面窗口使用 Win32 原生窗口行为，建议在 **Windows** 上运行。模型长度单位为 **毫米（mm）**，世界坐标系 **Z 轴向上**。
+项目仍处于迁移验收阶段：原生可执行文件能够构建、运行，不代表旧实现的全部功能、交互和每条测试都已等价迁移。请同时阅读[当前限制](#当前限制)、[测试与验收状态](#测试与验收状态)、[架构说明](ARCHITECTURE.md)和[迁移记录](MIGRATION.md)。
 
-## 目录
+## 快速开始：Windows / cmd
 
-- [主要功能](#主要功能)
-- [环境与安装](#环境与安装)
-- [启动与配置](#启动与配置)
-- [第一个零件](#第一个零件)
-- [鼠标与快捷键](#鼠标与快捷键)
-- [文档与导出](#文档与导出)
-- [AI 与脚本接入](#ai-与脚本接入)
-- [工程结构与开发](#工程结构与开发)
-- [测试](#测试)
-- [当前限制](#当前限制)
-- [常见问题](#常见问题)
+在项目根目录打开 **cmd.exe**：
 
-## 主要功能
+```bat
+build-native.cmd
+run-native.cmd
+```
 
-| 类别 | 当前能力 |
+打开已有文档：
+
+```bat
+run-native.cmd "C:\models\part.gform"
+```
+
+`build-native.cmd` 配置并构建根目录的 `build/`，输出桌面程序 `build\genform.exe` 和 MCP 程序 `build\genform_mcp.exe`；`run-native.cmd` 和 `run-mcp.cmd` 分别为两种入口设置 Qt / OCCT DLL 搜索路径并转交参数。这些脚本启动原生 EXE，不会启动 Python。
+
+桌面的“GenForm（源码启动）”运行 `launch-from-source.cmd`，增量构建并启动 `build\window-native\genform.exe`，包含原生窗口命令及草图标注修复，避免覆盖仍在运行的旧 `build\genform.exe` 或 `build\ui-fix\genform.exe`。`build-native.cmd`、`run-native.cmd` 和源码启动脚本支持用 `GENFORM_BUILD_DIR` 指定构建目录；`run-mcp.cmd` 默认仍使用根 `build`。2026-11-02 的界面遗漏、已修复内容和待补功能见 [界面审计](migration/UI_AUDIT.md)。
+
+### 工具链与 SDK
+
+| 项目 | 要求或已验证环境 |
 | --- | --- |
-| 二维草图 | 直线、中心线、矩形、多边形、圆、圆弧、椭圆、直槽口、圆弧槽口、样条、方程式曲线、点与文本 |
-| 草图编辑 | 捕捉、框选、拖动、剪裁、延伸、圆角、等距、镜向、移动、线性与圆周阵列、尺寸编辑、草图修复 |
-| 实体建模 | 拉伸、旋转、扫描、放样、边界凸台，以及对应的加料和切除操作 |
-| 特征修饰 | 圆角、倒角、孔、高级孔、螺柱、真实螺纹、筋、拔模、抽壳、包裹与分割线 |
-| 阵列与镜像 | 线性、圆周、曲线驱动、草图驱动、表格驱动、填充、变量阵列与镜像 |
-| 曲线与参考几何 | 螺旋线、坐标曲线、投影曲线、组合曲线、基准面、基准轴、坐标系、参考点、质心与边界框 |
-| 特征历史 | 参数修改、重命名、删除、抑制与恢复、回滚、撤销与重做 |
-| 三维视图 | 面与边拾取、标准视角、平移旋转缩放、显示样式、剖切、透视、外观和材质 |
-| 文件与自动化 | `.gform` 文档、STEP/STL 导出、视图截图、本地 TCP 接口和 MCP 工具调用 |
+| 编译器 | 支持 C++20；本机为 Visual Studio 2022 MSVC x64 |
+| CMake | 3.24 或更新 |
+| 生成器 | 本机脚本使用 Ninja |
+| Qt | CMake 最低声明 6.5；本机验证 6.9.1，MSVC x64 SDK |
+| OCCT | 本机验证 7.9 C++ 头文件、导入库和运行时 DLL |
+| 桌面 | 本机已验证 Windows；不据此宣称其他平台已经验收 |
 
-部分功能采用简化实现，例如草图几何关系目前不持续求解、边界凸台目前只处理一个方向的轮廓。使用前请阅读[当前限制](#当前限制)。
+Qt 需要 Core、Gui、Widgets、Qml、Quick、QuickControls2、Network、Concurrent、OpenGL、Svg 和 PrintSupport 模块。链接 Qt OpenGL 模块不表示三维视口沿用旧 OpenGL 引擎，见[当前限制](#当前限制)。
 
-## 环境与安装
+根脚本中的默认路径是**开发机配置**，不是所有用户必须安装到的位置。本机 OCCT SDK 取自一个 Anaconda 环境的 `Library` 目录，仅使用其中的 C++ 头文件、库和 DLL；**不需要激活该环境，也不运行其中的 Python**。其他来源的 ABI 兼容 OCCT SDK 同样可以通过路径配置使用。
 
-### 环境要求
+在调用脚本前，用实际安装路径覆盖默认值；以下路径只是示例：
 
-- Windows 桌面环境；当前 GUI 包含 Win32 专用代码。
-- Python：本地开发环境为 **3.13.0**，建议使用 Python 3.13。
-- 支持 **OpenGL 3.3 Core Profile** 的显卡和驱动。应用使用 OpenGL 渲染 QML 场景和三维视图。
-- Git：用于获取源码和同步修改。
-
-项目目前没有安装包，也没有 `requirements.txt` 或 `pyproject.toml`。以下安装命令按源码直接使用的依赖编写；依赖表列出本地开发环境的实际版本，并不代表已验证所有版本组合。
-
-| 依赖 | 用途 | 本地开发环境版本 |
-| --- | --- | --- |
-| PySide6 | Qt 窗口、QML 与界面控制 | 6.9.1 |
-| numpy | 相机、拾取和几何数据计算 | 2.5.3 |
-| PyOpenGL | OpenGL 渲染 | 3.1.10 |
-| cadquery-ocp | OpenCascade Python 绑定，提供 `OCP` 模块 | 8.0.1.0.0 |
-
-### 获取源码并安装依赖
-
-在 PowerShell 中执行：
-
-```powershell
-git clone git@github.com:xiekunkun666-hash/GenForm.git
-cd GenForm
-py -3.13 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install --upgrade pip
-.\.venv\Scripts\python.exe -m pip install PySide6 numpy PyOpenGL cadquery-ocp
+```bat
+set "QT_ROOT=D:\SDK\Qt\6.9.1\msvc2022_64"
+set "OCCT_ROOT=D:\SDK\OCCT-7.9"
+set "VCVARS=D:\VS2022\VC\Auxiliary\Build\vcvars64.bat"
+set "CMAKE_EXE=D:\Tools\CMake\bin\cmake.exe"
+set "NINJA_EXE=D:\Tools\Ninja\ninja.exe"
+build-native.cmd
 ```
 
-SSH 克隆需要提前配置 GitHub SSH 认证，也可以使用 HTTPS：
+`OCCT_ROOT` 应指向可找到 `include\opencascade`、`lib`、`bin` 的 SDK 前缀。Qt、OCCT、编译器的架构和运行库必须兼容。`build-native.cmd --test` 默认使用 `CMAKE_EXE` 同目录的 `ctest.exe`；如果 CTest 安装在其他位置，可另设 `CTEST_EXE` 覆盖，例如 `set "CTEST_EXE=D:\Tools\CMake\bin\ctest.exe"`。
 
-```powershell
-git clone https://github.com/xiekunkun666-hash/GenForm.git
+### 通用 CMake 构建
+
+已配置编译器环境，并让 `cmake`、`ninja` 可用时：
+
+```bat
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="%QT_ROOT%" -DGENFORM_OCCT_ROOT="%OCCT_ROOT%"
+cmake --build build --parallel 4
+set "PATH=%QT_ROOT%\bin;%OCCT_ROOT%\bin;%PATH%"
+ctest --test-dir build --output-on-failure
+build\genform.exe
 ```
 
-下文统一直接调用虚拟环境中的 Python，无需激活虚拟环境。请在工程根目录运行命令。
+也可让 CMake 通过 `find_package(OpenCASCADE)` 查找标准 SDK 配置，而不传 `GENFORM_OCCT_ROOT`。缺少 OCCT 时，部分文档/API 代码仍可构建，但几何命令会明确报告依赖错误；这不是完整 CAD 构建的替代验收。应用 QML、语言和图标已通过 Qt 资源系统打入原生程序，不再要求源码资源目录随行；Qt / OCCT DLL 与 Qt 插件仍需正确部署，示例配方也仍有源码路径依赖，因此不能仅复制一个 EXE 当作完整发布包。
 
-## 启动与配置
+## 桌面与建模
 
-### 打开桌面窗口
+原生控制器接入现有 QML 窗口、设计树、参数面板、草图工具栏、装配树和工程图/仿真面板。主要能力如下；各项的范围和精度以实际命令、错误信息和覆盖记录为准。
 
-```powershell
-.\.venv\Scripts\python.exe main.py
-```
-
-启动时默认同时开启本地 AI 接口 `127.0.0.1:9631`。GUI 的几何内核运行在独立进程中，重算结果再交给界面显示。
-
-可以在启动时打开已有文档：
-
-```powershell
-.\.venv\Scripts\python.exe main.py "C:\models\part.gform"
-```
-
-### 环境变量
-
-| 变量 | 默认值 | 说明 |
-| --- | --- | --- |
-| `GENFORM_PORT` | `9631` | 桌面本地接口端口；设为 `0` 时关闭接口。连接窗口的 MCP 服务也读取此变量 |
-| `GENFORM_SETTINGS` | `%APPDATA%\GenForm\settings.json` | 自定义设置文件位置，适合隔离测试配置 |
-
-例如，更换本地接口端口：
-
-```powershell
-$env:GENFORM_PORT = "9632"
-.\.venv\Scripts\python.exe main.py
-```
-
-关闭接口时使用 `$env:GENFORM_PORT = "0"`。这些 PowerShell 赋值只影响当前终端及其启动的进程；恢复默认端口可执行 `Remove-Item Env:GENFORM_PORT`。连接窗口的 MCP 进程需要使用与窗口一致的端口。
-
-快捷键和右键手势轮可以在设置窗口中修改。用户设置独立于零件文档保存。
-
-## 第一个零件
-
-下面以“矩形底座 + 圆形通孔”为例：
-
-1. 启动 GenForm，在左侧设计树或三维视图中选择**上视基准面（XY）**。
-2. 点击“草图绘制”，或直接选择矩形工具进入草图编辑。
-3. 绘制矩形，使用“智能尺寸”设置所需宽高，例如 `60 × 40 mm`。
-4. 点击“完成草图”，再选择“拉伸凸台/基体”，输入 `12 mm` 并确认。也可以在草图编辑中直接选择拉伸，软件会先保存草图再打开参数面板。
-5. 再次在 XY 基准面创建草图，绘制半径 `8 mm` 的圆，完成草图。
-6. 选择“拉伸切除”，沿进入实体的方向切除 `12 mm`。XY 默认法向为 +Z，底面草图沿 +Z 切除即可贯穿这个底座。
-7. 选择需要修饰的边，添加圆角或倒角。
-8. 保存为 `.gform`，需要交给其他 CAD 或切片软件时导出 STEP 或 STL。
-
-双击已有草图特征可以重新编辑草图。修改特征参数后，模型按历史顺序重新计算；出错的特征会在设计树中标红并显示原因，可以修改参数或撤销。
-
-草图中只有**封闭轮廓**参与拉伸。内层封闭轮廓作为孔处理；未闭合的线和构造线可以保留作参考，但不生成拉伸实体。“放弃草图”不会把本次编辑写入文档历史。
-
-## 鼠标与快捷键
-
-### 鼠标操作
-
-| 操作 | 功能 |
+| 模块 | 原生实现内容 |
 | --- | --- |
-| 左键 | 选择对象；草图编辑时绘制或选择图形 |
-| Ctrl + 左键 | 加选对象 |
-| 草图空白处拖动 | 框选图形 |
-| 中键拖动 | 旋转视图 |
-| Ctrl / Shift + 中键拖动 | 平移视图 |
-| 滚轮 | 朝光标位置缩放 |
-| 右键拖动 | 打开八方向手势轮，朝对应方向执行动作 |
+| 草图 | 图形数据、交互编辑、捕捉、选择和二维几何编辑算法 |
+| 参数化建模 | 特征历史、拉伸、旋转、扫描、放样、孔、圆角、倒角、阵列等 OCCT 建模路径 |
+| 文档 | JSON 特征与属性、参数编辑、抑制、回滚、撤销/重做、保存/打开 |
+| 视图 | 原生三角网格软件绘制、相机操作、拾取、选择、草图叠加、截图 |
+| 装配 | 装配文档、零件位姿、关节/运动、干涉与分析、BOM 等 C++ 模块 |
+| 领域功能 | 材料、制造工艺、成本、标准件、草图编辑与设计检查计算 |
+| 文件与自动化 | `.gform`、装配数据、STEP/STL 几何交换、TCP 与 MCP 命令入口 |
 
-建模与草图编辑各有一套手势轮，支持在设置中自定义。手势回到中心后松开可以取消。
+最小零件流程：选择 XY 基准面，创建闭合矩形草图，完成草图后拉伸，检查设计树特征状态，保存 `.gform`。修改尺寸后重新计算；若出现错误，修正或撤销错误特征，不要将画面中的上一次成功实体误认为修改已成功。
 
-### 常用默认快捷键
+`.gform` 是可读 JSON，保存特征参数及文档属性，几何由原生内核重建。STEP/STL 用于几何交换，不保存 GenForm 的完整参数化历史；需要继续编辑时同时保留原文档。导入特征和装配引用的外部文件也需要保留，移动项目时要检查路径。
 
-| 快捷键 | 功能 | 快捷键 | 功能 |
-| --- | --- | --- | --- |
-| Ctrl + N | 新建零件 | Ctrl + O | 打开文档 |
-| Ctrl + S | 保存文档 | Ctrl + , | 打开设置 |
-| Ctrl + Z | 撤销 | Ctrl + Y | 重做 |
-| Delete | 删除选中对象 | S | 进入草图 |
-| L / R / C / A | 直线 / 矩形 / 圆 / 圆弧 | D | 智能尺寸 |
-| T / O / M | 剪裁 / 等距 / 移动 | E / F | 拉伸 / 圆角 |
-| Z | 适应全图 | Ctrl + 7 | 等轴测视图 |
-| Ctrl + 1 / 2 | 前视 / 后视 | Ctrl + 3 / 4 | 左视 / 右视 |
-| Ctrl + 5 / 6 | 上视 / 下视 | Ctrl + 8 | 正视于 |
+## MCP 与本地命令
 
-草图编辑中的撤销操作处理草图图形快照；文档级撤销处理已提交的特征历史。
+### 连接桌面
 
-## 文档与导出
+先启动 `run-native.cmd`，再在项目根目录的另一个 cmd 窗口中启动 MCP：
 
-| 格式 | 用途 | 保留内容 |
-| --- | --- | --- |
-| `.gform` | GenForm 可编辑文档 | JSON 格式的特征历史、参数和零件属性；打开后重新计算几何 |
-| `.step` / `.stp` | 与其他 CAD 交换模型 | 精确几何 |
-| `.stl` | 交给切片等网格工作流 | 三角网格 |
-| `.gasm` | GenForm 装配体（“新建 → 装配体”，或仿真页“装配检查”里保存） | JSON：零件文件的相对路径、各自的位置和转角、装配顺序；零件几何仍在各自的文件里 |
-| `.gdrw` | GenForm 工程图（“新建 → 工程图”） | JSON：零件文件的相对路径、图纸、比例、视图位置、手标的尺寸、标题栏；可导出 PDF / DXF / SVG / PNG |
-| `.png` | 记录或检查视图 | 通过截图命令保存三维视图画面 |
-
-需要继续修改尺寸时应保存 `.gform`。STEP/STL 导出不会保留 GenForm 的参数化特征历史。
-
-可把多个 `.step` / `.stp` / `.stl` / `.gform` 文件一起拖入窗口，也可在“打开”对话框中按 Ctrl / Shift 多选：多个文件自动组成装配体；已有装配体时批量追加。每个文件是独立零部件，可选中、移动、旋转、隐藏、孤立和删除，并保留源文件的坐标，不自动排开或融合。当前零件有实体时会保留为装配体的第一个零件。装配体的“插入零件”也支持多选。加载失败的文件会显示错误，其余文件继续显示。
-
-单个 STEP 仍导入成可继续建模的新零件；单个 STL 以装配体网格组件打开。STL 支持 ASCII 和二进制格式，按毫米读取，用于显示和摆放，不支持精确实体测量、干涉检查、布尔建模或 STEP 导出。包含 STL 的装配体可保存成 `.gasm`，它引用源文件路径；移动工程时需一起带上源文件。
-
-## AI 与脚本接入
-
-GUI 和 AI 通过同一套命令修改文档。修改命令等待几何重算后再返回，结果包含特征状态和模型尺寸；查询命令可以读取特征、边、面和用户当前选择。
-
-### MCP：连接正在运行的窗口
-
-先启动 GenForm，再由支持 MCP stdio 的客户端启动：
-
-```powershell
-.\.venv\Scripts\python.exe -m genform.api.mcp_server
+```bat
+run-mcp.cmd
 ```
 
-仓库中的 `.mcp.json` 已包含配置，但其中的 Python 路径和工程目录是开发机绝对路径。其他机器需要按实际位置修改，例如：
+`run-mcp.cmd` 会设置 Qt / OCCT DLL 路径；如果 SDK 不在脚本默认位置，请为启动 MCP 的环境设置 `QT_ROOT` / `OCCT_ROOT`。推荐使用该入口，而不是在未配置 DLL 搜索路径的普通环境中直接启动 EXE。`run-native.cmd` 中的局部环境不会传给另一个终端。
+
+MCP 默认将工具调用转发到 `127.0.0.1:9631` 的桌面会话，人可以看到同一份文档变化。根 `.mcp.json` 现在使用以下启动方式：
 
 ```json
 {
   "mcpServers": {
     "genform": {
-      "command": "C:\\projects\\GenForm\\.venv\\Scripts\\python.exe",
-      "args": ["-B", "-m", "genform.api.mcp_server"],
-      "cwd": "C:\\projects\\GenForm"
+      "command": "cmd",
+      "args": ["/d", "/c", "run-mcp.cmd"],
+      "cwd": "."
     }
   }
 }
 ```
 
-不想管工作目录的话，用根目录下的启动器 `genform_mcp.py`，配置里只写两个绝对路径即可（它和 `-m genform.api.mcp_server` 等价，同样接受 `--headless`）：
+这里的 `cwd: "."` 要求客户端以项目根目录为工作目录；若客户端从其他位置启动，请把 `cwd` 改为 GenForm 的实际绝对路径。按客户端规则传递自定义 SDK 环境变量，不要依赖其他终端的局部环境。
 
-```json
-{
-  "mcpServers": {
-    "genform": {
-      "command": "C:\\projects\\GenForm\\.venv\\Scripts\\python.exe",
-      "args": ["C:\\projects\\GenForm\\genform_mcp.py"]
-    }
-  }
-}
+### 无桌面建模与协议检查
+
+```bat
+run-mcp.cmd --headless
+run-mcp.cmd --help
 ```
 
-Claude Code 里一条命令就能接上：
+`--headless` 使用本进程中的原生 `Session`，不连接桌面；视角、截图等依赖视口的工具不可用。它仍使用 Qt GUI 基础设施，但不会打开桌面主窗口。无显示服务的环境可按实际平台设置 `QT_QPA_PLATFORM=offscreen`，不能因此假定所有图形插件已打包。
 
-```powershell
-claude mcp add genform -- "C:\projects\GenForm\.venv\Scripts\python.exe" "C:\projects\GenForm\genform_mcp.py"
+MCP 使用 stdio 上**每行一个 JSON-RPC 对象**，协议输出与诊断输出隔离。下面是在 cmd 中发送初始化请求的最小检查，不代替完整 MCP 客户端握手：
+
+```bat
+echo {"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"manual-check","version":"1"}}} | run-mcp.cmd --headless
 ```
 
-软件里点标题栏右边的齿轮 → “AI 接口”，可以直接复制按本机路径填好的这几段。
+实际工具清单通过 MCP `tools/list` 获取，执行使用 `tools/call`；不要将桌面 TCP 的 `cmd` 信封直接写到 MCP stdio。
 
-这种模式操作当前窗口中的文档，用户可以看到模型变化。建议先让 AI 用 `get_model` 检查当前内容，再执行修改。
+### 本地 TCP
 
-### MCP：无界面建模
+桌面服务仅绑定回环地址，默认端口 `9631`。设置 `GENFORM_PORT=9632` 可更换端口，设为 `0` 关闭桌面接口。MCP 同样读取该变量，还支持 `--port 9632` 显式覆盖。
 
-```powershell
-.\.venv\Scripts\python.exe -m genform.api.mcp_server --headless
+TCP 使用换行分隔的 UTF-8 JSON 对象，例如：
+
+```jsonl
+{"cmd":"tools"}
+{"cmd":"get_model","args":{"brief":true}}
+{"cmd":"sketch","args":{"plane":"XY","shapes":[{"type":"circle","cx":0,"cy":0,"r":10}]}}
 ```
 
-无界面模式在 MCP 进程内持有独立文档，不需要启动桌面窗口，适合生成模型和导出文件。`screenshot`、`set_view` 等依赖窗口的命令不可用。无界面标志属于 MCP 模块，不是 `main.py` 的启动参数。
+创建命令返回的特征 ID 可用于后续拉伸；以 `tools` 返回的参数 schema 为准。常用命令包括 `new_document`、`open_document`、`save_document`、`edit_feature`、`batch`、`get_model`、`list_edges` 和 `list_faces`。
 
-MCP 适配使用标准输入输出传输 JSON-RPC，声明的协议版本为 `2024-11-05`，提供初始化、工具枚举和工具调用。日志写到标准错误；直接在终端启动后等待输入是正常状态。
+**取消或超时不是内核已停止的证明。** 当前同步 OCCT 计算一旦开始，接口可报告取消/超时，但不能中断正在运行的计算。收到结果不确定的响应后先查询文档，必要时等待计算结束；不要自动重发修改命令。该版本没有旧式内核子进程 watchdog 或崩溃后自动恢复承诺。
 
-### 取消、超时与断连
+## 原生示例
 
-- MCP 在执行工具时仍接收输入。客户端停止请求时，应发送 `notifications/cancelled`，参数为 `{"requestId": 原请求ID}`；关闭 MCP 标准输入也会取消未完成的请求。仅在 WebUI 上改变按钮状态，而不发送取消或关闭连接，GenForm 无法得知用户按了停止。
-- 窗口模式会断开该请求的等待连接，并通知 GUI 停止**属于这个请求**的内核任务；必要时终止并重新创建独立内核进程，不关闭主窗口，不清空文档，不取消其他连接的任务。
-- TCP 请求可附带唯一字符串 `request_id` 和 `timeout_s`（大于 0、不超过 300 秒）。另开连接发送 `{"cmd":"cancel_request","request_id":"原请求ID"}` 可取消；请求连接断开也会触发取消。未提供时，接口生成请求 ID 并使用 300 秒总时限。
-- MCP 窗口模式向 TCP 传递 285 秒总时限，MCP 请求自身上限为 290 秒；内核另有单步 120 秒与整项任务 300 秒看门狗。进度消息只重置单步计时，不延长总时限。
-- 取消或超时**不是事务回滚**。特征可能已经写入文档；使用 `get_model` 查看 `busy`、`model_stale`、`progress`、`query_progress`，再决定修改参数或撤销。断连后不会自动重发修改命令，避免重复添加特征。
-- 无界面模式仍使用进程内同步内核：取消会结束协议层的等待并丢弃迟到回复，但不能保证中断正在执行的 OpenCascade 原生调用。需要可强制停止且保留窗口文档的自动化时，使用窗口模式；本修复也不替代宿主 WebUI 自己的停止请求转发。
+`examples/native/` 提供统一原生程序，映射原 28 个示例入口。入口名保留历史模块标识，但不执行历史脚本：
 
-### 本地 TCP 接口
-
-桌面接口监听 `127.0.0.1:9631`，使用 UTF-8 编码，**每行一个 JSON 请求、每行一个 JSON 应答**。这是原始 TCP 协议，不能作为 HTTP 地址在浏览器中访问。
-
-```json
-{"cmd": "tools"}
-{"cmd": "get_model", "args": {}}
-{"cmd": "sketch", "args": {"plane": "XY", "shapes": [{"type": "rect", "cx": 0, "cy": 0, "w": 60, "h": 40}]}}
-{"cmd": "extrude", "args": {"distance": 12}}
+```bat
+set "PATH=%QT_ROOT%\bin;%OCCT_ROOT%\bin;%PATH%"
+build\examples\genform_examples.exe --list
+build\examples\genform_examples.exe --audit
+build\examples\genform_examples.exe button_latch/build all --output build\example-output\button-latch
+ctest --test-dir build -R "^examples_" --output-on-failure
 ```
 
-以下 Python 示例连接已启动的窗口，创建一个底座、给竖边倒圆角，并保存文档和 STEP。示例会向当前文档添加特征，建议在空白文档中执行。
+配方生成、校验、比较和日志均有原生路径。输出通常要求显式 `--output`，不要指向唯一一份原始模型。各入口参数和证据见 [MIGRATION.md](MIGRATION.md)。
 
-```python
-import json
-import os
-import socket
-from pathlib import Path
+已完成 **52 个实际模型的原生内核审计，52 通过 / 0 失败**，包括 button_latch、button_claw_latch、powder_pump、lance 和 powder_pump_fan 配方；这不是 28 个入口全部业务流程已等价验收的证明。**SKYE 缺少 4 份源 STEP，车辆全流程没有完整实跑**，不得将缺资源或未执行的路径记为成功。
 
+## 测试与验收状态
 
-def call(command, **args):
-    port = int(os.environ.get("GENFORM_PORT", "9631"))
-    with socket.create_connection(("127.0.0.1", port), timeout=5) as connection:
-        connection.settimeout(320)
-        with connection.makefile("rwb") as stream:
-            request = {"cmd": command, "args": args}
-            stream.write((json.dumps(request, ensure_ascii=False) + "\n").encode("utf-8"))
-            stream.flush()
-            result = json.loads(stream.readline().decode("utf-8"))
-    if not result.get("ok"):
-        raise RuntimeError(result.get("error", "GenForm 命令失败"))
-    return result
+本机 cmd 快捷入口：
 
-
-sketch = call("sketch", plane="XY", shapes=[
-    {"type": "rect", "cx": 0, "cy": 0, "w": 60, "h": 40}
-])
-call("extrude", sketch=sketch["id"], distance=12)
-call("fillet", edges="|Z", radius=3)
-print(json.dumps(call("get_model"), ensure_ascii=False, indent=2))
-
-output = Path("build/example").resolve()
-output.mkdir(parents=True, exist_ok=True)
-call("save_document", path=str(output / "base.gform"))
-call("export", path=str(output / "base.step"))
+```bat
+build-native.cmd --test
 ```
 
-### 设计检查与视图操作
+也可让对应的 `ctest` 在 PATH 中独立运行；构建脚本的测试入口支持上文所述 `CTEST_EXE` 覆盖：
 
-- 设计检查由用户手动触发：完成建模后点击“评估 → 设计检查”。打开装配、插入或移动零件不会自动检查；状态栏“日志”只展开已有结果。
-- 日志右上角“清除日志”会清空报错、警告、计数及场景红叉/标红；正在返回的旧结果不会重新出现。清除不修改几何，也不表示问题已修好，再次点击“设计检查”才重新检查。
-- 模型修改后，已有检查结果标为过期，并移除旧的场景错误标记；不会后台重新计算。
-- 零件和装配体进入孤立模式后，视图顶部均显示“退出孤立”按钮，退出后恢复原来的隐藏状态。
-- 左键从左往右框选完整落在框内的对象，从右往左框选与矩形相交的对象；装配支持同时选择多个组件，按 Ctrl 累加。隐藏组件不参与框选，属性编辑仍针对主选组件。
-- 鼠标旋转、平移或缩放时保持所选显示样式，带边线上色不会在移动时暂时变为纯上色。
-
-### 常用命令
-
-| 用途 | 命令 |
-| --- | --- |
-| 获取工具与参数格式 | TCP 请求 `tools`；MCP 请求 `tools/list` |
-| 创建特征 | `sketch`、`extrude`、`fillet`、`chamfer` 及特征表登记的其他命令 |
-| 编辑历史 | `edit_feature`、`delete_feature`、`rename_feature`、`suppress_feature`、`rollback`、`undo`、`redo` |
-| 查询模型 | `get_model`、`list_edges`、`list_faces`、`get_selection` |
-| 文档与导出 | `new_document`、`open_document`、`save_document`、`export` |
-| 外观与视图 | `set_material`、`set_appearance`、`set_view`、`screenshot` |
-
-参数以工具清单中的 JSON Schema 为准。长度使用毫米，草图角度使用度；草图坐标位于所选平面的二维坐标系中。XY 法向为 +Z，XZ 法向为 -Y，YZ 法向为 +X。
-
-边可以使用 `"all"`、`"|Z"`、`">Z"`、`"<Z"` 等选择器，也可以先调用 `list_edges` 获取中点，再传入 `[{"point": [x, y, z]}]`。修改特征示例：
-
-```json
-{"cmd": "edit_feature", "args": {"id": "f2", "params": {"distance": 20}}}
+```bat
+set "PATH=%QT_ROOT%\bin;%OCCT_ROOT%\bin;%PATH%"
+ctest --test-dir build -N
+ctest --test-dir build --output-on-failure
+ctest --test-dir build -R "^(domain_tests|session_tests|migration_tests|protocol_tests|file_io_tests|assembly_tests|kernel_tests|inspect_tests|sketch_tests|viewport_tests|gui_smoke_test)$" --output-on-failure
+ctest --test-dir build -R "^examples_" --output-on-failure
 ```
 
-返回 `ok: false` 时应检查 `error` 和模型状态。几何失败的特征通常仍留在历史中，需要修改参数或 `undo`；不能把失败应答理解为这一步从未写入文档。`new_document` 会清空文档，调用前应保存需要保留的内容。
+桌面冒烟也可使用 `run-native.cmd --gui-smoke-test`；无交互环境运行前可设置 `QT_QPA_PLATFORM=offscreen`。它验证原生控制器和 QML 的有限场景，不等于旧鼠标、手势和全部交互测试都迁移。
 
-## 工程结构与开发
+2026-11-02 最终干净构建与验证结果：
 
-```text
-GenForm/
-├── main.py                 # 轻量入口，处理多进程启动
-├── ARCHITECTURE.md         # 分层、线程、特征引用与实现细节
-├── .mcp.json               # MCP 客户端配置，路径需按本机调整
-├── genform/
-│   ├── bootstrap.py        # 装配窗口、会话、内核和本地接口
-│   ├── app.py              # 界面控制器
-│   ├── actions.py          # 动作、默认快捷键和手势轮
-│   ├── forms.py            # 参数面板数据
-│   ├── commands.py         # 命令注册与参数格式
-│   ├── features.py         # 特征定义与参考几何计算
-│   ├── document.py         # 特征历史、撤销重做与文档读写
-│   ├── session.py          # 命令执行、重算与结果通知
-│   ├── sketcher.py         # 草图编辑器
-│   ├── sketchgeom.py       # 二维图形与算法
-│   ├── api/                # TCP 服务、MCP 适配和 JSON 编码
-│   ├── kernel/             # OpenCascade 几何计算与工作进程
-│   └── view/               # 相机、拾取与 OpenGL 绘制
-├── qml/                    # 窗口、工具栏、设计树、参数面板与主题
-└── tests/                  # 单元测试与桌面冒烟测试
-```
+- 清理构建产物后完整重新编译、链接成功；执行 `build-native.cmd --test`，**16/16 项 CTest 全部通过，0 失败，总耗时 68.86 秒**。协议回归内部 42/42 组通过，真实 STEP 导出的 stdout 保持纯 JSON-RPC，OCCT 诊断保留在 stderr。
+- 迁移回归的 4 个问题已从实现根因修复，现为 **18/18 组通过**；内核 inspect 的真实 rule-pair / proof 自测 **18 项通过**，中文及 emoji 文件 I/O **423 项通过**。
+- GUI 冒烟 **65 项通过**，含中英语言和设置，`QMLWarnings=[]`；草图 **63 项**、视口 **17 项**、领域 **1880 项**自测通过。这些是各自子集的内部检查数量，不可与 CTest 数量相加。
+- 示例子集 **5/5 通过**，其中真实模型审计 **52/52 通过**；SKYE 和车辆的未验证边界仍保留。原 62 项测试语义的部分/未覆盖情况继续由 [tests/COVERAGE.md](tests/COVERAGE.md) 追踪。
 
-主要数据流：
-
-```text
-界面操作 / MCP / TCP
-        ↓
-commands → session → document
-               ↓
-        几何内核重算
-               ↓
-        模型状态 / 三维显示 / 命令应答
-```
-
-文档保存特征数据，实体由特征重新计算生成。GUI 使用独立内核进程；测试和无界面 MCP 使用同步内核。三维视图按需重绘，避免空闲时持续刷新。
-
-新增特征通常需要在 `genform/features.py` 的 `SPECS` 中登记参数，在 `genform/kernel/features.py` 中实现并注册计算函数，再补充对应几何测试。更多实现规则见 [ARCHITECTURE.md](ARCHITECTURE.md)。
-
-## 测试
-
-### 单元测试
-
-```powershell
-.\.venv\Scripts\python.exe -m unittest discover -s tests -p "test_*.py" -t .
-```
-
-测试覆盖几何内核、特征、命令会话、草图编辑与部分视图数学。单元测试不启动桌面主窗口，但内核测试需要安装 OpenCascade 依赖。
-
-### 桌面冒烟测试
-
-```powershell
-.\.venv\Scripts\python.exe tests\smoke_gui.py
-.\.venv\Scripts\python.exe tests\smoke_ui.py
-.\.venv\Scripts\python.exe tests\smoke_features.py
-.\.venv\Scripts\python.exe tests\smoke_sketch.py
-.\.venv\Scripts\python.exe tests\smoke_sketch2.py
-.\.venv\Scripts\python.exe tests\smoke_quit.py
-```
-
-- `smoke_gui.py`：通过本地接口验证建模、错误处理、撤销、尺寸修改、截图、导出和保存。
-- `smoke_ui.py`：模拟鼠标操作并抓取实际窗口画面。
-- `smoke_features.py`：特征页和参考几何的交互检查。
-- `smoke_sketch.py` / `smoke_sketch2.py`：草图工具与编辑操作的交互检查。
-- `smoke_quit.py`：检查建模后是否正常退出。
-
-这些脚本会启动真实窗口；涉及鼠标和屏幕抓图的脚本需要可交互桌面，运行时避免遮挡测试窗口或同时操作鼠标。默认输出位于 `build/smoke/`，包含截图、日志和导出文件；`smoke_gui.py` 也接受自定义输出目录。`build/` 已在 Git 中忽略。
+活动树中 `.py`、`.pyw`、`.pyc` 文件计数均为 0；原 234 份 Python 源码已逐文件校验归档。测试通过只代表当前原生套件，不意味着所有原功能和旧测试语义均已逐项等价迁移；完整限制仍以覆盖台账为准。
 
 ## 当前限制
 
-- **草图没有持续约束求解。** “添加几何关系”只按关系调整一次图形；智能尺寸修改图形参数，不保留驱动尺寸标注。等距、镜向、阵列和转换引用生成的是当时的拷贝。
-- **当前按单实体建模。** 尚无多实体管理；装配只有仿真页里的“装配检查”（摆放零件、查干涉、查装配顺序），没有配合关系。`op: common` 是与当前实体取交集。
-- **面上草图。** 选中零件上的一个平面点“草图绘制”即可；正对坐标轴的面用对应基准面加偏移，斜面会自动先建一个基准面特征。
-- **仿真是估算。** 静力分析把零件切成小方块求解（应力约 ±20%，尖角处偏低）；风阻只按迎风面积和阻力系数算，不是流场计算；装配顺序只试 ±X ±Y ±Z 六个方向的直线装入。尚无模态、热、疲劳分析。
-- **拓扑引用是简化实现。** 边、面坐标引用依靠附近几何匹配；上游尺寸大幅变化后可能需要重新选择引用。
-- **部分特征有范围限制。** 边界凸台目前使用放样算法；包裹仅支持圆柱面；筋只支持平行于草图的延伸；拔模为中性面拔模。
-- **阵列与镜像有对象限制。** 复制指定特征时需要该特征生成的工具体，如拉伸、旋转、扫描、放样、孔和螺柱；圆角、抽壳等修改特征不能按同样方式复制。
-- **三维草图目前通过坐标输入。** `sketch3d` 和曲面曲线并非在三维视图里直接用鼠标绘制。
-- **螺纹生成真实几何。** 计算可能较慢，尚无装饰螺纹线。
-- STL 作为网格参考加载，不转换为可编辑的精确实体；尚未实现视角方块和安装包。
+- **同步内核与恢复边界：** 几何计算仍可能阻塞会话/界面；无法强制中断已开始的 OCCT 请求。不再使用旧进程 watchdog，也没有增量磁盘 checkpoint 或未保存工作自动恢复保证。内存撤销快照与原子保存不是崩溃恢复系统。
+- **软件视口不是旧 OpenGL 引擎：** 当前原生视口通过 `QQuickPaintedItem` / `QPainter` 绘制三角网格。显示、遮挡、透明、拾取和性能不能宣称与旧渲染器完全等价；屏幕轮廓不代表精确隐藏线结果。
+- **草图与参考几何：** 没有持续约束求解；任意斜平面草图和相关坐标变换/交互不应视为已全面等价。一次性编辑不等于关联驱动约束。
+- **交互与设置：** 旧手势及设计规则设置尚未迁移；中英语言和已实现设置的冒烟通过不代表全部旧设置项已等价。
+- **工程图与交换：** 精确隐藏线、DXF 及完整工程图输出链路尚非旧版完全等价实现。仅列出 UI 或命令不代表对应格式已通过验收。
+- **拓扑与特征：** 基于坐标/邻近匹配的边面引用在大改尺寸后可能失效。复杂布尔、曲面、阵列、包裹、真实螺纹等需逐案检查，不能承诺任意输入成功。
+- **分析不是认证：** 装配运动、干涉、静力和制造估算的支持范围以原生实现及测试为准，不是通用约束求解器或工程认证；不沿用旧实现未重新验证的精度数字。
+- **资源和发布：** 应用 QML、语言与图标已内嵌；外部 STEP、装配引用以及仍使用源码路径的示例配方需正确定位。SKYE 与车辆验证边界见上文，独立安装包及跨平台发布尚未完成验收。
 
-## 常见问题
+## 项目结构与历史备份
+
+```text
+GenForm/
+├── CMakeLists.txt             # C++20 核心、桌面、MCP、测试和示例
+├── build-native.cmd          # 本机可覆盖路径的 MSVC/Ninja 构建入口
+├── run-native.cmd            # DLL 路径与桌面启动入口
+├── run-mcp.cmd               # DLL 路径与 MCP stdio 启动入口
+├── main.cpp                  # 桌面启动器
+├── genform_mcp.cpp           # 原生 MCP stdio 入口
+├── genform/
+│   ├── document.* / session.* # JSON 文档、历史、命令与重算
+│   ├── features.* / commands.json
+│   ├── controller/           # QML 桥接与草图交互
+│   ├── domain/               # 几何、材料、工艺、成本和检查
+│   ├── kernel/               # OCCT 几何及显示数据
+│   ├── assembly/             # 装配、运动、分析和 BOM
+│   ├── api/                  # 回环 TCP、MCP 与协议编码
+│   └── view/                 # 软件三角网格视口与图纸视图
+├── qml/                      # 编入 Qt 资源的窗口与界面源文件
+├── examples/                 # 原生入口、配方与审计
+├── models/                   # 示例文档及外部几何资源
+├── tests/                    # C++ 测试与 COVERAGE.md 迁移台账
+└── migration/                # 旧源码和原文档的历史 ZIP 备份
+```
+
+原 **234 个 Python 文件及原 README / ARCHITECTURE 已归档**到 `migration/python-original-2026-11-02.zip`，各分组哈希已验证；活动代码树中的全部 `.py` 已通过补丁删除。ZIP 的 SHA-256 为：
+
+```text
+D3951AF710D9FF157299F6BF0E5F3A3F3C34D3C993DC1E297AB8DC7C3140709F
+```
+
+ZIP 仅为历史备份，不参与配置、构建、测试或运行，也不需要解压才能使用原生程序。更详细的职责与安全边界见 [ARCHITECTURE.md](ARCHITECTURE.md)。
+
+## 故障检查
 
 | 现象 | 检查与处理 |
 | --- | --- |
-| `ModuleNotFoundError` | 确认使用安装了依赖的同一个 Python；`OCP` 模块由 `cadquery-ocp` 提供 |
-| 窗口启动失败或三维视图异常 | 查看终端中的 Qt/OpenGL 日志，检查显卡驱动和 OpenGL 3.3 支持；远程桌面或虚拟显卡环境需单独验证 |
-| MCP 连不上 GenForm | 先启动窗口，确认窗口与 MCP 的 `GENFORM_PORT` 一致；独立建模可使用 `--headless` |
-| 本地 AI 接口未开启 | 检查端口是否被占用、`GENFORM_PORT` 是否为 `0`；窗口可启动但接口绑定失败时不会提供 TCP 服务 |
-| 拉伸没有生成实体 | 检查轮廓是否闭合、是否全部为构造线，以及特征错误信息 |
-| 圆角或倒角失败 | 尝试较小尺寸并检查选中的边；用 `edit_feature` 修正参数或撤销失败特征 |
-| 无界面模式不能截图 | 截图和视角命令依赖 GUI，应使用连接窗口的 MCP 模式 |
-| 导出文件无法继续参数化编辑 | 同时保存 `.gform` 文档；STEP/STL 用于交换几何，不保留本项目的特征历史 |
+| 找不到 Qt / OCCT DLL | 核对 SDK 架构及路径，桌面使用 `run-native.cmd`、MCP 使用 `run-mcp.cmd`；不要尝试安装 Python 包修复原生链接问题 |
+| CMake 找不到 SDK | 检查 `QT_ROOT`、`GENFORM_OCCT_ROOT` 和实际头库目录；换编译器/SDK 后使用新的构建目录 |
+| 找不到 `qml/Main.qml` | 正常构建已内嵌 QML；确认使用最新产物及资源构建成功。开发时可用 `GENFORM_QML_DIR` 指定包含 `Main.qml` 的覆盖目录 |
+| MCP 无法连接桌面 | 确认窗口已运行、端口一致且未设为 0；独立建模改用 `--headless` |
+| 无界面命令不能截图 | 截图/视角依赖实际桌面视口，使用连接桌面的 MCP 模式 |
+| 超时或取消后结果不明 | 等待并查询当前文档，避免盲目重试修改命令；超时不保证回滚或计算中断 |
+| 特征失败或体积异常 | 检查特征状态、闭合轮廓、引用和尺度；修正/撤销后重算并核验实体 |

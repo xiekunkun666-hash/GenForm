@@ -34,8 +34,8 @@ Flickable {
         RibbonBtn { icon: "sweep"; text: qsTr("扫描切除"); tip: qsTr("轮廓沿路径扫过去, 从实体上切掉"); onClicked: app.startCommand("sweep_cut") }
         RibbonBtn { icon: "loft"; text: qsTr("放样切除"); tip: qsTr("在几个轮廓之间过渡, 从实体上切掉"); onClicked: app.startCommand("loft_cut") }
         RibbonSeparator {}
-        RibbonBtn { icon: "fillet"; text: qsTr("圆角"); tip: qsTr("圆角：给选中的边倒圆角"); action: "cmd:fillet"; onClicked: app.startCommand("fillet") }
-        RibbonBtn { icon: "chamfer"; text: qsTr("倒角"); tip: qsTr("给选中的边倒斜角"); onClicked: app.startCommand("chamfer") }
+        RibbonBtn { objectName: "featureCommand_fillet"; icon: "fillet"; text: qsTr("圆角"); tip: qsTr("圆角：给选中的边倒圆角"); action: "cmd:fillet"; onClicked: app.startCommand("fillet") }
+        RibbonBtn { objectName: "featureCommand_chamfer"; icon: "chamfer"; text: qsTr("倒角"); tip: qsTr("给选中的边倒斜角"); onClicked: app.startCommand("chamfer") }
         RibbonBtn { icon: "rib"; text: qsTr("筋"); tip: qsTr("用一条开口的草图线做加强筋"); onClicked: app.startCommand("rib") }
         RibbonBtn { icon: "draft"; text: qsTr("拔模"); tip: qsTr("把选中的面相对中性面倾斜一个角度"); onClicked: app.startCommand("draft") }
         RibbonBtn { icon: "shell"; text: qsTr("抽壳"); tip: qsTr("掏空成等厚的壳, 选中的面成为开口"); onClicked: app.startCommand("shell") }
@@ -45,5 +45,6 @@ Flickable {
         RibbonMenu { icon: "pattern"; text: qsTr("阵列"); tip: qsTr("线性、圆周、镜像、曲线驱动、草图驱动、表格驱动、填充、变量阵列"); items: app.featureMenus[1].items; onPicked: (id) => app.startCommand(id) }
         RibbonMenu { icon: "reference"; text: qsTr("参考几何体"); tip: qsTr("基准面、基准轴、坐标系、点、质心、边界框"); items: app.featureMenus[2].items; onPicked: (id) => app.startCommand(id) }
         RibbonMenu { icon: "curve"; text: qsTr("曲线"); tip: qsTr("分割线、投影曲线、组合曲线、通过点的曲线、螺旋线/涡状线"); items: app.featureMenus[3].items; onPicked: (id) => app.startCommand(id) }
+        RibbonMenu { icon: "sketch3d"; text: qsTr("3D 草图"); tip: qsTr("3D 草图、曲面上的样条曲线"); items: app.featureMenus[4].items; onPicked: (id) => app.startCommand(id) }
     }
 }

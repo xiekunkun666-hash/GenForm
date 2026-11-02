@@ -398,14 +398,15 @@ Popup {
                     Heading { text: qsTr("设计规则"); width: parent.width - resetRules.width }
                     Rectangle {
                         id: resetRules
+                        objectName: "resetDesignRules"
                         width: resetText.implicitWidth + 20; height: 26; radius: 6
                         color: resetArea.containsMouse ? Theme.cBgHover : "transparent"
                         border.width: 1; border.color: Theme.cDivider
-                        Text { id: resetText; anchors.centerIn: parent; text: qsTr("恢复默认"); color: Theme.cText; font.family: Theme.font; font.pixelSize: Theme.smallSize }
+                        Text { id: resetText; anchors.centerIn: parent; text: qsTr("重置用户规则"); color: Theme.cText; font.family: Theme.font; font.pixelSize: Theme.smallSize }
                         MouseArea { id: resetArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: app.resetRules() }
                     }
                 }
-                Note { width: parent.width; bottomPadding: 6; text: qsTr("评估 → 设计检查 按这些规则查：件与件的间隙比规则小、只贴着、压得比规则浅的，两个件在视图里一起标红。所有零件共用；改了立刻生效，下次检查用新的。") }
+                Note { width: parent.width; bottomPadding: 6; text: qsTr("评估 → 设计检查使用这些规则。用户规则保存到设置文件，修改后旧检查结果失效；重新检查使用新值。文档规则优先，并标明为文档覆盖；重置只清除用户规则，不修改文档。") }
                 Repeater {
                     model: app.designRules
                     delegate: Rectangle {
@@ -422,7 +423,7 @@ Popup {
                         Text {
                             id: help
                             x: 10; y: 30; width: parent.width - 200
-                            text: modelData.help + (modelData.changed ? "" : qsTr("（默认）"))
+                            text: modelData.help + (modelData.document ? qsTr("（文档覆盖）") : modelData.changed ? qsTr("（用户设置）") : qsTr("（默认）"))
                             wrapMode: Text.Wrap
                             color: Theme.cTextMuted; font.family: Theme.font; font.pixelSize: Theme.smallSize
                         }
@@ -433,6 +434,9 @@ Popup {
                             border.width: 1; border.color: value.activeFocus ? Theme.cAccent : modelData.changed ? Theme.cAccentLine : Theme.cDivider
                             TextInput {
                                 id: value
+                                readOnly: modelData.document
+                                objectName: "designRule_" + modelData.key
+                                property bool ruleEdited: false
                                 anchors.fill: parent; anchors.leftMargin: 8; anchors.rightMargin: 8
                                 verticalAlignment: TextInput.AlignVCenter
                                 horizontalAlignment: TextInput.AlignRight
@@ -440,7 +444,14 @@ Popup {
                                 color: Theme.cText; font.family: Theme.font; font.pixelSize: Theme.textSize
                                 selectByMouse: true
                                 validator: DoubleValidator { bottom: modelData.min; top: modelData.max }
-                                onEditingFinished: if (text !== String(modelData.value)) app.setRule(modelData.key, text)
+                                onTextEdited: ruleEdited = true
+                                onEditingFinished: {
+                                    if (!ruleEdited) return
+                                    ruleEdited = false
+                                    const key = modelData.key
+                                    const edited = text
+                                    if (edited !== String(modelData.value)) Qt.callLater(() => app.setRule(key, edited))
+                                }
                             }
                         }
                         Text {

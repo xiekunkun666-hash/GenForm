@@ -25,13 +25,6 @@ Rectangle {
             const slop = Qt.styleHints.startDragDistance
             if (Math.abs(mouse.x - pressAt.x) < slop && Math.abs(mouse.y - pressAt.y) < slop) return
             moving = true
-            if (titleBar.maximized) {
-                const at = titleBar.mapToGlobal(mouse.x, mouse.y)
-                const ratio = mouse.x / Math.max(1, titleBar.width)
-                titleBar.window.showNormal()
-                titleBar.window.x = Math.round(at.x - titleBar.window.width * ratio)
-                titleBar.window.y = Math.round(at.y - mouse.y)
-            }
             titleBar.window.startSystemMove()
         }
         onDoubleClicked: app.toggleMaximize()
@@ -86,8 +79,8 @@ Rectangle {
         IconBtn { icon: "gear"; tip: qsTr("设置：快捷键、鼠标笔势（右键手势轮）、AI 接口"); action: "app.settings"; onClicked: titleBar.openSettings() }
         IconBtn { icon: "theme"; tip: Theme.darkMode ? qsTr("换成浅色界面") : qsTr("换成深色界面"); onClicked: Theme.darkMode = !Theme.darkMode }
         Item { width: 6 }
-        IconBtn { icon: "min"; implicitWidth: 44; implicitHeight: 38; radius: 0; onClicked: titleBar.window.showMinimized() }
-        IconBtn { icon: titleBar.maximized ? "restore" : "max"; implicitWidth: 44; implicitHeight: 38; radius: 0; onClicked: app.toggleMaximize() }
+        IconBtn { objectName: "windowMinimizeButton"; icon: "min"; implicitWidth: 44; implicitHeight: 38; radius: 0; onClicked: app.minimizeWindow() }
+        IconBtn { objectName: "windowMaximizeButton"; icon: titleBar.maximized ? "restore" : "max"; implicitWidth: 44; implicitHeight: 38; radius: 0; onClicked: app.toggleMaximize() }
         IconBtn { icon: "close"; danger: true; implicitWidth: 44; implicitHeight: 38; radius: 0; onClicked: titleBar.window.close() }
     }
     // 文档名放在正中 (不参与上面一行的排布, 所以不会被两边的按钮挤偏)

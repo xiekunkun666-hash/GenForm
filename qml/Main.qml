@@ -23,6 +23,12 @@ ApplicationWindow {
     readonly property bool maximized: visibility === Window.Maximized || visibility === Window.FullScreen
     // 正在输入框里打字: 单字母快捷键、Delete、回车都要让给输入框
     readonly property bool typing: activeFocusItem !== null && activeFocusItem instanceof TextInput
+    readonly property string contextMode: app.docKind + ":" + app.sketchActive + ":" + app.pickingPlane
+    onContextModeChanged: {
+        if (sceneBar) { sceneBar.close(); sceneBar.target = ""; sceneBar.items = [] }
+        if (viewMenu) { viewMenu.close(); viewMenu.target = "" }
+        if (viewRename) viewRename.close()
+    }
 
 
     // ---- 快捷键: 每个功能的键在 "设置" 里改 (app.shortcuts); 只有取消和确认是固定的 ----
@@ -35,6 +41,7 @@ ApplicationWindow {
                 required property var modelData
                 Shortcut {
                     sequence: modelData.key
+                    context: modelData.id === "sketch.start" ? Qt.ApplicationShortcut : Qt.WindowShortcut
                     // 正在输入框里打字: 单个字母、Delete 让给输入框; 带 Ctrl 的照常
                     enabled: !settingsDialog.opened && (!root.typing || modelData.key.indexOf("Ctrl+") >= 0)
                              && (!app.startPage || modelData.id === "file.new" || modelData.id === "file.open" || modelData.id === "app.settings")
@@ -54,8 +61,8 @@ ApplicationWindow {
         }
         function onAppearanceRequested() { viewBar.openAppearance() }
         function onContextRequested(x, y) {
-            const items = x < 0 ? [] : app.sceneContext
-            if (items.length === 0) { sceneBar.close(); return }
+            const items = x < 0 || app.sketchActive || app.pickingPlane ? [] : app.sceneContext
+            if (items.length === 0) { sceneBar.close(); sceneBar.target = ""; sceneBar.items = []; return }
             sceneBar.target = app.sceneTarget
             sceneBar.items = items
             // 摆在点的位置的右上方 (不压住刚点的地方); 靠边时往里收
@@ -401,6 +408,7 @@ ApplicationWindow {
                 Connections {
                     target: app
                     function onViewMenuRequested(identifier, x, y) {
+                        if (app.sketchActive || app.pickingPlane) return
                         const items = identifier.startsWith("part:") ? sim.partMenu(parseInt(identifier.slice(5)))
                                     : identifier !== "" ? app.featureMenu(identifier) : app.treeMenu("root", "")
                         if (items.length === 0) return
@@ -492,7 +500,7 @@ ApplicationWindow {
                 }
 
                 // 在视图里点中面 / 边 / 草图线弹出来的小工具条
-                ContextBar { id: sceneBar }
+                ContextBar { id: sceneBar; objectName: "sceneContextBar" }
 
                 // 确认角 (草图里才有): ✓ 保存并退出草图, ✕ 放弃这次画的
                 Column {

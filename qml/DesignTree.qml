@@ -19,6 +19,14 @@ ListView {
 
     property bool rolling: false        // 正在拖回退线
     property real keptY: -1             // 换内容之前滚到哪了 (换模型 ListView 会跳回顶上: 换完滚回去)
+    readonly property string contextMode: app.docKind + ":" + app.sketchActive + ":" + app.pickingPlane
+    onContextModeChanged: {
+        if (planeBar) { planeBar.close(); planeBar.plane = "" }
+        if (featureBar) { featureBar.close(); featureBar.target = ""; featureBar.items = [] }
+        if (rowMenu) { rowMenu.close(); rowMenu.target = "" }
+        if (renameBox) renameBox.close()
+        if (materialMenu) materialMenu.close()
+    }
 
     Connections {
         target: app
@@ -63,7 +71,7 @@ ListView {
 
     // 点了基准面这一行。选中会让整棵树重新生成 (这一行跟着没了), 所以这段逻辑放在列表上, 不放在行里
     function planeTapped(plane, shown, below) {
-        const picking = app.hint !== "" && !app.sketchActive      // 正等着选基准面画草图: 点了就直接进草图
+        const picking = app.pickingPlane
         app.selectPlane(plane)
         if (picking || app.sketchActive) return
         planeBar.plane = plane
@@ -76,6 +84,7 @@ ListView {
     // 点了特征这一行: 选中它, 在它下面弹出小工具条 (和上面一样, 逻辑放在列表上)
     function featureTapped(identifier, below) {
         app.selectFeature(identifier)
+        if (app.sketchActive || app.pickingPlane) return
         const items = app.featureContext(identifier)
         if (items.length === 0) return
         featureBar.target = identifier
@@ -85,12 +94,13 @@ ListView {
         featureBar.open()
     }
 
-    ContextBar { id: featureBar }
+    ContextBar { id: featureBar; objectName: "designFeatureBar" }
 
     // 右键一行: 弹菜单。特征有自己的一套; 零件 (第一行)、材质、基准面、原点用 treeMenu
     function rowMenuAt(kind, identifier, x, top, below) {
         featureBar.close()
         planeBar.close()
+        if ((app.sketchActive || app.pickingPlane) && kind !== "plane") return
         let items
         if (kind === "feature") {
             app.selectFeature(identifier)
@@ -161,6 +171,7 @@ ListView {
     }
     Popup {                             // 基准面的浮动工具条
         id: planeBar
+        objectName: "designPlaneBar"
         property string plane: ""
         property bool shown: false
         padding: 4
@@ -188,6 +199,7 @@ ListView {
     // 左边那道缩进竖线都是这一层的颜色, 一眼看得出哪几行属于哪个文件夹
     delegate: Rectangle {
         id: row
+        objectName: modelData.kind === "plane" ? "designPlane_" + modelData.id : ""
         required property var modelData
         readonly property bool bar: modelData.kind === "rollback"
         readonly property bool feature: modelData.kind === "feature"

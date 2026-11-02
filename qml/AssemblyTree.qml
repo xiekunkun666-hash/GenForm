@@ -13,6 +13,13 @@ ListView {
     boundsBehavior: Flickable.StopAtBounds
     ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
     readonly property var parts: sim.components
+    readonly property string contextMode: app.docKind + ":" + app.sketchActive + ":" + app.pickingPlane
+    onContextModeChanged: {
+        if (planeBar) { planeBar.close(); planeBar.plane = "" }
+        if (partBar) { partBar.close(); partBar.target = ""; partBar.items = [] }
+        if (partMenu) partMenu.close()
+        if (renameBox) renameBox.close()
+    }
     // 前面固定的几行 (装配体、三个基准面、原点), 后面是零部件
     readonly property var heads: [{ kind: "root", label: sim.assemblyName, icon: "assembly" },
                                   { kind: "plane", plane: "XZ", label: qsTr("前视基准面"), icon: "plane" },
@@ -37,11 +44,17 @@ ListView {
             }
         }
         function onEditRequested(index) { list.editPart(index) }
+        function onRenameRequested(index) { list.renameAt(index) }
     }
 
     // 单击一个零部件: 选中它, 在它下面弹出小工具条 (打开零件、编辑位置、镜像、隐藏、孤立、放大所选范围)
     function partTapped(index, below) {
+        if (app.sketchActive || app.pickingPlane) return
+        planeBar.close()
+        partMenu.close()
+        renameBox.close()
         sim.selectPart(index)
+        if (index >= 0 && sim.picked !== index) { partBar.close(); return }
         const items = sim.partContext(index)
         if (items.length === 0) return
         partBar.target = "part:" + index
@@ -50,12 +63,12 @@ ListView {
         partBar.y = below
         partBar.open()
     }
-    ContextBar { id: partBar }
+    ContextBar { id: partBar; objectName: "assemblyPartBar" }
 
     // 点了基准面: 弹出 草图绘制 / 正视于 / 放大所选范围 (正等着选基准面画草图时, 点了就直接进草图)
     function planeTapped(plane, below) {
         partBar.close()
-        const picking = app.hint !== "" && !app.sketchActive
+        const picking = app.pickingPlane
         sim.selectPart(-1)
         app.selectPlane(plane)
         if (picking || app.sketchActive) return
@@ -66,6 +79,7 @@ ListView {
     }
     Popup {
         id: planeBar
+        objectName: "assemblyPlaneBar"
         property string plane: ""
         padding: 4
         background: Rectangle { color: Theme.cBgCard; radius: 9; border.width: 1; border.color: Theme.cDivider }
@@ -78,6 +92,7 @@ ListView {
     }
     // 点了布局草图: 选中它, 弹出它的小工具条 (编辑草图、编辑草图平面、隐藏…, 和零件的设计树一样)
     function sketchTapped(identifier, below) {
+        if (app.sketchActive || app.pickingPlane) return
         planeBar.close()
         sim.selectPart(-1)
         app.selectFeature(identifier)
@@ -91,7 +106,12 @@ ListView {
     }
 
     function menuAt(index, x, below) {
+        if (app.sketchActive || app.pickingPlane) return
         partBar.close()
+        planeBar.close()
+        renameBox.close()
+        sim.selectPart(index)
+        if (index >= 0 && sim.picked !== index) return
         const items = sim.partMenu(index)
         if (items.length === 0) return
         partMenu.target = index
@@ -102,15 +122,26 @@ ListView {
     }
     MenuList {
         id: partMenu
+        objectName: "assemblyPartMenu"
         property int target: -1
         itemWidth: 196
         onPicked: (id) => {
-            if (id === "rename") { renameBox.target = target; renameBox.y = partMenu.y - 30; renameBox.open() }
-            else sim.partAction(target, id)
+            sim.partAction(target, id)
         }
+    }
+    function renameAt(index) {
+        if (index < 0 || index >= list.parts.length) return
+        partBar.close()
+        partMenu.close()
+        planeBar.close()
+        renameBox.target = index
+        const row = list.itemAtIndex(list.heads.length + index)
+        renameBox.y = Math.max(0, Math.min(list.height - renameBox.height, row ? row.y - list.contentY : 0))
+        renameBox.open()
     }
     Popup {                             // 重命名: 盖在那一行上的输入框
         id: renameBox
+        objectName: "assemblyRenamePopup"
         property int target: -1
         x: 30
         width: Math.max(140, list.width - 40); height: 30
@@ -122,6 +153,7 @@ ListView {
         }
         contentItem: TextInput {
             id: nameInput
+            objectName: "assemblyRenameInput"
             leftPadding: 8; rightPadding: 8
             verticalAlignment: TextInput.AlignVCenter
             color: Theme.cText
@@ -137,6 +169,7 @@ ListView {
     delegate: Rectangle {
         id: row
         required property int index
+        objectName: head ? (info.kind === "joint" ? "assemblyJoint_" + info.index : "assemblyHead_" + index) : "assemblyPart_" + part
         readonly property bool head: index < list.heads.length
         readonly property var info: head ? list.heads[index] : list.parts[index - list.heads.length]
         readonly property int part: head ? -1 : index - list.heads.length
@@ -219,7 +252,6 @@ ListView {
             acceptedButtons: Qt.RightButton
             onTapped: (point) => {
                 if (row.head && row.info.kind !== "root") return
-                if (!row.head) sim.selectPart(row.part)
                 list.menuAt(row.part, point.position.x, row.y - list.contentY + row.body + 2)
             }
         }
@@ -229,7 +261,7 @@ ListView {
                 if (!row.head) list.partTapped(row.part, below)
                 else if (row.info.kind === "plane") list.planeTapped(row.info.plane, below)
                 else if (row.info.kind === "sketch") list.sketchTapped(row.info.id, below)
-                else if (row.info.kind === "joint") { partBar.close(); planeBar.close(); sim.selectJoint(row.info.index); list.editPart(-1) }
+                else if (row.info.kind === "joint") { partBar.close(); partMenu.close(); renameBox.close(); planeBar.close(); sim.selectJoint(row.info.index); list.editPart(-1) }
                 else if (row.info.kind === "root") { planeBar.close(); list.partTapped(-1, below) }
                 else { partBar.close(); planeBar.close(); sim.selectPart(-1) }
             }
