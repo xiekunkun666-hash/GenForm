@@ -1,5 +1,9 @@
 # GenForm
 
+[中文](README.md) | [English](README.en.md)
+
+GenForm 由**泛化智能科技公司**设计。
+
 GenForm 是面向人和 AI 协作的参数化三维建模软件。桌面界面、命令会话、几何内核、装配、领域计算、MCP 服务和示例入口现使用 **原生 C++20**；界面使用 **Qt / QML**，精确几何使用 **OpenCascade（OCCT）C++ SDK**。本机已完成 Qt 6.9.1、OCCT 7.9 与 MSVC 工具链下的完整编译链接。
 
 **运行不需要 Python、PySide6、numpy、PyOpenGL 或 OCP Python 绑定。** QML、JSON 配方和模型是原生程序读取的数据，不是 Python 替代启动器。长度单位为毫米（mm），世界坐标系 Z 轴向上。
