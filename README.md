@@ -1,5 +1,9 @@
 # GenForm
 
+[中文](README.md) | [English](README.en.md)
+
+GenForm 由**泛化智能科技公司**设计。
+
 GenForm 是面向人和 AI 协作的参数化三维建模软件。用户可以在图形界面中绘制草图、创建特征、修改尺寸；AI 或脚本可以通过 MCP 和本地接口执行建模命令、查询模型、保存文档和导出几何。
 
 项目使用 **Python + PySide6 + QML + OpenGL** 构建桌面界面，使用 **OpenCascade（cadquery-ocp）** 进行几何计算。模型由有顺序的特征历史生成，修改上游参数后重新计算后续特征。
